@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/bgAppStatusBar.png</file>
+        <file>img/bgAppToolBar.png</file>
+        <file>img/bgDivider.png</file>
+        <file>img/bgMainPage.png</file>
+        <file>img/bgProgressBar.png</file>
+        <file>img/bgTabButton.png</file>
+        <file>img/bgTabButtonChecked.png</file>
+        <file>img/bgToolButton.png</file>
+        <file>img/bgToolButtonPressed.png</file>
+        <file>img/cvCelineDionFallingIntoYou.png</file>
+        <file>qml/AppStatusBar.qml</file>
+        <file>qml/AppToolBar.qml</file>
+        <file>qml/Divider.qml</file>
+        <file>qml/EmbeddedAuto/AppTheme.qml</file>
+        <file>qml/EmbeddedAuto/qmldir</file>
+        <file>qml/MainMusicPage.qml</file>
+        <file>qml/MusicCategorySwitcher.qml</file>
+        <file>qml/MusicToolBar.qml</file>
+        <file>qml/NowPlayingView.qml</file>
+        <file>qml/SongInfo.qml</file>
+        <file>qml/SongProgressBar.qml</file>
+        <file>qml/main.qml</file>
+    </qresource>
+</RCC>
