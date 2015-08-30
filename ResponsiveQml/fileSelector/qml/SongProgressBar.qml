@@ -80,17 +80,17 @@ Column
 
         Column {
             BorderImage {
-                id: progressBar
+                id: position
                 source: "qrc:/img/bgToolButton.png"
                 width: AppTheme.songProgressBarWidth
-                height: AppTheme.songProgressBarHeight
+                height: AppTheme.songProgressBarPositionHeight
 
                 Image {
-                   source: "qrc:/img/bgProgressBar.png"
-                   anchors.verticalCenter: parent.verticalCenter
-                   anchors.left: parent.left
-                   anchors.leftMargin: AppTheme.songProgressBarMargin
-                    height: AppTheme.songProgressBarHeight - 2 * AppTheme.songProgressBarMargin
+                    source: "qrc:/img/bgProgressBar.png"
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: AppTheme.songProgressBarMargin
+                    height: position.height - 2 * AppTheme.songProgressBarMargin
                     width: root.totalTime != 0 ? ((AppTheme.songProgressBarWidth - 2 * AppTheme.songProgressBarMargin) * root.elapsedTime / root.totalTime) : 0
                     Behavior on width {
                         PropertyAnimation {
@@ -107,10 +107,10 @@ Column
             }
 
             BorderImage {
-                id: timeBar
+                id: time
                 source: "qrc:/img/bgToolButton.png"
                 width: AppTheme.songProgressBarWidth
-                height: AppTheme.songProgressBarHeight
+                height: AppTheme.songProgressBarTimeHeight
 
                 Text {
                     id: elapsedTimeText
