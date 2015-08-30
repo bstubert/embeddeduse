@@ -27,9 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 
-/* This QML component defines the size properties for the screen size 1280x800.
-  This is the default or reference screen size of the music player. If no file selector
-  for screen size is set, the music player uses the default screen size.
+/* This QML component defines the size properties for the screen size 400x225 ("sizeXS").
  */
 
 pragma Singleton
@@ -37,37 +35,37 @@ import QtQuick 2.0
 
 QtObject
 {
-    readonly property real screenWidth: 1280
-    readonly property real screenHeight: 800
+    readonly property real screenWidth: 400
+    readonly property real screenHeight: 225
 
-    readonly property real screenLeftMargin: 16
+    readonly property real screenLeftMargin: 5
     readonly property real screenRightMargin: screenLeftMargin
-    readonly property real statusBarHeight: 79
-    readonly property real mainPageHeight: 599
-    readonly property real appToolBarHeight: 120
+    readonly property real statusBarHeight: 22
+    readonly property real mainPageHeight: 168
+    readonly property real appToolBarHeight: 34
     readonly property real dividerSize: 1
 
-    readonly property int textSizeNormal: 42
-    readonly property int textSizeSmall: 32
-    readonly property int textSizeVerySmall: 24
+    readonly property int textSizeNormal: 12
+    readonly property int textSizeSmall: 9
+    readonly property int textSizeVerySmall: 7
     readonly property color textColorNormal: "#ffec8b" // lightgoldenrod 1
     readonly property color textColorSmall: "#cdbe70" // lightgoldenrod 3
     readonly property color textColorSelected: "#7FFF00" // chartreuse
 
-    readonly property real leftTabButtonWidth: 319
-    readonly property real leftTabButtonHeight: 99
-    readonly property real toolButtonWidth: 191
-    readonly property real toolButtonHeight: 99
+    readonly property real leftTabButtonWidth: 100
+    readonly property real leftTabButtonHeight: 28
+    readonly property real toolButtonWidth: 60
+    readonly property real toolButtonHeight: 28
     readonly property int buttonBorderWidth: 2
 
-    readonly property real songInfoWidth: 860
-    readonly property real songInfoHeight: 300
-    readonly property real songInfoTextFieldWidth: 510
-    readonly property int songInfoTextSpacing: 16
-    readonly property real songInfoCoverSize: 300
+    readonly property real songInfoWidth: 269
+    readonly property real songInfoHeight: 84
+    readonly property real songInfoTextFieldWidth: 159
+    readonly property int songInfoTextSpacing: 5
+    readonly property real songInfoCoverSize: 84
 
-    readonly property real songProgressBarWidth: 576
-    readonly property real songProgressBarHeight: 49
-    readonly property real songProgressBarMargin: 3
-    readonly property real songProgressBarTextMargin: 12
+    readonly property real songProgressBarWidth: 180
+    readonly property real songProgressBarHeight: 14
+    readonly property real songProgressBarMargin: 1
+    readonly property real songProgressBarTextMargin: 4
 }

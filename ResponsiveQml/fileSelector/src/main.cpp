@@ -27,15 +27,60 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 
-#include <QApplication>
-#include <QQmlApplicationEngine>
+#include <QtCore/QCommandLineOption>
+#include <QtCore/QCommandLineParser>
+#include <QtCore/QSettings>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtCore/QtDebug>
+#include <QtQml/QQmlApplicationEngine>
+#include <QtQml/QQmlFileSelector>
+#include <QtWidgets/QApplication>
 
+
+namespace {
+
+/*!
+  Returns the name of the extra selector corresponding to the given \a screenSize. If \a screenSize
+  is a value other than "sizeM" or "sizeXS", it returns the extra selector for the default screen size
+  "sizeXL", which is the empty string "". Otherwise, it returns \a screenSize as the extra selector.
+ */
+QString screenSizeSelector(const QString screenSize)
+{
+    if (screenSize != "sizeM" && screenSize != "sizeXS") {
+        return "";
+    }
+    else {
+        return screenSize;
+    }
+}
+
+}
+
+
+/*!
+  The user can specify the screen size through the command-line option "--screenSize=<screen-size>",
+  where <screen-size> is one of "sizeXL" (1280x800), "sizeM" (800x600) or "sizeXS" (400x225). If this
+  option is not present on the command line, the program will use "sizeXL" as the default screen size.
+ */
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
+    QCommandLineParser parser;
+    QCommandLineOption screenSizeOption(
+                "screenSize",
+                "One of the string constants sizeXL (1280x800), sizeM (800x600) or sizeXS (400x225)."
+                "screen-size", "sizeXL");
+    screenSizeOption.setDefaultValue("sizeXL");
+    parser.addOption(screenSizeOption);
+    parser.process(app);
+    QString screenSize = parser.value(screenSizeOption);
+
     QQmlApplicationEngine engine;
     engine.addImportPath("qrc:/qml");
+    QQmlFileSelector *selector = new QQmlFileSelector(&engine);
+    selector->setExtraSelectors(QStringList() << screenSizeSelector(screenSize));
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
     return app.exec();
