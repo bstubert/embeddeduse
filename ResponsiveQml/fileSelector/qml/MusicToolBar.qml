@@ -80,10 +80,6 @@ Column
                 }
 
                 ListElement {
-                    buttonIcon: "qrc:/img/icTracks.png"
-                    buttonIconPressed: "qrc:/img/icTracksPressed.png"
-                }
-                ListElement {
                     buttonIcon: "qrc:/img/icPreviousTrack.png"
                     buttonIconPressed: "qrc:/img/icPreviousTrackPressed.png"
                 }
@@ -94,6 +90,10 @@ Column
                 ListElement {
                     buttonIcon: "qrc:/img/icNextTrack.png"
                     buttonIconPressed: "qrc:/img/icNextTrackPressed.png"
+                }
+                ListElement {
+                    buttonIcon: "qrc:/img/icTracks.png"
+                    buttonIconPressed: "qrc:/img/icTracksPressed.png"
                 }
                 ListElement {
                     buttonIcon: "qrc:/img/icMore.png"
