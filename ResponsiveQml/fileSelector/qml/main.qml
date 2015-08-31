@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 
+/*!
+  This is the main QML file for screen sizes sizeXL and sizeM.
+ */
+
 import QtQuick 2.0
 import QtQuick.Window 2.2
 

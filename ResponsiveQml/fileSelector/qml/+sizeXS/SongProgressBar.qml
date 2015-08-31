@@ -27,47 +27,58 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 
+/*!
+  This is the SongProgressBar component for screen size sizeXS. It is vertically arranged and
+  comes without the repeat and shuffle buttons.
+ */
+
 import QtQuick 2.0
+import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 
 import EmbeddedAuto 1.0
 
-Item
+BorderImage
 {
     id: root
 
+    property bool playing: false
+    property int elapsedTime: 0  // in seconds
+    property int totalTime: 0    // in seconds
+
+    source: "qrc:/img/bgToolButton.png"
+    width: AppTheme.songProgressBarWidth
+    height: AppTheme.songProgressBarTimeHeight
+
     Column {
-        anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
-        spacing: AppTheme.songInfoTextSpacing
-
+        anchors.centerIn: parent
         Text {
-            text: "Celine Dion"
+            id: elapsedTimeText
+            text: Qt.formatTime(new Date(root.elapsedTime * 1000), "m:ss")
             font.pixelSize: AppTheme.textSizeSmall
-            color: AppTheme.textColorSmall
-            width: AppTheme.songInfoTextFieldWidth
-        }
-
-        Text {
-            text: "It's All Coming Back to Me Now"
-            font.pixelSize: AppTheme.textSizeNormal
             color: AppTheme.textColorNormal
-            width: AppTheme.songInfoTextFieldWidth
-            wrapMode: Text.Wrap
         }
 
         Text {
-            text: "Falling Into You"
+            id: totalTimeText
+            text: Qt.formatTime(new Date(root.totalTime * 1000), "m:ss")
             font.pixelSize: AppTheme.textSizeSmall
-            color: AppTheme.textColorSmall
-            width: AppTheme.songInfoTextFieldWidth
+            color: AppTheme.textColorNormal
         }
     }
 
-    Image {
-        anchors.right: parent.right
-        anchors.verticalCenter: parent.verticalCenter
-        width: AppTheme.songInfoCoverSize
-        height: width
-        source: "qrc:/img/cvCelineDionFallingIntoYou.png"
+    Timer {
+        id: progressTimer
+        interval: 1000
+        running: root.playing
+        repeat: true
+        onTriggered: {
+            if (root.elapsedTime < root.totalTime) {
+                ++root.elapsedTime
+            }
+            else {
+                root.elapsedTime = 0
+            }
+        }
     }
 }

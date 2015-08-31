@@ -28,26 +28,91 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
 /*!
-  This is the MainMusicPage component for all screen sizes other than sizeXS.
+  This is the MainMusicPage component for screen size sizeXS.
  */
 
 import QtQuick 2.0
+import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
+
+import EmbeddedAuto 1.0
+
 
 BorderImage
 {
     id: root
     source: "qrc:/img/bgMainPage.png"
 
-    MusicCategorySwitcher {
-        id: categorySelector
-        anchors.left: parent.left
-        anchors.top: parent.top
+    Button {
+        id: menuButton
+        iconSource: !pressed ? "qrc:/img/icMenu.png" : "qrc:/img/icMenuPressed.png"
+        style: ButtonStyle {
+            background: BorderImage {
+                source: !control.pressed ? "qrc:/img/bgToolButton.png" : "qrc:/img/bgToolButtonPressed.png"
+                border.left: AppTheme.buttonBorderWidth
+                border.top: AppTheme.buttonBorderWidth
+                border.right: AppTheme.buttonBorderWidth
+                border.bottom: AppTheme.buttonBorderWidth
+            }
+            label: Image {
+                source: control.iconSource
+                fillMode: Image.PreserveAspectFit
+            }
+        }
+        width: AppTheme.toolButtonWidth
+        height: AppTheme.toolButtonHeight
     }
 
-    NowPlayingView {
-        id: nowPlayingView
-        anchors.left: categorySelector.right
+    Divider {
+        id: topDivider
+        height: 1
+        anchors.left: menuButton.left
+        anchors.right: menuButton.right
+        anchors.top: menuButton.bottom
+    }
+
+
+    SongProgressBar {
+        id: songProgressBar
+        anchors.left: parent.left
+        anchors.bottom: bottomDivider.top
+        playing: musicToolBar.playing
+        totalTime: 227
+        elapsedTime: 215
+    }
+
+    Divider {
+        id: leftDivider
+        width: 1
         anchors.top: parent.top
+        anchors.bottom: songInfo.bottom
+        anchors.right: songInfo.left
+    }
+
+    Item {
+        id: songInfo
+        anchors.right: parent.right
+        anchors.top: parent.top
+        width: AppTheme.songInfoWidth
+        height: AppTheme.songInfoHeight
+
+        SongInfo {
+            anchors.fill: parent
+            anchors.margins: AppTheme.songInfoMargin
+        }
+    }
+
+    Divider {
+        id: bottomDivider
+        height: 1
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: songInfo.bottom
+    }
+
+    MusicToolBar {
+        id: musicToolBar
+        anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
     }

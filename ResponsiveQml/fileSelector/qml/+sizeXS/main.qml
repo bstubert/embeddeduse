@@ -27,47 +27,60 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 
+/*!
+  This is the main QML file of the music application for screen size sizeXS. It has a different
+  structure than the main QML files for the bigger sizes sizeM and sizeXL.
+ */
+
 import QtQuick 2.0
+import QtQuick.Window 2.2
 
 import EmbeddedAuto 1.0
 
-Item
-{
-    id: root
+Window {
+    title: qsTr("Music")
+    width: AppTheme.screenWidth
+    height: AppTheme.screenHeight
+    visible: true
 
-    Column {
-        anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
-        spacing: AppTheme.songInfoTextSpacing
-
-        Text {
-            text: "Celine Dion"
-            font.pixelSize: AppTheme.textSizeSmall
-            color: AppTheme.textColorSmall
-            width: AppTheme.songInfoTextFieldWidth
-        }
-
-        Text {
-            text: "It's All Coming Back to Me Now"
-            font.pixelSize: AppTheme.textSizeNormal
-            color: AppTheme.textColorNormal
-            width: AppTheme.songInfoTextFieldWidth
-            wrapMode: Text.Wrap
-        }
-
-        Text {
-            text: "Falling Into You"
-            font.pixelSize: AppTheme.textSizeSmall
-            color: AppTheme.textColorSmall
-            width: AppTheme.songInfoTextFieldWidth
-        }
+    MainMusicPage {
+        anchors.fill: parent
     }
 
-    Image {
-        anchors.right: parent.right
-        anchors.verticalCenter: parent.verticalCenter
-        width: AppTheme.songInfoCoverSize
-        height: width
-        source: "qrc:/img/cvCelineDionFallingIntoYou.png"
-    }
+//    Column {
+//        anchors.fill: parent
+
+//        AppStatusBar {
+//            id: statusBar
+//            anchors.left: parent.left
+//            anchors.right: parent.right
+//            height: AppTheme.statusBarHeight
+//        }
+
+//        Divider {
+//            height: AppTheme.dividerSize
+//            anchors.left: parent.left
+//            anchors.right: parent.right
+//        }
+
+//        MainMusicPage {
+//            id: mainPage
+//            anchors.left: parent.left
+//            anchors.right: parent.right
+//            height: AppTheme.mainPageHeight
+//        }
+
+//        Divider {
+//            height: AppTheme.dividerSize
+//            anchors.left: parent.left
+//            anchors.right: parent.right
+//        }
+
+//        AppToolBar {
+//            id: applicationBar
+//            anchors.left: parent.left
+//            anchors.right: parent.right
+//            height: AppTheme.appToolBarHeight
+//        }
+//    }
 }

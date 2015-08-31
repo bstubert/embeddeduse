@@ -24,5 +24,8 @@
         <file>qml/NowPlayingView.qml</file>
         <file>qml/SongInfo.qml</file>
         <file>qml/SongProgressBar.qml</file>
+        <file>qml/+sizeXS/main.qml</file>
+        <file>qml/+sizeXS/MainMusicPage.qml</file>
+        <file>qml/+sizeXS/SongProgressBar.qml</file>
     </qresource>
 </RCC>

@@ -29,6 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import QtQuick 2.0
 
+import EmbeddedAuto 1.0
+
 BorderImage
 {
     id: root
@@ -45,8 +47,11 @@ BorderImage
     }
 
     SongInfo {
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.horizontalCenter: songProgressBar.horizontalCenter
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: songProgressBar.bottom
+        anchors.bottom: musicToolBar.top
+        anchors.margins: AppTheme.songInfoMargin
     }
 
     MusicToolBar {

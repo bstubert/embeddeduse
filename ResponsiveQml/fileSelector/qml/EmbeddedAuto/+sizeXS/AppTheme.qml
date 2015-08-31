@@ -40,33 +40,35 @@ QtObject
 
     readonly property real screenLeftMargin: 5
     readonly property real screenRightMargin: screenLeftMargin
-    readonly property real statusBarHeight: 22
-    readonly property real mainPageHeight: 168
-    readonly property real appToolBarHeight: 34
+    readonly property real statusBarHeight: 0
+    readonly property real mainPageHeight: 165
+    readonly property real appToolBarHeight: 0
     readonly property real dividerSize: 1
 
-    readonly property int textSizeNormal: 12
-    readonly property int textSizeSmall: 9
-    readonly property int textSizeVerySmall: 7
+    readonly property int textSizeNormal: 24
+    readonly property int textSizeSmall: 18
+    readonly property int textSizeVerySmall: 14
     readonly property color textColorNormal: "#ffec8b" // lightgoldenrod 1
     readonly property color textColorSmall: "#cdbe70" // lightgoldenrod 3
     readonly property color textColorSelected: "#7FFF00" // chartreuse
 
-    readonly property real leftTabButtonWidth: 100
-    readonly property real leftTabButtonHeight: 28
-    readonly property real toolButtonWidth: 60
-    readonly property real toolButtonHeight: 28
+    readonly property real leftTabButtonWidth: 0    // Not used
+    readonly property real leftTabButtonHeight: 0   // Not used
+    readonly property real toolButtonWidth: 79
+    readonly property real toolButtonHeight: 59
     readonly property int buttonBorderWidth: 2
 
-    readonly property real songInfoWidth: 269
-    readonly property real songInfoHeight: 84
-    readonly property real songInfoTextFieldWidth: 159
-    readonly property int songInfoTextSpacing: 5
-    readonly property real songInfoCoverSize: 84
+    readonly property real songInfoWidth: 320
+    readonly property real songInfoHeight: 165
+    readonly property real songInfoMargin: 15
+    readonly property real songInfoTextFieldWidth: songInfoCoverSize !== 0 ? songInfoWidth - songInfoCoverSize - 3 * songInfoMargin
+                                                                           : songInfoWidth - 2 * songInfoMargin
+    readonly property int songInfoTextSpacing: 6
+    readonly property real songInfoCoverSize: 0
 
-    readonly property real songProgressBarWidth: 180
-    readonly property real songProgressBarPositionHeight: 14
-    readonly property real songProgressBarTimeHeight: songProgressBarPositionHeight - 1
+    readonly property real songProgressBarWidth: 79
+    readonly property real songProgressBarPositionHeight: 0
+    readonly property real songProgressBarTimeHeight: 105
     readonly property real songProgressBarMargin: 1
-    readonly property real songProgressBarTextMargin: 4
+    readonly property real songProgressBarTextMargin: screenLeftMargin
 }
