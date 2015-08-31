@@ -38,7 +38,7 @@ import QtQuick.Controls.Styles 1.4
 
 import EmbeddedAuto 1.0
 
-BorderImage
+Column
 {
     id: root
 
@@ -46,25 +46,73 @@ BorderImage
     property int elapsedTime: 0  // in seconds
     property int totalTime: 0    // in seconds
 
-    source: "qrc:/img/bgToolButton.png"
-    width: AppTheme.songProgressBarWidth
-    height: AppTheme.songProgressBarTimeHeight
+    width: childrenRect.width
+    height: childrenRect.height
 
-    Column {
-        anchors.centerIn: parent
-        Text {
-            id: elapsedTimeText
-            text: Qt.formatTime(new Date(root.elapsedTime * 1000), "m:ss")
-            font.pixelSize: AppTheme.textSizeSmall
-            color: AppTheme.textColorNormal
-        }
+    BorderImage {
+        id: position
+        source: "qrc:/img/bgToolButton.png"
+        width: childrenRect.width
+        height: childrenRect.height
 
-        Text {
-            id: totalTimeText
-            text: Qt.formatTime(new Date(root.totalTime * 1000), "m:ss")
-            font.pixelSize: AppTheme.textSizeSmall
-            color: AppTheme.textColorNormal
+        Row {
+            Text {
+                id: elapsedTimeText
+                width: AppTheme.songProgressBarTextWidth
+                height: AppTheme.songProgressBarPositionHeight
+                text: Qt.formatTime(new Date(root.elapsedTime * 1000), "m:ss")
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                font.pixelSize: AppTheme.textSizeVerySmall
+                color: AppTheme.textColorNormal
+            }
+
+            Divider {
+                width: 1
+                height: AppTheme.songProgressBarPositionHeight
+            }
+
+            Item {
+                width: AppTheme.songProgressBarWidth
+                height: AppTheme.songProgressBarPositionHeight
+
+                Image {
+                    source: "qrc:/img/bgProgressBar.png"
+                    anchors.verticalCenter: parent.verticalCenter
+                    x: AppTheme.songProgressBarMargin
+                    height: AppTheme.songProgressBarPositionHeight - 2 * AppTheme.songProgressBarMargin
+                    width: root.totalTime !== 0 ? ((AppTheme.songProgressBarWidth - 2 * AppTheme.songProgressBarMargin) * root.elapsedTime / root.totalTime) : 0
+                    Behavior on width {
+                        PropertyAnimation {
+                            duration: 1000
+                            easing.type: Easing.Linear
+                        }
+                    }
+                }
+            }
+
+            Divider {
+                width: 1
+                height: AppTheme.songProgressBarPositionHeight
+            }
+
+            Text {
+                id: totalTimeText
+                width: AppTheme.songProgressBarTextWidth
+                height: AppTheme.songProgressBarPositionHeight
+                text: Qt.formatTime(new Date(root.totalTime * 1000), "m:ss")
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                font.pixelSize: AppTheme.textSizeVerySmall
+                color: AppTheme.textColorNormal
+            }
         }
+    }
+
+    Divider {
+        height: 1
+        anchors.left: parent.left
+        anchors.right: parent.right
     }
 
     Timer {

@@ -64,21 +64,19 @@ BorderImage
     }
 
     Divider {
-        id: topDivider
         height: 1
         anchors.left: menuButton.left
         anchors.right: menuButton.right
         anchors.top: menuButton.bottom
     }
 
-
     SongProgressBar {
         id: songProgressBar
-        anchors.left: parent.left
-        anchors.bottom: bottomDivider.top
+        anchors.right: parent.right
+        anchors.top: parent.top
         playing: musicToolBar.playing
         totalTime: 227
-        elapsedTime: 215
+        elapsedTime: 115
     }
 
     Divider {
@@ -92,7 +90,7 @@ BorderImage
     Item {
         id: songInfo
         anchors.right: parent.right
-        anchors.top: parent.top
+        anchors.top: songProgressBar.bottom
         width: AppTheme.songInfoWidth
         height: AppTheme.songInfoHeight
 
