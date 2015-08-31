@@ -50,12 +50,14 @@ Window {
             anchors.left: parent.left
             anchors.right: parent.right
             height: AppTheme.statusBarHeight
+            visible: height !== 0
         }
 
         Divider {
             height: AppTheme.dividerSize
             anchors.left: parent.left
             anchors.right: parent.right
+            visible: statusBar.visible
         }
 
         MainMusicPage {
@@ -69,6 +71,7 @@ Window {
             height: AppTheme.dividerSize
             anchors.left: parent.left
             anchors.right: parent.right
+            visible: applicationBar.visible
         }
 
         AppToolBar {
@@ -76,6 +79,7 @@ Window {
             anchors.left: parent.left
             anchors.right: parent.right
             height: AppTheme.appToolBarHeight
+            visible: height !== 0
         }
     }
 }

@@ -41,7 +41,7 @@ QtObject
     readonly property real screenLeftMargin: 5
     readonly property real screenRightMargin: screenLeftMargin
     readonly property real statusBarHeight: 0
-    readonly property real mainPageHeight: 165
+    readonly property real mainPageHeight: screenHeight
     readonly property real appToolBarHeight: 0
     readonly property real dividerSize: 1
 
