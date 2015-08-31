@@ -26,5 +26,6 @@
         <file>qml/SongProgressBar.qml</file>
         <file>qml/+sizeXS/MainMusicPage.qml</file>
         <file>qml/+sizeXS/SongProgressBar.qml</file>
+        <file>qml/+sizeXS/MusicCategorySwitcher.qml</file>
     </qresource>
 </RCC>

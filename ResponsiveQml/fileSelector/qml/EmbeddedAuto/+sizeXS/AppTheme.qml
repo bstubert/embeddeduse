@@ -72,4 +72,6 @@ QtObject
     readonly property real songProgressBarMargin: 1
     readonly property real songProgressBarTextWidth: 59 // Specific to sizeXS
     readonly property real songProgressBarTextMargin: 0
+
+    readonly property int musicToolBarButtonCount: 3
 }

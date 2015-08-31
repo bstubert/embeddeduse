@@ -59,7 +59,7 @@ QtObject
     readonly property int buttonBorderWidth: 2
 
     readonly property real songInfoWidth: 600
-    readonly property real songInfoHeight: 300
+    readonly property real songInfoHeight: 299
     readonly property real songInfoMargin: 30
     readonly property real songInfoTextFieldWidth: songInfoWidth - songInfoCoverSize - 3 * songInfoMargin
     readonly property int songInfoTextSpacing: 12
@@ -70,4 +70,6 @@ QtObject
     readonly property real songProgressBarTimeHeight: songProgressBarPositionHeight - 1
     readonly property real songProgressBarMargin: 2
     readonly property real songProgressBarTextMargin: 8
+
+    readonly property int musicToolBarButtonCount: 4
 }

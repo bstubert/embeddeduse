@@ -43,75 +43,22 @@ BorderImage
     id: root
     source: "qrc:/img/bgMainPage.png"
 
-    Button {
-        id: menuButton
-        iconSource: !pressed ? "qrc:/img/icMenu.png" : "qrc:/img/icMenuPressed.png"
-        style: ButtonStyle {
-            background: BorderImage {
-                source: !control.pressed ? "qrc:/img/bgToolButton.png" : "qrc:/img/bgToolButtonPressed.png"
-                border.left: AppTheme.buttonBorderWidth
-                border.top: AppTheme.buttonBorderWidth
-                border.right: AppTheme.buttonBorderWidth
-                border.bottom: AppTheme.buttonBorderWidth
-            }
-            label: Image {
-                source: control.iconSource
-                fillMode: Image.PreserveAspectFit
-            }
+    Row {
+        anchors.fill: parent
+
+        MusicCategorySwitcher {
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
         }
-        width: AppTheme.toolButtonWidth
-        height: AppTheme.toolButtonHeight
-    }
 
-    Divider {
-        height: 1
-        anchors.left: menuButton.left
-        anchors.right: menuButton.right
-        anchors.top: menuButton.bottom
-    }
-
-    SongProgressBar {
-        id: songProgressBar
-        anchors.right: parent.right
-        anchors.top: parent.top
-        playing: musicToolBar.playing
-        totalTime: 227
-        elapsedTime: 115
-    }
-
-    Divider {
-        id: leftDivider
-        width: 1
-        anchors.top: parent.top
-        anchors.bottom: songInfo.bottom
-        anchors.right: songInfo.left
-    }
-
-    Item {
-        id: songInfo
-        anchors.right: parent.right
-        anchors.top: songProgressBar.bottom
-        width: AppTheme.songInfoWidth
-        height: AppTheme.songInfoHeight
-
-        SongInfo {
-            anchors.fill: parent
-            anchors.margins: AppTheme.songInfoMargin
+        Divider {
+            width: AppTheme.dividerSize
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
         }
-    }
 
-    Divider {
-        id: bottomDivider
-        height: 1
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: songInfo.bottom
-    }
-
-    MusicToolBar {
-        id: musicToolBar
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
+        NowPlayingView {
+            id: nowPlayingView
+        }
     }
 }

@@ -39,6 +39,20 @@ Column
 
     property bool playing: false
 
+    property Component __toolButtonStyle: ButtonStyle {
+        background: BorderImage {
+            source: !control.pressed ? "qrc:/img/bgToolButton.png" : "qrc:/img/bgToolButtonPressed.png"
+            border.left: AppTheme.buttonBorderWidth
+            border.top: AppTheme.buttonBorderWidth
+            border.right: AppTheme.buttonBorderWidth
+            border.bottom: AppTheme.buttonBorderWidth
+        }
+        label: Image {
+            source: control.iconSource
+            fillMode: Image.PreserveAspectFit
+        }
+    }
+
     width: childrenRect.width
     height: childrenRect.height
 
@@ -63,7 +77,7 @@ Column
 
                 function doAction(index) {
                     switch (index) {
-                    case 2: // play/pause
+                    case 1: // play/pause
                         if (root.playing) {
                             musicBarModel.setProperty(index, "buttonIcon", "qrc:/img/icPlay.png")
                             musicBarModel.setProperty(index, "buttonIconPressed", "qrc:/img/icPlayPressed.png")
@@ -95,10 +109,6 @@ Column
                     buttonIcon: "qrc:/img/icTracks.png"
                     buttonIconPressed: "qrc:/img/icTracksPressed.png"
                 }
-                ListElement {
-                    buttonIcon: "qrc:/img/icMore.png"
-                    buttonIconPressed: "qrc:/img/icMorePressed.png"
-                }
             }
 
             Row {
@@ -106,32 +116,29 @@ Column
                 height: childrenRect.height
 
                 Button {
+                    id: toolButton
                     iconSource: !pressed ? buttonIcon : buttonIconPressed
-                    style: ButtonStyle {
-                        background: BorderImage {
-                            source: !control.pressed ? "qrc:/img/bgToolButton.png" : "qrc:/img/bgToolButtonPressed.png"
-                            border.left: AppTheme.buttonBorderWidth
-                            border.top: AppTheme.buttonBorderWidth
-                            border.right: AppTheme.buttonBorderWidth
-                            border.bottom: AppTheme.buttonBorderWidth
-                        }
-                        label: Image {
-                            source: control.iconSource
-                            fillMode: Image.PreserveAspectFit
-                        }
-                    }
-                    width: AppTheme.toolButtonWidth
-                    height: AppTheme.toolButtonHeight
+                    style: root.__toolButtonStyle
+                    width: visible ? AppTheme.toolButtonWidth : 0
+                    height: visible ? AppTheme.toolButtonHeight : 0
+                    visible: index < AppTheme.musicToolBarButtonCount
 
                     onClicked: musicBarModel.doAction(index)
                 }
 
                 Divider {
-                    width: AppTheme.dividerSize
-                    height: AppTheme.toolButtonHeight
-                    visible: index + 1 !== repeater.count
+                    width: visible ? AppTheme.dividerSize : 0
+                    height: visible ? AppTheme.toolButtonHeight : 0
+                    visible: toolButton.visible
                 }
             }
+        }
+
+        Button {
+            iconSource: !pressed ? "qrc:/img/icMore.png" : "qrc:/img/icMorePressed.png"
+            style: root.__toolButtonStyle
+            width: AppTheme.toolButtonWidth
+            height: AppTheme.toolButtonHeight
         }
     }
 }

@@ -28,37 +28,41 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
 import QtQuick 2.0
+import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 
 import EmbeddedAuto 1.0
 
-BorderImage
-{
+Item {
     id: root
-    source: "qrc:/img/bgMainPage.png"
 
-    Column {
-        anchors.fill: parent
+    width: childrenRect.width
 
-        SongProgressBar {
-            id: songProgressBar
-            anchors.left: parent.left
-            anchors.right: parent.right
-            playing: musicToolBar.playing
-            totalTime: 227
-            elapsedTime: 215
+    Divider {
+        height: AppTheme.dividerSize
+        anchors.left: menuButton.left
+        anchors.right: menuButton.right
+        anchors.bottom: menuButton.top
+    }
+
+    Button {
+        id: menuButton
+        iconSource: !pressed ? "qrc:/img/icMenu.png" : "qrc:/img/icMenuPressed.png"
+        style: ButtonStyle {
+            background: BorderImage {
+                source: !control.pressed ? "qrc:/img/bgToolButton.png" : "qrc:/img/bgToolButtonPressed.png"
+                border.left: AppTheme.buttonBorderWidth
+                border.top: AppTheme.buttonBorderWidth
+                border.right: AppTheme.buttonBorderWidth
+                border.bottom: AppTheme.buttonBorderWidth
+            }
+            label: Image {
+                source: control.iconSource
+                fillMode: Image.PreserveAspectFit
+            }
         }
-
-        SongInfo {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.margins: AppTheme.songInfoMargin
-        }
-
-        MusicToolBar {
-            id: musicToolBar
-            anchors.left: parent.left
-            anchors.right: parent.right
-        }
+        anchors.bottom: parent.bottom
+        width: AppTheme.toolButtonWidth
+        height: AppTheme.toolButtonHeight
     }
 }
-

@@ -111,8 +111,8 @@ Column
 
     Divider {
         height: 1
-        anchors.left: parent.left
-        anchors.right: parent.right
+        anchors.left: position.left
+        anchors.right: position.right
     }
 
     Timer {

@@ -34,6 +34,8 @@ import EmbeddedAuto 1.0
 Item
 {
     id: root
+    width: AppTheme.songInfoWidth
+    height: AppTheme.songInfoHeight
 
     Column {
         anchors.left: parent.left
