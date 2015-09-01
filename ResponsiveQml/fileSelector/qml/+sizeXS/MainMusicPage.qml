@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import QtQuick 2.0
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
+import QtQuick.Dialogs 1.2
 
 import EmbeddedAuto 1.0
 
@@ -43,22 +44,54 @@ BorderImage
     id: root
     source: "qrc:/img/bgMainPage.png"
 
-    Row {
-        anchors.fill: parent
 
-        MusicCategorySwitcher {
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-        }
+    Divider {
+        height: AppTheme.dividerSize
+        anchors.left: menuButton.left
+        anchors.right: menuButton.right
+        anchors.bottom: menuButton.top
+    }
 
-        Divider {
-            width: AppTheme.dividerSize
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
+    Button {
+        id: menuButton
+        iconSource: !pressed ? "qrc:/img/icMenu.png" : "qrc:/img/icMenuPressed.png"
+        style: ButtonStyle {
+            background: BorderImage {
+                source: !control.pressed ? "qrc:/img/bgToolButton.png" : "qrc:/img/bgToolButtonPressed.png"
+                border.left: AppTheme.buttonBorderWidth
+                border.top: AppTheme.buttonBorderWidth
+                border.right: AppTheme.buttonBorderWidth
+                border.bottom: AppTheme.buttonBorderWidth
+            }
+            label: Image {
+                source: control.iconSource
+                fillMode: Image.PreserveAspectFit
+            }
         }
+        anchors.bottom: parent.bottom
+        width: AppTheme.toolButtonWidth
+        height: AppTheme.toolButtonHeight
+        onClicked: categorySwitcher.visible = !categorySwitcher.visible
+    }
 
-        NowPlayingView {
-            id: nowPlayingView
-        }
+    Divider {
+        id: verticalDivider
+        width: AppTheme.dividerSize
+        anchors.left: menuButton.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+    }
+
+    NowPlayingView {
+        id: nowPlayingView
+        anchors.left: verticalDivider.right
+    }
+
+    MusicCategorySwitcher {
+        id: categorySwitcher
+        anchors.left: verticalDivider.right
+        width: AppTheme.dialogWidth
+        height: AppTheme.dialogHeight
+        visible: false
     }
 }

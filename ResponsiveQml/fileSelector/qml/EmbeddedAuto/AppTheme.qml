@@ -74,4 +74,8 @@ QtObject
     readonly property real songProgressBarTextMargin: 12
 
     readonly property int musicToolBarButtonCount: 4
+
+    readonly property real dialogWidth: 0           // Not used yet
+    readonly property real dialogHeight: 0          // Not used yet
+    readonly property real dialogButtonHeight: 0    // Not used yet
 }

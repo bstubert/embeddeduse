@@ -74,4 +74,12 @@ QtObject
     readonly property real songProgressBarTextMargin: 0
 
     readonly property int musicToolBarButtonCount: 3
+
+    readonly property real dialogWidth: 320
+    readonly property real dialogHeight: screenHeight
+    readonly property real dialogButtonHeight: toolButtonHeight
+
+    // Specific to sizeXS
+    readonly property real musicCategorySwitcherButtonWidth: 160
+    readonly property real musicCategorySwitcherButtonHeight: 54
 }
