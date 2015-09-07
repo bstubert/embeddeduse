@@ -65,90 +65,48 @@ BorderImage
             model: ListModel {
                 ListElement {
                     buttonText: "Now Playing"
-                    isPadding: false
                 }
                 ListElement {
                     buttonText: "Artists"
-                    isPadding: false
                 }
                 ListElement {
                     buttonText: "Albums"
-                    isPadding: false
                 }
                 ListElement {
                     buttonText: "Genres"
-                    isPadding: false
                 }
                 ListElement {
                     buttonText: "Songs"
-                    isPadding: false
                 }
                 ListElement {
                     buttonText: ""
-                    isPadding: true
                 }
             }
 
-            Row {
-                property bool __isLastRow: Math.floor(index / categoryGrid.columns) === categoryGrid.rows - 1
+            Button {
+                id: gridButton
+
+                property bool __isFirstRow: Math.floor(index / categoryGrid.columns) === 0
                 property bool __isFirstColumn: index % categoryGrid.columns === 0
 
-                width: childrenRect.width
-                height: childrenRect.height
-
-                Column {
-                    width: childrenRect.width
-                    height: childrenRect.height
-
-                    Button {
-                        id: gridButton
-                        text: buttonText
-                        exclusiveGroup: tabButtonGroup
-                        checkable: enabled
-                        checked: index === 0
-                        enabled: !isPadding
-                        style: ButtonStyle {
-                            background: BorderImage {
-                                source: !control.checked ? "qrc:/img/bgTabButton.png" : "qrc:/img/bgTabButtonChecked.png"
-                                border.left: AppTheme.buttonBorderWidth
-                                border.top: AppTheme.buttonBorderWidth
-                                border.right: AppTheme.buttonBorderWidth
-                                border.bottom: AppTheme.buttonBorderWidth
-                            }
-                            label: Text {
-                                x: AppTheme.screenLeftMargin
-                                text: control.text
-                                font.pixelSize: AppTheme.textSizeNormal
-                                color: control.checked ? AppTheme.textColorSelected : AppTheme.textColorNormal
-                                horizontalAlignment: Text.AlignLeft
-                                verticalAlignment: Text.AlignVCenter
-                            }
-                        }
-                        width: AppTheme.musicCategorySwitcherButtonWidth - (__isFirstColumn ? 0 : 1)
-                        height: AppTheme.musicCategorySwitcherButtonHeight + (__isLastRow ? 1 : 0)
-                    }
-
-                    Divider {
-                        height: AppTheme.dividerSize
-                        width: AppTheme.musicCategorySwitcherButtonWidth
-                        visible: !__isLastRow
-                    }
+                text: buttonText
+                exclusiveGroup: tabButtonGroup
+                checkable: enabled
+                checked: index === 0
+                enabled: !gridButton.Positioner.isLastItem
+                style: TabButtonStyle {
+                    backgroundNormal: __isFirstRow ? (__isFirstColumn ? AppTheme.bgTabButtonNormalR : AppTheme.bgTabButtonNormal)
+                                                   : (__isFirstColumn ? AppTheme.bgTabButtonNormalRT : AppTheme.bgTabButtonNormalT)
+                    backgroundChecked: AppTheme.bgTabButtonChecked
+                    textSize: AppTheme.textSizeNormal
+                    textColorNormal: AppTheme.textColorNormal
+                    textColorChecked: AppTheme.textColorSelected
+                    leftMargin: AppTheme.screenLeftMargin
                 }
-
-                Divider {
-                    width: AppTheme.dividerSize
-                    height: gridButton.height
-                    visible: __isFirstColumn
-                }
+                width: AppTheme.musicCategorySwitcherButtonWidth
+                height: AppTheme.musicCategorySwitcherButtonHeight
             }
         }
-    }
-
-    Divider {
-        height: AppTheme.dividerSize
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: categoryGrid.bottom
     }
 
     Row {
@@ -158,43 +116,34 @@ BorderImage
         width: childrenRect.width
         height: childrenRect.height
 
-        property Component __toolButtonStyle: ButtonStyle {
-            background: BorderImage {
-                source: !control.pressed ? "qrc:/img/bgTabButton.png" : "qrc:/img/bgToolButtonPressed.png" // TODO: Introduce bgTabButtonPressed.png!
-                border.left: AppTheme.buttonBorderWidth
-                border.top: AppTheme.buttonBorderWidth
-                border.right: AppTheme.buttonBorderWidth
-                border.bottom: AppTheme.buttonBorderWidth
-            }
-            label: Image {
-                source: control.iconSource
-                fillMode: Image.PreserveAspectFit
-            }
-        }
-
-        Divider {
-            width: AppTheme.dividerSize
+        BorderBackground {
+            backgroundColor: "#191970"
+            borderColor: "#FFEC8B"
+            rightBorder: AppTheme.dividerSize
+            topBorder: AppTheme.dividerSize
+            width: AppTheme.musicCategorySwitcherButtonWidth
             height: AppTheme.toolButtonHeight
         }
 
         Button {
             id: cancelButton
             iconSource: !pressed ? "qrc:/img/icCancel.png" : "qrc:/img/icCancelPressed.png"
-            style: dialogButtonRow.__toolButtonStyle
+            style: ToolButtonStyle {
+                backgroundNormal: AppTheme.bgTabButtonNormalRT
+                backgroundSelected: AppTheme.bgToolButtonSelected
+            }
             width: AppTheme.toolButtonWidth
             height: AppTheme.toolButtonHeight
             onClicked: root.visible = false
         }
 
-        Divider {
-            width: AppTheme.dividerSize
-            height: AppTheme.toolButtonHeight
-        }
-
         Button {
             id: okButton
             iconSource: !pressed ? "qrc:/img/icOk.png" : "qrc:/img/icOkPressed.png"
-            style: dialogButtonRow.__toolButtonStyle
+            style: ToolButtonStyle {
+                backgroundNormal: AppTheme.bgTabButtonNormalT
+                backgroundSelected: AppTheme.bgToolButtonSelected
+            }
             width: AppTheme.toolButtonWidth
             height: AppTheme.toolButtonHeight
             onClicked: root.visible = false

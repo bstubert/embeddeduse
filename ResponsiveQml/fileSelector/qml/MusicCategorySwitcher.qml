@@ -33,92 +33,58 @@ import QtQuick.Controls.Styles 1.4
 
 import EmbeddedAuto 1.0
 
-Row
+Column
 {
     id: root
 
     width: childrenRect.width
     height: childrenRect.height
 
-    Column
-    {
-        id: buttonColumn
-
-        width: childrenRect.width
-        height: childrenRect.height
-
-        ExclusiveGroup {
-            id: tabButtonGroup
-        }
-
-        Repeater {
-            id: repeater
-            model: ListModel {
-                ListElement {
-                    buttonText: "Now Playing"
-                    isPadding: false
-                }
-                ListElement {
-                    buttonText: "Artists"
-                    isPadding: false
-                }
-                ListElement {
-                    buttonText: "Albums"
-                    isPadding: false
-                }
-                ListElement {
-                    buttonText: "Genres"
-                    isPadding: false
-                }
-                ListElement {
-                    buttonText: "Songs"
-                    isPadding: false
-                }
-                ListElement {
-                    buttonText: ""
-                    isPadding: true
-                }
-            }
-
-            Column {
-                Button {
-                    text: buttonText
-                    exclusiveGroup: tabButtonGroup
-                    checkable: enabled
-                    checked: index === 0
-                    enabled: !isPadding
-                    style: ButtonStyle {
-                        background: BorderImage {
-                            source: !control.checked ? "qrc:/img/bgTabButton.png" : "qrc:/img/bgTabButtonChecked.png"
-                            border.left: AppTheme.buttonBorderWidth
-                            border.top: AppTheme.buttonBorderWidth
-                            border.right: AppTheme.buttonBorderWidth
-                            border.bottom: AppTheme.buttonBorderWidth
-                        }
-                        label: Text {
-                            x: AppTheme.screenLeftMargin
-                            text: control.text
-                            font.pixelSize: AppTheme.textSizeNormal
-                            color: control.checked ? AppTheme.textColorSelected : AppTheme.textColorNormal
-                            horizontalAlignment: Text.AlignLeft
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                    }
-                    width: AppTheme.leftTabButtonWidth
-                    height: AppTheme.leftTabButtonHeight
-                }
-
-                Divider {
-                    height: AppTheme.dividerSize
-                    width: AppTheme.leftTabButtonWidth
-                    visible: index + 1 !== repeater.count
-                }
-            }
-        }
+    ExclusiveGroup {
+        id: tabButtonGroup
     }
 
-    Divider {
-        width: AppTheme.dividerSize
-        height: buttonColumn.height
+    Repeater {
+        id: repeater
+
+        model: ListModel {
+            ListElement {
+                buttonText: "Now Playing"
+            }
+            ListElement {
+                buttonText: "Artists"
+            }
+            ListElement {
+                buttonText: "Albums"
+            }
+            ListElement {
+                buttonText: "Genres"
+            }
+            ListElement {
+                buttonText: "Songs"
+            }
+            ListElement {
+                buttonText: ""
+            }
+        }
+
+        Button {
+            id: tabButton
+            text: buttonText
+            exclusiveGroup: tabButtonGroup
+            checkable: enabled
+            checked: index === 0
+            enabled: !tabButton.Positioner.isLastItem
+            style: TabButtonStyle {
+                backgroundNormal: tabButton.Positioner.isFirstItem ? AppTheme.bgTabButtonNormalRTB : AppTheme.bgTabButtonNormalRB
+                backgroundChecked: AppTheme.bgTabButtonChecked
+                textSize: AppTheme.textSizeNormal
+                textColorNormal: AppTheme.textColorNormal
+                textColorChecked: AppTheme.textColorSelected
+                leftMargin: AppTheme.screenLeftMargin
+            }
+            width: AppTheme.leftTabButtonWidth
+            height: AppTheme.leftTabButtonHeight
+        }
     }
 }

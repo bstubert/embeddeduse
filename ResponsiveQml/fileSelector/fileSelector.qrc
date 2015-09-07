@@ -27,5 +27,8 @@
         <file>qml/+sizeXS/MainMusicPage.qml</file>
         <file>qml/+sizeXS/SongProgressBar.qml</file>
         <file>qml/+sizeXS/MusicCategorySwitcher.qml</file>
+        <file>qml/EmbeddedAuto/BorderBackground.qml</file>
+        <file>qml/EmbeddedAuto/ToolButtonStyle.qml</file>
+        <file>qml/EmbeddedAuto/TabButtonStyle.qml</file>
     </qresource>
 </RCC>

@@ -27,3 +27,6 @@
 
 module EmbeddedAuto
 singleton AppTheme 1.0 AppTheme.qml
+BorderBackground 1.0 BorderBackground.qml
+TabButtonStyle 1.0 TabButtonStyle.qml
+ToolButtonStyle 1.0 ToolButtonStyle.qml

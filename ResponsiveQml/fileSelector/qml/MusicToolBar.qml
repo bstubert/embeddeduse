@@ -33,112 +33,79 @@ import QtQuick.Controls.Styles 1.4
 
 import EmbeddedAuto 1.0
 
-Column
+Row
 {
     id: root
 
     property bool playing: false
 
-    property Component __toolButtonStyle: ButtonStyle {
-        background: BorderImage {
-            source: !control.pressed ? "qrc:/img/bgToolButton.png" : "qrc:/img/bgToolButtonPressed.png"
-            border.left: AppTheme.buttonBorderWidth
-            border.top: AppTheme.buttonBorderWidth
-            border.right: AppTheme.buttonBorderWidth
-            border.bottom: AppTheme.buttonBorderWidth
-        }
-        label: Image {
-            source: control.iconSource
-            fillMode: Image.PreserveAspectFit
-        }
-    }
-
-    width: childrenRect.width
-    height: childrenRect.height
-
-    Divider {
-        width: buttonRow.width + 1
-        height: AppTheme.dividerSize
-    }
-
-    Row
+    Repeater
     {
-        id: buttonRow
+        id: repeater
 
-        width: childrenRect.width
-        height: childrenRect.height
+        model: ListModel {
+            id: musicBarModel
 
-        Repeater
-        {
-            id: repeater
-
-            model: ListModel {
-                id: musicBarModel
-
-                function doAction(index) {
-                    switch (index) {
-                    case 1: // play/pause
-                        if (root.playing) {
-                            musicBarModel.setProperty(index, "buttonIcon", "qrc:/img/icPlay.png")
-                            musicBarModel.setProperty(index, "buttonIconPressed", "qrc:/img/icPlayPressed.png")
-                        }
-                        else {
-                            musicBarModel.setProperty(index, "buttonIcon", "qrc:/img/icPause.png")
-                            musicBarModel.setProperty(index, "buttonIconPressed", "qrc:/img/icPausePressed.png")
-                        }
-                        root.playing = !root.playing
-                        break;
-                    default:
-                        console.log("@ Action not supported")
+            function doAction(index) {
+                switch (index) {
+                case 1: // play/pause
+                    if (root.playing) {
+                        musicBarModel.setProperty(index, "buttonIcon", "qrc:/img/icPlay.png")
+                        musicBarModel.setProperty(index, "buttonIconPressed", "qrc:/img/icPlayPressed.png")
                     }
-                }
-
-                ListElement {
-                    buttonIcon: "qrc:/img/icPreviousTrack.png"
-                    buttonIconPressed: "qrc:/img/icPreviousTrackPressed.png"
-                }
-                ListElement {
-                    buttonIcon: "qrc:/img/icPlay.png"
-                    buttonIconPressed: "qrc:/img/icPlayPressed.png"
-                }
-                ListElement {
-                    buttonIcon: "qrc:/img/icNextTrack.png"
-                    buttonIconPressed: "qrc:/img/icNextTrackPressed.png"
-                }
-                ListElement {
-                    buttonIcon: "qrc:/img/icTracks.png"
-                    buttonIconPressed: "qrc:/img/icTracksPressed.png"
+                    else {
+                        musicBarModel.setProperty(index, "buttonIcon", "qrc:/img/icPause.png")
+                        musicBarModel.setProperty(index, "buttonIconPressed", "qrc:/img/icPausePressed.png")
+                    }
+                    root.playing = !root.playing
+                    break;
+                default:
+                    console.log("@ Action not supported")
                 }
             }
 
-            Row {
-                width: childrenRect.width
-                height: childrenRect.height
-
-                Button {
-                    id: toolButton
-                    iconSource: !pressed ? buttonIcon : buttonIconPressed
-                    style: root.__toolButtonStyle
-                    width: visible ? AppTheme.toolButtonWidth : 0
-                    height: visible ? AppTheme.toolButtonHeight : 0
-                    visible: index < AppTheme.musicToolBarButtonCount
-
-                    onClicked: musicBarModel.doAction(index)
-                }
-
-                Divider {
-                    width: visible ? AppTheme.dividerSize : 0
-                    height: visible ? AppTheme.toolButtonHeight : 0
-                    visible: toolButton.visible
-                }
+            ListElement {
+                buttonIcon: "qrc:/img/icPreviousTrack.png"
+                buttonIconPressed: "qrc:/img/icPreviousTrackPressed.png"
+            }
+            ListElement {
+                buttonIcon: "qrc:/img/icPlay.png"
+                buttonIconPressed: "qrc:/img/icPlayPressed.png"
+            }
+            ListElement {
+                buttonIcon: "qrc:/img/icNextTrack.png"
+                buttonIconPressed: "qrc:/img/icNextTrackPressed.png"
+            }
+            ListElement {
+                buttonIcon: "qrc:/img/icTracks.png"
+                buttonIconPressed: "qrc:/img/icTracksPressed.png"
             }
         }
 
-        Button {
-            iconSource: !pressed ? "qrc:/img/icMore.png" : "qrc:/img/icMorePressed.png"
-            style: root.__toolButtonStyle
-            width: AppTheme.toolButtonWidth
-            height: AppTheme.toolButtonHeight
+        Row {
+            Button {
+                id: toolButton
+                iconSource: !pressed ? buttonIcon : buttonIconPressed
+                style: ToolButtonStyle {
+                    backgroundNormal: AppTheme.appToolBarHeight !== 0 ? AppTheme.bgToolButtonNormalRTB : AppTheme.bgToolButtonNormalRT
+                    backgroundSelected: AppTheme.bgToolButtonSelected
+                }
+                width: visible ? AppTheme.toolButtonWidth : 0
+                height: visible ? AppTheme.musicToolBarButtonHeight : 0
+                visible: index < AppTheme.musicToolBarButtonCount
+
+                onClicked: musicBarModel.doAction(index)
+            }
         }
+    }
+
+    Button {
+        iconSource: !pressed ? "qrc:/img/icMore.png" : "qrc:/img/icMorePressed.png"
+        style: ToolButtonStyle {
+            backgroundNormal: AppTheme.appToolBarHeight !== 0 ? AppTheme.bgToolButtonNormalRTB : AppTheme.bgToolButtonNormalT
+            backgroundSelected: AppTheme.bgToolButtonSelected
+        }
+        width: AppTheme.toolButtonWidth
+        height: AppTheme.musicToolBarButtonHeight
     }
 }

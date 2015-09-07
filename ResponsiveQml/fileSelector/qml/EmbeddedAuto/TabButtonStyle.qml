@@ -27,45 +27,28 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 
-/*!
-  This is the main QML file for screen sizes sizeXL and sizeM.
- */
-
 import QtQuick 2.0
-import QtQuick.Window 2.2
+import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 
-import EmbeddedAuto 1.0
+ButtonStyle
+{
+    id: root
 
-Window {
-    title: qsTr("Music")
-    width: AppTheme.screenWidth
-    height: AppTheme.screenHeight
-    visible: true
+    property Component backgroundNormal
+    property Component backgroundChecked
+    property int textSize: 16
+    property color textColorNormal: "black"
+    property color textColorChecked: "red"
+    property real leftMargin: 0
 
-    Column {
-        anchors.fill: parent
-
-        AppStatusBar {
-            id: statusBar
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: AppTheme.statusBarHeight
-            visible: height !== 0
-        }
-
-        MainMusicPage {
-            id: mainPage
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: AppTheme.mainPageHeight
-        }
-
-        AppToolBar {
-            id: applicationBar
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: AppTheme.appToolBarHeight
-            visible: height !== 0
-        }
+    background: !control.checked ? backgroundNormal : backgroundChecked
+    label: Text {
+        x: root.leftMargin
+        text: control.text
+        font.pixelSize: root.textSize
+        color: control.checked ? root.textColorChecked : root.textColorNormal
+        horizontalAlignment: Text.AlignLeft
+        verticalAlignment: Text.AlignVCenter
     }
 }

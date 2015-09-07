@@ -28,10 +28,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
 import QtQuick 2.0
+import EmbeddedAuto 1.0
 
-BorderImage
+BorderBackground
 {
     id: root
-    source: "qrc:/img/bgTabButton.png"
+    backgroundColor: "#191970"
+    borderColor: "#ffec8b"
 }
 

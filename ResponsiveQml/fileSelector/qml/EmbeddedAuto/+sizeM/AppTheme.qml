@@ -40,22 +40,19 @@ QtObject
 
     readonly property real screenLeftMargin: 10
     readonly property real screenRightMargin: screenLeftMargin
-    readonly property real statusBarHeight: 59
-    readonly property real mainPageHeight: 449
+    readonly property real statusBarHeight: 60
+    readonly property real mainPageHeight: 450
     readonly property real appToolBarHeight: 90
     readonly property real dividerSize: 1
 
     readonly property int textSizeNormal: 32
     readonly property int textSizeSmall: 24
     readonly property int textSizeVerySmall: 18
-    readonly property color textColorNormal: "#ffec8b" // lightgoldenrod 1
-    readonly property color textColorSmall: "#cdbe70" // lightgoldenrod 3
-    readonly property color textColorSelected: "#7FFF00" // chartreuse
 
-    readonly property real leftTabButtonWidth: 199
-    readonly property real leftTabButtonHeight: 74
-    readonly property real toolButtonWidth: 119
-    readonly property real toolButtonHeight: 74
+    readonly property real leftTabButtonWidth: 200
+    readonly property real leftTabButtonHeight: 75
+    readonly property real toolButtonWidth: 120
+    readonly property real toolButtonHeight: 75
     readonly property int buttonBorderWidth: 2
 
     readonly property real songInfoWidth: 600
@@ -66,14 +63,87 @@ QtObject
     readonly property real songInfoCoverSize: 180
 
     readonly property real songProgressBarWidth: 360
-    readonly property real songProgressBarPositionHeight: 37
+    readonly property real songProgressBarPositionHeight: 38
     readonly property real songProgressBarTimeHeight: songProgressBarPositionHeight - 1
     readonly property real songProgressBarMargin: 2
     readonly property real songProgressBarTextMargin: 8
 
     readonly property int musicToolBarButtonCount: 4
+    readonly property real musicToolBarButtonHeight: toolButtonHeight + 1
 
     readonly property real dialogWidth: 0           // Not used yet
     readonly property real dialogHeight: 0          // Not used yet
     readonly property real dialogButtonHeight: 0    // Not used yet
+
+    // Look-and-feel properties (e.g., for brand themes)
+    readonly property color textColorNormal: "#ffec8b" // lightgoldenrod 1
+    readonly property color textColorSmall: "#cdbe70" // lightgoldenrod 3
+    readonly property color textColorSelected: "#7FFF00" // chartreuse
+
+    property Component bgToolButtonNormalT: BorderBackground {
+        backgroundColor: "#00008B"
+        borderColor: "#FFEC8B"
+        topBorder: dividerSize
+    }
+
+    property Component bgToolButtonNormalTB: BorderBackground {
+        backgroundColor: "#00008B"
+        borderColor: "#FFEC8B"
+        topBorder: dividerSize
+        bottomBorder: dividerSize
+    }
+
+    property Component bgToolButtonNormalRT: BorderBackground {
+        backgroundColor: "#00008B"
+        borderColor: "#FFEC8B"
+        rightBorder: dividerSize
+        topBorder: dividerSize
+    }
+
+    property Component bgToolButtonNormalRTB: BorderBackground {
+        backgroundColor: "#00008B"
+        borderColor: "#FFEC8B"
+        rightBorder: dividerSize
+        topBorder: dividerSize
+        bottomBorder: dividerSize
+    }
+
+    property Component bgToolButtonSelected: BorderBackground {
+        backgroundColor: "#00008B"
+        borderColor: "#FFB90F"
+        leftBorder: buttonBorderWidth
+        rightBorder: buttonBorderWidth
+        topBorder: buttonBorderWidth
+        bottomBorder: buttonBorderWidth
+    }
+
+    property Component bgTabButtonNormalB: BorderBackground {
+        backgroundColor: "#191970"
+        borderColor: "#FFEC8B"
+        bottomBorder: dividerSize
+    }
+
+    property Component bgTabButtonNormalRB: BorderBackground {
+        backgroundColor: "#191970"
+        borderColor: "#FFEC8B"
+        rightBorder: dividerSize
+        bottomBorder: dividerSize
+    }
+
+    property Component bgTabButtonNormalRTB: BorderBackground {
+        backgroundColor: "#191970"
+        borderColor: "#FFEC8B"
+        rightBorder: dividerSize
+        topBorder: dividerSize
+        bottomBorder: dividerSize
+    }
+
+    property Component bgTabButtonChecked: BorderBackground {
+        backgroundColor: "#191970"
+        borderColor: "#7FFF00"
+        leftBorder: buttonBorderWidth
+        rightBorder: buttonBorderWidth
+        topBorder: buttonBorderWidth
+        bottomBorder: buttonBorderWidth
+    }
 }

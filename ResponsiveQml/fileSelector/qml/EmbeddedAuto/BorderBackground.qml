@@ -28,44 +28,49 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
 /*!
-  This is the main QML file for screen sizes sizeXL and sizeM.
+  This component is used to create a background "image" with or without borders on its four sides.
+  If \a leftBorder has a non-zero value, a border with color \a borderColor and with thickness
+  \a leftBorder is shown on the left-hand side of the BorderBackground component. The same holds
+  for \a rightBorder, \a topBorder and \a bottomBorder and their respective sides of the
+  BorderBackground component. The central area of this component is painted with the color
+  \a backgroundColor.
+
+  If we want to have a button background in blue with a yellow border of 1 pixel on the
+  right-hand side, we would write the following:
+
+    BorderBackground {
+        backgroundColor: "blue"
+        borderColor: "yellow"
+        rightBorder: 1
+    }
  */
 
 import QtQuick 2.0
-import QtQuick.Window 2.2
 
-import EmbeddedAuto 1.0
+Rectangle
+{
+    id: border
 
-Window {
-    title: qsTr("Music")
-    width: AppTheme.screenWidth
-    height: AppTheme.screenHeight
-    visible: true
+    property color backgroundColor: "white"
+    property color borderColor: "black"
 
-    Column {
+    property real leftBorder: 0
+    property real rightBorder: 0
+    property real topBorder: 0
+    property real bottomBorder: 0
+
+    color: border.borderColor
+
+    Rectangle {
+        id: background
         anchors.fill: parent
-
-        AppStatusBar {
-            id: statusBar
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: AppTheme.statusBarHeight
-            visible: height !== 0
+        anchors {
+            leftMargin: border.leftBorder
+            rightMargin: border.rightBorder
+            topMargin: border.topBorder
+            bottomMargin: border.bottomBorder
         }
-
-        MainMusicPage {
-            id: mainPage
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: AppTheme.mainPageHeight
-        }
-
-        AppToolBar {
-            id: applicationBar
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: AppTheme.appToolBarHeight
-            visible: height !== 0
-        }
+        color: border.backgroundColor
     }
 }
+

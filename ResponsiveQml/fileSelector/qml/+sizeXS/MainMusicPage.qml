@@ -44,52 +44,38 @@ BorderImage
     id: root
     source: "qrc:/img/bgMainPage.png"
 
+    Column {
+        id: leftColumn
 
-    Divider {
-        height: AppTheme.dividerSize
-        anchors.left: menuButton.left
-        anchors.right: menuButton.right
-        anchors.bottom: menuButton.top
-    }
-
-    Button {
-        id: menuButton
-        iconSource: !pressed ? "qrc:/img/icMenu.png" : "qrc:/img/icMenuPressed.png"
-        style: ButtonStyle {
-            background: BorderImage {
-                source: !control.pressed ? "qrc:/img/bgToolButton.png" : "qrc:/img/bgToolButtonPressed.png"
-                border.left: AppTheme.buttonBorderWidth
-                border.top: AppTheme.buttonBorderWidth
-                border.right: AppTheme.buttonBorderWidth
-                border.bottom: AppTheme.buttonBorderWidth
-            }
-            label: Image {
-                source: control.iconSource
-                fillMode: Image.PreserveAspectFit
-            }
+        BorderBackground {
+            width: AppTheme.toolButtonWidth
+            height: AppTheme.screenHeight - AppTheme.toolButtonHeight
+            backgroundColor: "#00008B"
+            borderColor: "#FFEC8B"
+            rightBorder: 1
         }
-        anchors.bottom: parent.bottom
-        width: AppTheme.toolButtonWidth
-        height: AppTheme.toolButtonHeight
-        onClicked: categorySwitcher.visible = !categorySwitcher.visible
-    }
 
-    Divider {
-        id: verticalDivider
-        width: AppTheme.dividerSize
-        anchors.left: menuButton.right
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
+        Button {
+            id: menuButton
+            iconSource: !pressed ? "qrc:/img/icMenu.png" : "qrc:/img/icMenuPressed.png"
+            style: ToolButtonStyle {
+                backgroundNormal: AppTheme.bgToolButtonNormalRT
+                backgroundSelected: AppTheme.bgToolButtonSelected
+            }
+            width: AppTheme.toolButtonWidth
+            height: AppTheme.toolButtonHeight
+            onClicked: categorySwitcher.visible = !categorySwitcher.visible
+        }
     }
 
     NowPlayingView {
         id: nowPlayingView
-        anchors.left: verticalDivider.right
+        anchors.left: leftColumn.right
     }
 
     MusicCategorySwitcher {
         id: categorySwitcher
-        anchors.left: verticalDivider.right
+        anchors.left: leftColumn.right
         width: AppTheme.dialogWidth
         height: AppTheme.dialogHeight
         visible: false

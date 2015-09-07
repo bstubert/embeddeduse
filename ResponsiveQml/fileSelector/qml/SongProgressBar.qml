@@ -33,7 +33,7 @@ import QtQuick.Controls.Styles 1.4
 
 import EmbeddedAuto 1.0
 
-Column
+Item
 {
     id: root
 
@@ -41,47 +41,33 @@ Column
     property int elapsedTime: 0  // in seconds
     property int totalTime: 0    // in seconds
 
-    property Component __buttonStyle: ButtonStyle {
-        background: BorderImage {
-            source: !control.pressed ? "qrc:/img/bgToolButton.png" : "qrc:/img/bgToolButtonPressed.png"
-            border.left: AppTheme.buttonBorderWidth
-            border.top: AppTheme.buttonBorderWidth
-            border.right: AppTheme.buttonBorderWidth
-            border.bottom: AppTheme.buttonBorderWidth
-        }
-        label: Image {
-            source: control.iconSource
-            fillMode: Image.PreserveAspectFit
-        }
-    }
-
     width: childrenRect.width
     height: childrenRect.height
 
     Row
     {
-        id: buttonRow
-
         width: childrenRect.width
         height: childrenRect.height
 
         Button {
             id: shuffleButton
             iconSource: !pressed ? "qrc:/img/icShuffle.png" : "qrc:/img/icShufflePressed.png"
-            style: root.__buttonStyle
+            style: ToolButtonStyle {
+                backgroundNormal: AppTheme.bgToolButtonNormalRTB
+                backgroundSelected: AppTheme.bgToolButtonSelected
+            }
             width: AppTheme.toolButtonWidth
             height: AppTheme.toolButtonHeight
         }
 
-        Divider {
-            width: AppTheme.dividerSize
-            height: AppTheme.toolButtonHeight
-        }
-
         Column {
-            BorderImage {
+            BorderBackground {
                 id: position
-                source: "qrc:/img/bgToolButton.png"
+                backgroundColor: "#00008B"
+                borderColor: "#FFEC8B"
+                rightBorder: AppTheme.dividerSize
+                topBorder: AppTheme.dividerSize
+                bottomBorder: AppTheme.dividerSize
                 width: AppTheme.songProgressBarWidth
                 height: AppTheme.songProgressBarPositionHeight
 
@@ -101,14 +87,12 @@ Column
                 }
             }
 
-            Divider {
-                height: AppTheme.dividerSize
-                width: AppTheme.songProgressBarWidth
-            }
-
-            BorderImage {
+            BorderBackground {
                 id: time
-                source: "qrc:/img/bgToolButton.png"
+                backgroundColor: "#00008B"
+                borderColor: "#FFEC8B"
+                rightBorder: AppTheme.dividerSize
+                bottomBorder: AppTheme.dividerSize
                 width: AppTheme.songProgressBarWidth
                 height: AppTheme.songProgressBarTimeHeight
 
@@ -134,23 +118,16 @@ Column
             }
         }
 
-        Divider {
-            width: AppTheme.dividerSize
-            height: AppTheme.toolButtonHeight
-        }
-
         Button {
             id: repeatButton
             iconSource: !pressed ? "qrc:/img/icRepeat.png" : "qrc:/img/icRepeatPressed.png"
-            style: root.__buttonStyle
+            style: ToolButtonStyle {
+                backgroundNormal: AppTheme.bgToolButtonNormalTB
+                backgroundSelected: AppTheme.bgToolButtonSelected
+            }
             width: AppTheme.toolButtonWidth
             height: AppTheme.toolButtonHeight
         }
-    }
-
-    Divider {
-        height: AppTheme.dividerSize
-        width: buttonRow.width
     }
 
     Timer {
