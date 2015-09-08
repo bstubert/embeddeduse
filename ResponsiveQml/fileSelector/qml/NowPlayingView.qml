@@ -39,7 +39,6 @@ Rectangle
         anchors.fill: parent
 
         SongProgressBar {
-            id: songProgressBar
             anchors.left: parent.left
             anchors.right: parent.right
             playing: musicToolBar.playing

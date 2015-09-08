@@ -83,6 +83,7 @@ Row
         }
 
         Row {
+
             Button {
                 id: toolButton
                 iconSource: !pressed ? buttonIcon : buttonIconPressed

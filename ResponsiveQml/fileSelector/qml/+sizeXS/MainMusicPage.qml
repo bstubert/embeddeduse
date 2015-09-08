@@ -71,6 +71,7 @@ Rectangle
     NowPlayingView {
         id: nowPlayingView
         anchors.left: leftColumn.right
+        anchors.right: parent.right
     }
 
     MusicCategorySwitcher {
