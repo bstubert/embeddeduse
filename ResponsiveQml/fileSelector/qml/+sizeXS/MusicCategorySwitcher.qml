@@ -119,8 +119,8 @@ BorderImage
         BorderBackground {
             backgroundColor: "#191970"
             borderColor: "#FFEC8B"
-            rightBorder: SizeTheme.dividerSize
-            topBorder: SizeTheme.dividerSize
+            rightBorder: BrandTheme.borderSizeNormal
+            topBorder: BrandTheme.borderSizeNormal
             width: SizeTheme.musicCategorySwitcherButtonWidth
             height: SizeTheme.toolButtonHeight
         }

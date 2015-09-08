@@ -38,41 +38,44 @@ QtObject
     readonly property color textColorSmall: "#cdbe70" // lightgoldenrod 3
     readonly property color textColorSelected: "#7FFF00" // chartreuse
 
+    readonly property real borderSizeNormal: 1
+    readonly property int borderSizeSelected: 2
+
     property Component bgToolButtonNormalT: BorderBackground {
         backgroundColor: "#00008B"
         borderColor: "#FFEC8B"
-        topBorder: SizeTheme.dividerSize
+        topBorder: borderSizeNormal
     }
 
     property Component bgToolButtonNormalTB: BorderBackground {
         backgroundColor: "#00008B"
         borderColor: "#FFEC8B"
-        topBorder: SizeTheme.dividerSize
-        bottomBorder: SizeTheme.dividerSize
+        topBorder: borderSizeNormal
+        bottomBorder: borderSizeNormal
     }
 
     property Component bgToolButtonNormalRT: BorderBackground {
         backgroundColor: "#00008B"
         borderColor: "#FFEC8B"
-        rightBorder: SizeTheme.dividerSize
-        topBorder: SizeTheme.dividerSize
+        rightBorder: borderSizeNormal
+        topBorder: borderSizeNormal
     }
 
     property Component bgToolButtonNormalRTB: BorderBackground {
         backgroundColor: "#00008B"
         borderColor: "#FFEC8B"
-        rightBorder: SizeTheme.dividerSize
-        topBorder: SizeTheme.dividerSize
-        bottomBorder: SizeTheme.dividerSize
+        rightBorder: borderSizeNormal
+        topBorder: borderSizeNormal
+        bottomBorder: borderSizeNormal
     }
 
     property Component bgToolButtonSelected: BorderBackground {
         backgroundColor: "#00008B"
         borderColor: "#FFB90F"
-        leftBorder: SizeTheme.buttonBorderWidth
-        rightBorder: SizeTheme.buttonBorderWidth
-        topBorder: SizeTheme.buttonBorderWidth
-        bottomBorder: SizeTheme.buttonBorderWidth
+        leftBorder: borderSizeSelected
+        rightBorder: borderSizeSelected
+        topBorder: borderSizeSelected
+        bottomBorder: borderSizeSelected
     }
 
     property Component bgTabButtonNormal: BorderBackground {
@@ -83,43 +86,43 @@ QtObject
     property Component bgTabButtonNormalT: BorderBackground {
         backgroundColor: "#191970"
         borderColor: "#FFEC8B"
-        topBorder: SizeTheme.dividerSize
+        topBorder: borderSizeNormal
     }
 
     property Component bgTabButtonNormalR: BorderBackground {
         backgroundColor: "#191970"
         borderColor: "#FFEC8B"
-        rightBorder: SizeTheme.dividerSize
+        rightBorder: borderSizeNormal
     }
 
     property Component bgTabButtonNormalRT: BorderBackground {
         backgroundColor: "#191970"
         borderColor: "#FFEC8B"
-        rightBorder: SizeTheme.dividerSize
-        topBorder: SizeTheme.dividerSize
+        rightBorder: borderSizeNormal
+        topBorder: borderSizeNormal
     }
 
     property Component bgTabButtonNormalRB: BorderBackground {
         backgroundColor: "#191970"
         borderColor: "#FFEC8B"
-        rightBorder: SizeTheme.dividerSize
-        bottomBorder: SizeTheme.dividerSize
+        rightBorder: borderSizeNormal
+        bottomBorder: borderSizeNormal
     }
 
     property Component bgTabButtonNormalRTB: BorderBackground {
         backgroundColor: "#191970"
         borderColor: "#FFEC8B"
-        rightBorder: SizeTheme.dividerSize
-        topBorder: SizeTheme.dividerSize
-        bottomBorder: SizeTheme.dividerSize
+        rightBorder: borderSizeNormal
+        topBorder: borderSizeNormal
+        bottomBorder: borderSizeNormal
     }
 
     property Component bgTabButtonChecked: BorderBackground {
         backgroundColor: "#191970"
         borderColor: "#7FFF00"
-        leftBorder: SizeTheme.buttonBorderWidth
-        rightBorder: SizeTheme.buttonBorderWidth
-        topBorder: SizeTheme.buttonBorderWidth
-        bottomBorder: SizeTheme.buttonBorderWidth
+        leftBorder: borderSizeSelected
+        rightBorder: borderSizeSelected
+        topBorder: borderSizeSelected
+        bottomBorder: borderSizeSelected
     }
 }

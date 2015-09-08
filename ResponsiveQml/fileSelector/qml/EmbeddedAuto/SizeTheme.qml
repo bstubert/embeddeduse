@@ -46,7 +46,6 @@ QtObject
     readonly property real statusBarHeight: 80
     readonly property real mainPageHeight: 600
     readonly property real appToolBarHeight: 120
-    readonly property real dividerSize: 1
 
     readonly property int textSizeNormal: 42
     readonly property int textSizeSmall: 32
@@ -56,7 +55,6 @@ QtObject
     readonly property real leftTabButtonHeight: 100
     readonly property real toolButtonWidth: 192
     readonly property real toolButtonHeight: 100
-    readonly property int buttonBorderWidth: 2
 
     readonly property real songInfoWidth: 960
     readonly property real songInfoHeight: 399

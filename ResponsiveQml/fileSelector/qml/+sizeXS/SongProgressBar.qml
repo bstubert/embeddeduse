@@ -55,8 +55,8 @@ Item
             height: SizeTheme.songProgressBarPositionHeight
             backgroundColor: "#00008B"
             borderColor: "#FFEC8B"
-            rightBorder: SizeTheme.dividerSize
-            bottomBorder: SizeTheme.dividerSize
+            rightBorder: BrandTheme.borderSizeNormal
+            bottomBorder: BrandTheme.borderSizeNormal
 
             Text {
                 id: elapsedTimeText
@@ -74,8 +74,8 @@ Item
             height: SizeTheme.songProgressBarPositionHeight
             backgroundColor: "#00008B"
             borderColor: "#FFEC8B"
-            rightBorder: SizeTheme.dividerSize
-            bottomBorder: SizeTheme.dividerSize
+            rightBorder: BrandTheme.borderSizeNormal
+            bottomBorder: BrandTheme.borderSizeNormal
 
             Image {
                 id: progressBar
@@ -99,7 +99,7 @@ Item
             height: SizeTheme.songProgressBarPositionHeight
             backgroundColor: "#00008B"
             borderColor: "#FFEC8B"
-            bottomBorder: SizeTheme.dividerSize
+            bottomBorder: BrandTheme.borderSizeNormal
 
             Text {
                 id: totalTimeText

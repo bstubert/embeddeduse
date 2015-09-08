@@ -65,9 +65,9 @@ Item
                 id: position
                 backgroundColor: "#00008B"
                 borderColor: "#FFEC8B"
-                rightBorder: SizeTheme.dividerSize
-                topBorder: SizeTheme.dividerSize
-                bottomBorder: SizeTheme.dividerSize
+                rightBorder: BrandTheme.borderSizeNormal
+                topBorder: BrandTheme.borderSizeNormal
+                bottomBorder: BrandTheme.borderSizeNormal
                 width: SizeTheme.songProgressBarWidth
                 height: SizeTheme.songProgressBarPositionHeight
 
@@ -91,8 +91,8 @@ Item
                 id: time
                 backgroundColor: "#00008B"
                 borderColor: "#FFEC8B"
-                rightBorder: SizeTheme.dividerSize
-                bottomBorder: SizeTheme.dividerSize
+                rightBorder: BrandTheme.borderSizeNormal
+                bottomBorder: BrandTheme.borderSizeNormal
                 width: SizeTheme.songProgressBarWidth
                 height: SizeTheme.songProgressBarTimeHeight
 
