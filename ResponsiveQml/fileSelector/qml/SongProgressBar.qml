@@ -71,8 +71,8 @@ Item
                 width: SizeTheme.songProgressBarWidth
                 height: SizeTheme.songProgressBarPositionHeight
 
-                Image {
-                    source: "qrc:/img/bgProgressBar.png"
+                Rectangle {
+                    color: BrandTheme.textColorNormal
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
                     anchors.leftMargin: SizeTheme.songProgressBarMargin

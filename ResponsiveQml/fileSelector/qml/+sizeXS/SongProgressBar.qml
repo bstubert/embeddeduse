@@ -77,10 +77,10 @@ Item
             rightBorder: BrandTheme.borderSizeNormal
             bottomBorder: BrandTheme.borderSizeNormal
 
-            Image {
+            Rectangle {
                 id: progressBar
                 property real maxProgressBarWidth: SizeTheme.songProgressBarWidth - 2 * progressBar.x - parent.rightBorder
-                source: "qrc:/img/bgProgressBar.png"
+                color: BrandTheme.textColorNormal
                 x: SizeTheme.songProgressBarMargin
                 y: SizeTheme.songProgressBarMargin
                 height: parent.height - 2 * SizeTheme.songProgressBarMargin - parent.bottomBorder
