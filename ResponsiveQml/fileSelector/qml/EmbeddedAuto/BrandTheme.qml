@@ -34,44 +34,48 @@ import EmbeddedAuto 1.0
 
 QtObject
 {
-    readonly property color textColorNormal: "#ffec8b" // lightgoldenrod 1
-    readonly property color textColorSmall: "#cdbe70" // lightgoldenrod 3
-    readonly property color textColorSelected: "#7FFF00" // chartreuse
+    readonly property color textColorNormal: "#FFEC8B"      // lightgoldenrod 1
+    readonly property color textColorSmall: "#CDBE70"       // lightgoldenrod 3
+    readonly property color textColorSelected: "#7FFF00"    // chartreuse
+    readonly property color textColorPressed: "#FFB90F"     // darkgoldenrod 1
+
+    readonly property color backgroundColorLight: "#00008B" // blue 4 (darkblue)
+    readonly property color backgroundColorDark: "#191970"  // midnightblue
 
     readonly property real borderSizeNormal: 1
     readonly property int borderSizeSelected: 2
 
     property Component bgToolButtonNormalT: BorderBackground {
-        backgroundColor: "#00008B"
-        borderColor: "#FFEC8B"
+        backgroundColor: backgroundColorLight
+        borderColor: textColorNormal
         topBorder: borderSizeNormal
     }
 
     property Component bgToolButtonNormalTB: BorderBackground {
-        backgroundColor: "#00008B"
-        borderColor: "#FFEC8B"
+        backgroundColor: backgroundColorLight
+        borderColor: textColorNormal
         topBorder: borderSizeNormal
         bottomBorder: borderSizeNormal
     }
 
     property Component bgToolButtonNormalRT: BorderBackground {
-        backgroundColor: "#00008B"
-        borderColor: "#FFEC8B"
+        backgroundColor: backgroundColorLight
+        borderColor: textColorNormal
         rightBorder: borderSizeNormal
         topBorder: borderSizeNormal
     }
 
     property Component bgToolButtonNormalRTB: BorderBackground {
-        backgroundColor: "#00008B"
-        borderColor: "#FFEC8B"
+        backgroundColor: backgroundColorLight
+        borderColor: textColorNormal
         rightBorder: borderSizeNormal
         topBorder: borderSizeNormal
         bottomBorder: borderSizeNormal
     }
 
     property Component bgToolButtonSelected: BorderBackground {
-        backgroundColor: "#00008B"
-        borderColor: "#FFB90F"
+        backgroundColor: backgroundColorLight
+        borderColor: textColorPressed
         leftBorder: borderSizeSelected
         rightBorder: borderSizeSelected
         topBorder: borderSizeSelected
@@ -79,47 +83,47 @@ QtObject
     }
 
     property Component bgTabButtonNormal: BorderBackground {
-        backgroundColor: "#191970"
-        borderColor: "#FFEC8B"
+        backgroundColor: backgroundColorDark
+        borderColor: textColorNormal
     }
 
     property Component bgTabButtonNormalT: BorderBackground {
-        backgroundColor: "#191970"
-        borderColor: "#FFEC8B"
+        backgroundColor: backgroundColorDark
+        borderColor: textColorNormal
         topBorder: borderSizeNormal
     }
 
     property Component bgTabButtonNormalR: BorderBackground {
-        backgroundColor: "#191970"
-        borderColor: "#FFEC8B"
+        backgroundColor: backgroundColorDark
+        borderColor: textColorNormal
         rightBorder: borderSizeNormal
     }
 
     property Component bgTabButtonNormalRT: BorderBackground {
-        backgroundColor: "#191970"
-        borderColor: "#FFEC8B"
+        backgroundColor: backgroundColorDark
+        borderColor: textColorNormal
         rightBorder: borderSizeNormal
         topBorder: borderSizeNormal
     }
 
     property Component bgTabButtonNormalRB: BorderBackground {
-        backgroundColor: "#191970"
-        borderColor: "#FFEC8B"
+        backgroundColor: backgroundColorDark
+        borderColor: textColorNormal
         rightBorder: borderSizeNormal
         bottomBorder: borderSizeNormal
     }
 
     property Component bgTabButtonNormalRTB: BorderBackground {
-        backgroundColor: "#191970"
-        borderColor: "#FFEC8B"
+        backgroundColor: backgroundColorDark
+        borderColor: textColorNormal
         rightBorder: borderSizeNormal
         topBorder: borderSizeNormal
         bottomBorder: borderSizeNormal
     }
 
     property Component bgTabButtonChecked: BorderBackground {
-        backgroundColor: "#191970"
-        borderColor: "#7FFF00"
+        backgroundColor: backgroundColorDark
+        borderColor: textColorSelected
         leftBorder: borderSizeSelected
         rightBorder: borderSizeSelected
         topBorder: borderSizeSelected
