@@ -36,7 +36,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Dialogs 1.2
 
-import EmbeddedAuto 1.0
+import EmbeddedAuto.Themes 1.0
 
 
 Rectangle

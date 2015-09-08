@@ -1,14 +1,14 @@
 <RCC>
     <qresource prefix="/">
         <file>img/cvCelineDionFallingIntoYou.png</file>
-        <file>qml/EmbeddedAuto/qmldir</file>
-        <file>qml/EmbeddedAuto/BorderBackground.qml</file>
-        <file>qml/EmbeddedAuto/BrandTheme.qml</file>
-        <file>qml/EmbeddedAuto/SizeTheme.qml</file>
-        <file>qml/EmbeddedAuto/TabButtonStyle.qml</file>
-        <file>qml/EmbeddedAuto/ToolButtonStyle.qml</file>
-        <file>qml/EmbeddedAuto/+sizeM/SizeTheme.qml</file>
-        <file>qml/EmbeddedAuto/+sizeXS/SizeTheme.qml</file>
+        <file>qml/EmbeddedAuto/Themes/qmldir</file>
+        <file>qml/EmbeddedAuto/Themes/BorderBackground.qml</file>
+        <file>qml/EmbeddedAuto/Themes/BrandTheme.qml</file>
+        <file>qml/EmbeddedAuto/Themes/SizeTheme.qml</file>
+        <file>qml/EmbeddedAuto/Themes/TabButtonStyle.qml</file>
+        <file>qml/EmbeddedAuto/Themes/ToolButtonStyle.qml</file>
+        <file>qml/EmbeddedAuto/Themes/+sizeM/SizeTheme.qml</file>
+        <file>qml/EmbeddedAuto/Themes/+sizeXS/SizeTheme.qml</file>
         <file>qml/main.qml</file>
         <file>qml/AppStatusBar.qml</file>
         <file>qml/AppToolBar.qml</file>

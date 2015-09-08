@@ -30,8 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 pragma Singleton
 import QtQuick 2.0
 
-import EmbeddedAuto 1.0
-
 QtObject
 {
     readonly property color textColorNormal: "#FFEC8B"      // lightgoldenrod 1

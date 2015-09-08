@@ -25,7 +25,7 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
 
-module EmbeddedAuto
+module EmbeddedAuto.Themes
 singleton SizeTheme 1.0 SizeTheme.qml
 singleton BrandTheme 1.0 BrandTheme.qml
 BorderBackground 1.0 BorderBackground.qml
