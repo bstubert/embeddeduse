@@ -28,8 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
 /*!
-  This is the SongProgressBar component for screen size sizeXS. It is vertically arranged and
-  comes without the repeat and shuffle buttons.
+  This is the SongProgressBar component for screen size sizeXS. It comes without
+  the repeat and shuffle buttons.
  */
 
 import QtQuick 2.0
@@ -38,7 +38,7 @@ import QtQuick.Controls.Styles 1.4
 
 import EmbeddedAuto 1.0
 
-Column
+Item
 {
     id: root
 
@@ -49,57 +49,61 @@ Column
     width: childrenRect.width
     height: childrenRect.height
 
-    BorderImage {
-        id: position
-        source: "qrc:/img/bgToolButton.png"
-        width: childrenRect.width
-        height: childrenRect.height
+    Row {
+        BorderBackground {
+            width: AppTheme.songProgressBarTextWidth
+            height: AppTheme.songProgressBarPositionHeight
+            backgroundColor: "#00008B"
+            borderColor: "#FFEC8B"
+            rightBorder: AppTheme.dividerSize
+            bottomBorder: AppTheme.dividerSize
 
-        Row {
             Text {
                 id: elapsedTimeText
-                width: AppTheme.songProgressBarTextWidth
-                height: AppTheme.songProgressBarPositionHeight
+                anchors.fill: parent
                 text: Qt.formatTime(new Date(root.elapsedTime * 1000), "m:ss")
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 font.pixelSize: AppTheme.textSizeVerySmall
                 color: AppTheme.textColorNormal
             }
+        }
 
-            Divider {
-                width: 1
-                height: AppTheme.songProgressBarPositionHeight
-            }
+        BorderBackground {
+            width: AppTheme.songProgressBarWidth
+            height: AppTheme.songProgressBarPositionHeight
+            backgroundColor: "#00008B"
+            borderColor: "#FFEC8B"
+            rightBorder: AppTheme.dividerSize
+            bottomBorder: AppTheme.dividerSize
 
-            Item {
-                width: AppTheme.songProgressBarWidth
-                height: AppTheme.songProgressBarPositionHeight
-
-                Image {
-                    source: "qrc:/img/bgProgressBar.png"
-                    anchors.verticalCenter: parent.verticalCenter
-                    x: AppTheme.songProgressBarMargin
-                    height: AppTheme.songProgressBarPositionHeight - 2 * AppTheme.songProgressBarMargin
-                    width: root.totalTime !== 0 ? ((AppTheme.songProgressBarWidth - 2 * AppTheme.songProgressBarMargin) * root.elapsedTime / root.totalTime) : 0
-                    Behavior on width {
-                        PropertyAnimation {
-                            duration: 1000
-                            easing.type: Easing.Linear
-                        }
+            Image {
+                id: progressBar
+                property real maxProgressBarWidth: AppTheme.songProgressBarWidth - 2 * progressBar.x - parent.rightBorder
+                source: "qrc:/img/bgProgressBar.png"
+                x: AppTheme.songProgressBarMargin
+                y: AppTheme.songProgressBarMargin
+                height: parent.height - 2 * AppTheme.songProgressBarMargin - parent.bottomBorder
+                width: root.totalTime !== 0 ? (maxProgressBarWidth * root.elapsedTime) / root.totalTime : 0
+                Behavior on width {
+                    PropertyAnimation {
+                        duration: 1000
+                        easing.type: Easing.Linear
                     }
                 }
             }
+        }
 
-            Divider {
-                width: 1
-                height: AppTheme.songProgressBarPositionHeight
-            }
+        BorderBackground {
+            width: AppTheme.songProgressBarTextWidth
+            height: AppTheme.songProgressBarPositionHeight
+            backgroundColor: "#00008B"
+            borderColor: "#FFEC8B"
+            bottomBorder: AppTheme.dividerSize
 
             Text {
                 id: totalTimeText
-                width: AppTheme.songProgressBarTextWidth
-                height: AppTheme.songProgressBarPositionHeight
+                anchors.fill: parent
                 text: Qt.formatTime(new Date(root.totalTime * 1000), "m:ss")
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
@@ -107,12 +111,6 @@ Column
                 color: AppTheme.textColorNormal
             }
         }
-    }
-
-    Divider {
-        height: 1
-        anchors.left: position.left
-        anchors.right: position.right
     }
 
     Timer {
