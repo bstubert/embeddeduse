@@ -117,8 +117,8 @@ BorderImage
         height: childrenRect.height
 
         BorderBackground {
-            backgroundColor: "#191970"
-            borderColor: "#FFEC8B"
+            backgroundColor: BrandTheme.backgroundColorDark
+            borderColor: BrandTheme.textColorNormal
             rightBorder: BrandTheme.borderSizeNormal
             topBorder: BrandTheme.borderSizeNormal
             width: SizeTheme.musicCategorySwitcherButtonWidth

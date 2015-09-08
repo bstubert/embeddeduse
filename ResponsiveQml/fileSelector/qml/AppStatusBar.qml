@@ -33,7 +33,7 @@ import EmbeddedAuto 1.0
 BorderBackground
 {
     id: root
-    backgroundColor: "#191970"
-    borderColor: "#ffec8b"
+    backgroundColor: BrandTheme.backgroundColorDark
+    borderColor: BrandTheme.textColorNormal
 }
 

@@ -50,9 +50,9 @@ BorderImage
         BorderBackground {
             width: SizeTheme.toolButtonWidth
             height: SizeTheme.screenHeight - SizeTheme.toolButtonHeight
-            backgroundColor: "#00008B"
-            borderColor: "#FFEC8B"
-            rightBorder: 1
+            backgroundColor: BrandTheme.backgroundColorLight
+            borderColor: BrandTheme.textColorNormal
+            rightBorder: BrandTheme.borderSizeNormal
         }
 
         Button {

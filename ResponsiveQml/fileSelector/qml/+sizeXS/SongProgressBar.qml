@@ -53,8 +53,8 @@ Item
         BorderBackground {
             width: SizeTheme.songProgressBarTextWidth
             height: SizeTheme.songProgressBarPositionHeight
-            backgroundColor: "#00008B"
-            borderColor: "#FFEC8B"
+            backgroundColor: BrandTheme.backgroundColorLight
+            borderColor: BrandTheme.textColorNormal
             rightBorder: BrandTheme.borderSizeNormal
             bottomBorder: BrandTheme.borderSizeNormal
 
@@ -72,8 +72,8 @@ Item
         BorderBackground {
             width: SizeTheme.songProgressBarWidth
             height: SizeTheme.songProgressBarPositionHeight
-            backgroundColor: "#00008B"
-            borderColor: "#FFEC8B"
+            backgroundColor: BrandTheme.backgroundColorLight
+            borderColor: BrandTheme.textColorNormal
             rightBorder: BrandTheme.borderSizeNormal
             bottomBorder: BrandTheme.borderSizeNormal
 
@@ -97,8 +97,8 @@ Item
         BorderBackground {
             width: SizeTheme.songProgressBarTextWidth
             height: SizeTheme.songProgressBarPositionHeight
-            backgroundColor: "#00008B"
-            borderColor: "#FFEC8B"
+            backgroundColor: BrandTheme.backgroundColorLight
+            borderColor: BrandTheme.textColorNormal
             bottomBorder: BrandTheme.borderSizeNormal
 
             Text {

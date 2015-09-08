@@ -63,8 +63,8 @@ Item
         Column {
             BorderBackground {
                 id: position
-                backgroundColor: "#00008B"
-                borderColor: "#FFEC8B"
+                backgroundColor: BrandTheme.backgroundColorLight
+                borderColor: BrandTheme.textColorNormal
                 rightBorder: BrandTheme.borderSizeNormal
                 topBorder: BrandTheme.borderSizeNormal
                 bottomBorder: BrandTheme.borderSizeNormal
@@ -89,8 +89,8 @@ Item
 
             BorderBackground {
                 id: time
-                backgroundColor: "#00008B"
-                borderColor: "#FFEC8B"
+                backgroundColor: BrandTheme.backgroundColorLight
+                borderColor: BrandTheme.textColorNormal
                 rightBorder: BrandTheme.borderSizeNormal
                 bottomBorder: BrandTheme.borderSizeNormal
                 width: SizeTheme.songProgressBarWidth
