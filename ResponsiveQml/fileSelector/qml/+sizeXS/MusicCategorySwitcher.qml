@@ -33,10 +33,9 @@ import QtQuick.Controls.Styles 1.4
 
 import EmbeddedAuto 1.0
 
-BorderImage
+Item
 {
     id: root
-    source: "qrc:/img/bgTabButton.png"
     width: childrenRect.width
     height: childrenRect.height
 

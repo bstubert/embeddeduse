@@ -28,13 +28,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
 import QtQuick 2.0
-
 import EmbeddedAuto 1.0
 
-BorderImage
+Rectangle
 {
     id: root
-    source: "qrc:/img/bgMainPage.png"
+    color: BrandTheme.backgroundColorLight
 
     Column {
         anchors.fill: parent

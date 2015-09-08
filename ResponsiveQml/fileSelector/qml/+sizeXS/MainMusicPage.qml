@@ -39,10 +39,10 @@ import QtQuick.Dialogs 1.2
 import EmbeddedAuto 1.0
 
 
-BorderImage
+Rectangle
 {
     id: root
-    source: "qrc:/img/bgMainPage.png"
+    color: BrandTheme.backgroundColorLight
 
     Column {
         id: leftColumn
