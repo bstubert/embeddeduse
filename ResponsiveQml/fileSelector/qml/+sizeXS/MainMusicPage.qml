@@ -59,8 +59,8 @@ BorderImage
             id: menuButton
             iconSource: !pressed ? "qrc:/img/icMenu.png" : "qrc:/img/icMenuPressed.png"
             style: ToolButtonStyle {
-                backgroundNormal: AppTheme.bgToolButtonNormalRT
-                backgroundSelected: AppTheme.bgToolButtonSelected
+                backgroundNormal: BrandTheme.bgToolButtonNormalRT
+                backgroundSelected: BrandTheme.bgToolButtonSelected
             }
             width: AppTheme.toolButtonWidth
             height: AppTheme.toolButtonHeight

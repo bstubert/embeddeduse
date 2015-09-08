@@ -76,11 +76,11 @@ Column
             checked: index === 0
             enabled: !tabButton.Positioner.isLastItem
             style: TabButtonStyle {
-                backgroundNormal: tabButton.Positioner.isFirstItem ? AppTheme.bgTabButtonNormalRTB : AppTheme.bgTabButtonNormalRB
-                backgroundChecked: AppTheme.bgTabButtonChecked
+                backgroundNormal: tabButton.Positioner.isFirstItem ? BrandTheme.bgTabButtonNormalRTB : BrandTheme.bgTabButtonNormalRB
+                backgroundChecked: BrandTheme.bgTabButtonChecked
                 textSize: AppTheme.textSizeNormal
-                textColorNormal: AppTheme.textColorNormal
-                textColorChecked: AppTheme.textColorSelected
+                textColorNormal: BrandTheme.textColorNormal
+                textColorChecked: BrandTheme.textColorSelected
                 leftMargin: AppTheme.screenLeftMargin
             }
             width: AppTheme.leftTabButtonWidth

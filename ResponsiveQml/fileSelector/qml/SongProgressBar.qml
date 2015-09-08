@@ -53,8 +53,8 @@ Item
             id: shuffleButton
             iconSource: !pressed ? "qrc:/img/icShuffle.png" : "qrc:/img/icShufflePressed.png"
             style: ToolButtonStyle {
-                backgroundNormal: AppTheme.bgToolButtonNormalRTB
-                backgroundSelected: AppTheme.bgToolButtonSelected
+                backgroundNormal: BrandTheme.bgToolButtonNormalRTB
+                backgroundSelected: BrandTheme.bgToolButtonSelected
             }
             width: AppTheme.toolButtonWidth
             height: AppTheme.toolButtonHeight
@@ -103,7 +103,7 @@ Item
                     anchors.verticalCenter: parent.verticalCenter
                     text: Qt.formatTime(new Date(root.elapsedTime * 1000), "m:ss")
                     font.pixelSize: AppTheme.textSizeVerySmall
-                    color: AppTheme.textColorNormal
+                    color: BrandTheme.textColorNormal
                 }
 
                 Text {
@@ -113,7 +113,7 @@ Item
                     anchors.verticalCenter: parent.verticalCenter
                     text: Qt.formatTime(new Date(root.totalTime * 1000), "m:ss")
                     font.pixelSize: AppTheme.textSizeVerySmall
-                    color: AppTheme.textColorNormal
+                    color: BrandTheme.textColorNormal
                 }
             }
         }
@@ -122,8 +122,8 @@ Item
             id: repeatButton
             iconSource: !pressed ? "qrc:/img/icRepeat.png" : "qrc:/img/icRepeatPressed.png"
             style: ToolButtonStyle {
-                backgroundNormal: AppTheme.bgToolButtonNormalTB
-                backgroundSelected: AppTheme.bgToolButtonSelected
+                backgroundNormal: BrandTheme.bgToolButtonNormalTB
+                backgroundSelected: BrandTheme.bgToolButtonSelected
             }
             width: AppTheme.toolButtonWidth
             height: AppTheme.toolButtonHeight

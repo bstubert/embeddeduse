@@ -29,5 +29,6 @@
         <file>qml/EmbeddedAuto/BorderBackground.qml</file>
         <file>qml/EmbeddedAuto/ToolButtonStyle.qml</file>
         <file>qml/EmbeddedAuto/TabButtonStyle.qml</file>
+        <file>qml/EmbeddedAuto/BrandTheme.qml</file>
     </qresource>
 </RCC>

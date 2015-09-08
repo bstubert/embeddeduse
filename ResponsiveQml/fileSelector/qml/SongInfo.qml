@@ -45,14 +45,14 @@ Item
         Text {
             text: "Celine Dion"
             font.pixelSize: AppTheme.textSizeSmall
-            color: AppTheme.textColorSmall
+            color: BrandTheme.textColorSmall
             width: AppTheme.songInfoTextFieldWidth
         }
 
         Text {
             text: "It's All Coming Back to Me Now"
             font.pixelSize: AppTheme.textSizeNormal
-            color: AppTheme.textColorNormal
+            color: BrandTheme.textColorNormal
             width: AppTheme.songInfoTextFieldWidth
             wrapMode: Text.Wrap
         }
@@ -60,7 +60,7 @@ Item
         Text {
             text: "Falling Into You"
             font.pixelSize: AppTheme.textSizeSmall
-            color: AppTheme.textColorSmall
+            color: BrandTheme.textColorSmall
             width: AppTheme.songInfoTextFieldWidth
         }
     }

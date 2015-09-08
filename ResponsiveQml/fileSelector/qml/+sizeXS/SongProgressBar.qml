@@ -65,7 +65,7 @@ Item
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 font.pixelSize: AppTheme.textSizeVerySmall
-                color: AppTheme.textColorNormal
+                color: BrandTheme.textColorNormal
             }
         }
 
@@ -108,7 +108,7 @@ Item
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 font.pixelSize: AppTheme.textSizeVerySmall
-                color: AppTheme.textColorNormal
+                color: BrandTheme.textColorNormal
             }
         }
     }

@@ -95,12 +95,12 @@ BorderImage
                 checked: index === 0
                 enabled: !gridButton.Positioner.isLastItem
                 style: TabButtonStyle {
-                    backgroundNormal: __isFirstRow ? (__isFirstColumn ? AppTheme.bgTabButtonNormalR : AppTheme.bgTabButtonNormal)
-                                                   : (__isFirstColumn ? AppTheme.bgTabButtonNormalRT : AppTheme.bgTabButtonNormalT)
-                    backgroundChecked: AppTheme.bgTabButtonChecked
+                    backgroundNormal: __isFirstRow ? (__isFirstColumn ? BrandTheme.bgTabButtonNormalR : BrandTheme.bgTabButtonNormal)
+                                                   : (__isFirstColumn ? BrandTheme.bgTabButtonNormalRT : BrandTheme.bgTabButtonNormalT)
+                    backgroundChecked: BrandTheme.bgTabButtonChecked
                     textSize: AppTheme.textSizeNormal
-                    textColorNormal: AppTheme.textColorNormal
-                    textColorChecked: AppTheme.textColorSelected
+                    textColorNormal: BrandTheme.textColorNormal
+                    textColorChecked: BrandTheme.textColorSelected
                     leftMargin: AppTheme.screenLeftMargin
                 }
                 width: AppTheme.musicCategorySwitcherButtonWidth
@@ -129,8 +129,8 @@ BorderImage
             id: cancelButton
             iconSource: !pressed ? "qrc:/img/icCancel.png" : "qrc:/img/icCancelPressed.png"
             style: ToolButtonStyle {
-                backgroundNormal: AppTheme.bgTabButtonNormalRT
-                backgroundSelected: AppTheme.bgToolButtonSelected
+                backgroundNormal: BrandTheme.bgTabButtonNormalRT
+                backgroundSelected: BrandTheme.bgToolButtonSelected
             }
             width: AppTheme.toolButtonWidth
             height: AppTheme.toolButtonHeight
@@ -141,8 +141,8 @@ BorderImage
             id: okButton
             iconSource: !pressed ? "qrc:/img/icOk.png" : "qrc:/img/icOkPressed.png"
             style: ToolButtonStyle {
-                backgroundNormal: AppTheme.bgTabButtonNormalT
-                backgroundSelected: AppTheme.bgToolButtonSelected
+                backgroundNormal: BrandTheme.bgTabButtonNormalT
+                backgroundSelected: BrandTheme.bgToolButtonSelected
             }
             width: AppTheme.toolButtonWidth
             height: AppTheme.toolButtonHeight

@@ -87,8 +87,8 @@ Row
                 id: toolButton
                 iconSource: !pressed ? buttonIcon : buttonIconPressed
                 style: ToolButtonStyle {
-                    backgroundNormal: AppTheme.appToolBarHeight !== 0 ? AppTheme.bgToolButtonNormalRTB : AppTheme.bgToolButtonNormalRT
-                    backgroundSelected: AppTheme.bgToolButtonSelected
+                    backgroundNormal: AppTheme.appToolBarHeight !== 0 ? BrandTheme.bgToolButtonNormalRTB : BrandTheme.bgToolButtonNormalRT
+                    backgroundSelected: BrandTheme.bgToolButtonSelected
                 }
                 width: visible ? AppTheme.toolButtonWidth : 0
                 height: visible ? AppTheme.musicToolBarButtonHeight : 0
@@ -102,8 +102,8 @@ Row
     Button {
         iconSource: !pressed ? "qrc:/img/icMore.png" : "qrc:/img/icMorePressed.png"
         style: ToolButtonStyle {
-            backgroundNormal: AppTheme.appToolBarHeight !== 0 ? AppTheme.bgToolButtonNormalRTB : AppTheme.bgToolButtonNormalT
-            backgroundSelected: AppTheme.bgToolButtonSelected
+            backgroundNormal: AppTheme.appToolBarHeight !== 0 ? BrandTheme.bgToolButtonNormalTB : BrandTheme.bgToolButtonNormalT
+            backgroundSelected: BrandTheme.bgToolButtonSelected
         }
         width: AppTheme.toolButtonWidth
         height: AppTheme.musicToolBarButtonHeight
