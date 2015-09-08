@@ -41,38 +41,38 @@ QtObject
     property Component bgToolButtonNormalT: BorderBackground {
         backgroundColor: "#00008B"
         borderColor: "#FFEC8B"
-        topBorder: AppTheme.dividerSize
+        topBorder: SizeTheme.dividerSize
     }
 
     property Component bgToolButtonNormalTB: BorderBackground {
         backgroundColor: "#00008B"
         borderColor: "#FFEC8B"
-        topBorder: AppTheme.dividerSize
-        bottomBorder: AppTheme.dividerSize
+        topBorder: SizeTheme.dividerSize
+        bottomBorder: SizeTheme.dividerSize
     }
 
     property Component bgToolButtonNormalRT: BorderBackground {
         backgroundColor: "#00008B"
         borderColor: "#FFEC8B"
-        rightBorder: AppTheme.dividerSize
-        topBorder: AppTheme.dividerSize
+        rightBorder: SizeTheme.dividerSize
+        topBorder: SizeTheme.dividerSize
     }
 
     property Component bgToolButtonNormalRTB: BorderBackground {
         backgroundColor: "#00008B"
         borderColor: "#FFEC8B"
-        rightBorder: AppTheme.dividerSize
-        topBorder: AppTheme.dividerSize
-        bottomBorder: AppTheme.dividerSize
+        rightBorder: SizeTheme.dividerSize
+        topBorder: SizeTheme.dividerSize
+        bottomBorder: SizeTheme.dividerSize
     }
 
     property Component bgToolButtonSelected: BorderBackground {
         backgroundColor: "#00008B"
         borderColor: "#FFB90F"
-        leftBorder: AppTheme.buttonBorderWidth
-        rightBorder: AppTheme.buttonBorderWidth
-        topBorder: AppTheme.buttonBorderWidth
-        bottomBorder: AppTheme.buttonBorderWidth
+        leftBorder: SizeTheme.buttonBorderWidth
+        rightBorder: SizeTheme.buttonBorderWidth
+        topBorder: SizeTheme.buttonBorderWidth
+        bottomBorder: SizeTheme.buttonBorderWidth
     }
 
     property Component bgTabButtonNormal: BorderBackground {
@@ -83,43 +83,43 @@ QtObject
     property Component bgTabButtonNormalT: BorderBackground {
         backgroundColor: "#191970"
         borderColor: "#FFEC8B"
-        topBorder: AppTheme.dividerSize
+        topBorder: SizeTheme.dividerSize
     }
 
     property Component bgTabButtonNormalR: BorderBackground {
         backgroundColor: "#191970"
         borderColor: "#FFEC8B"
-        rightBorder: AppTheme.dividerSize
+        rightBorder: SizeTheme.dividerSize
     }
 
     property Component bgTabButtonNormalRT: BorderBackground {
         backgroundColor: "#191970"
         borderColor: "#FFEC8B"
-        rightBorder: AppTheme.dividerSize
-        topBorder: AppTheme.dividerSize
+        rightBorder: SizeTheme.dividerSize
+        topBorder: SizeTheme.dividerSize
     }
 
     property Component bgTabButtonNormalRB: BorderBackground {
         backgroundColor: "#191970"
         borderColor: "#FFEC8B"
-        rightBorder: AppTheme.dividerSize
-        bottomBorder: AppTheme.dividerSize
+        rightBorder: SizeTheme.dividerSize
+        bottomBorder: SizeTheme.dividerSize
     }
 
     property Component bgTabButtonNormalRTB: BorderBackground {
         backgroundColor: "#191970"
         borderColor: "#FFEC8B"
-        rightBorder: AppTheme.dividerSize
-        topBorder: AppTheme.dividerSize
-        bottomBorder: AppTheme.dividerSize
+        rightBorder: SizeTheme.dividerSize
+        topBorder: SizeTheme.dividerSize
+        bottomBorder: SizeTheme.dividerSize
     }
 
     property Component bgTabButtonChecked: BorderBackground {
         backgroundColor: "#191970"
         borderColor: "#7FFF00"
-        leftBorder: AppTheme.buttonBorderWidth
-        rightBorder: AppTheme.buttonBorderWidth
-        topBorder: AppTheme.buttonBorderWidth
-        bottomBorder: AppTheme.buttonBorderWidth
+        leftBorder: SizeTheme.buttonBorderWidth
+        rightBorder: SizeTheme.buttonBorderWidth
+        topBorder: SizeTheme.buttonBorderWidth
+        bottomBorder: SizeTheme.buttonBorderWidth
     }
 }

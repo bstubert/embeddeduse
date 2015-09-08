@@ -51,7 +51,7 @@ BorderImage
         SongInfo {
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.margins: AppTheme.songInfoMargin
+            anchors.margins: SizeTheme.songInfoMargin
         }
 
         MusicToolBar {

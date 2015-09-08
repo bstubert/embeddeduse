@@ -78,13 +78,13 @@ Column
             style: TabButtonStyle {
                 backgroundNormal: tabButton.Positioner.isFirstItem ? BrandTheme.bgTabButtonNormalRTB : BrandTheme.bgTabButtonNormalRB
                 backgroundChecked: BrandTheme.bgTabButtonChecked
-                textSize: AppTheme.textSizeNormal
+                textSize: SizeTheme.textSizeNormal
                 textColorNormal: BrandTheme.textColorNormal
                 textColorChecked: BrandTheme.textColorSelected
-                leftMargin: AppTheme.screenLeftMargin
+                leftMargin: SizeTheme.screenLeftMargin
             }
-            width: AppTheme.leftTabButtonWidth
-            height: AppTheme.leftTabButtonHeight
+            width: SizeTheme.leftTabButtonWidth
+            height: SizeTheme.leftTabButtonHeight
         }
     }
 }

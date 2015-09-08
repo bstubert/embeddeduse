@@ -98,13 +98,13 @@ BorderImage
                     backgroundNormal: __isFirstRow ? (__isFirstColumn ? BrandTheme.bgTabButtonNormalR : BrandTheme.bgTabButtonNormal)
                                                    : (__isFirstColumn ? BrandTheme.bgTabButtonNormalRT : BrandTheme.bgTabButtonNormalT)
                     backgroundChecked: BrandTheme.bgTabButtonChecked
-                    textSize: AppTheme.textSizeNormal
+                    textSize: SizeTheme.textSizeNormal
                     textColorNormal: BrandTheme.textColorNormal
                     textColorChecked: BrandTheme.textColorSelected
-                    leftMargin: AppTheme.screenLeftMargin
+                    leftMargin: SizeTheme.screenLeftMargin
                 }
-                width: AppTheme.musicCategorySwitcherButtonWidth
-                height: AppTheme.musicCategorySwitcherButtonHeight
+                width: SizeTheme.musicCategorySwitcherButtonWidth
+                height: SizeTheme.musicCategorySwitcherButtonHeight
             }
         }
     }
@@ -119,10 +119,10 @@ BorderImage
         BorderBackground {
             backgroundColor: "#191970"
             borderColor: "#FFEC8B"
-            rightBorder: AppTheme.dividerSize
-            topBorder: AppTheme.dividerSize
-            width: AppTheme.musicCategorySwitcherButtonWidth
-            height: AppTheme.toolButtonHeight
+            rightBorder: SizeTheme.dividerSize
+            topBorder: SizeTheme.dividerSize
+            width: SizeTheme.musicCategorySwitcherButtonWidth
+            height: SizeTheme.toolButtonHeight
         }
 
         Button {
@@ -132,8 +132,8 @@ BorderImage
                 backgroundNormal: BrandTheme.bgTabButtonNormalRT
                 backgroundSelected: BrandTheme.bgToolButtonSelected
             }
-            width: AppTheme.toolButtonWidth
-            height: AppTheme.toolButtonHeight
+            width: SizeTheme.toolButtonWidth
+            height: SizeTheme.toolButtonHeight
             onClicked: root.visible = false
         }
 
@@ -144,8 +144,8 @@ BorderImage
                 backgroundNormal: BrandTheme.bgTabButtonNormalT
                 backgroundSelected: BrandTheme.bgToolButtonSelected
             }
-            width: AppTheme.toolButtonWidth
-            height: AppTheme.toolButtonHeight
+            width: SizeTheme.toolButtonWidth
+            height: SizeTheme.toolButtonHeight
             onClicked: root.visible = false
         }
     }

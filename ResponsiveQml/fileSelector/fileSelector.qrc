@@ -11,9 +11,9 @@
         <file>img/bgToolButtonPressed.png</file>
         <file>img/cvCelineDionFallingIntoYou.png</file>
         <file>qml/EmbeddedAuto/qmldir</file>
-        <file>qml/EmbeddedAuto/AppTheme.qml</file>
-        <file>qml/EmbeddedAuto/+sizeM/AppTheme.qml</file>
-        <file>qml/EmbeddedAuto/+sizeXS/AppTheme.qml</file>
+        <file>qml/EmbeddedAuto/SizeTheme.qml</file>
+        <file>qml/EmbeddedAuto/+sizeM/SizeTheme.qml</file>
+        <file>qml/EmbeddedAuto/+sizeXS/SizeTheme.qml</file>
         <file>qml/main.qml</file>
         <file>qml/AppStatusBar.qml</file>
         <file>qml/AppToolBar.qml</file>

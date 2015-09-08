@@ -56,8 +56,8 @@ Item
                 backgroundNormal: BrandTheme.bgToolButtonNormalRTB
                 backgroundSelected: BrandTheme.bgToolButtonSelected
             }
-            width: AppTheme.toolButtonWidth
-            height: AppTheme.toolButtonHeight
+            width: SizeTheme.toolButtonWidth
+            height: SizeTheme.toolButtonHeight
         }
 
         Column {
@@ -65,19 +65,19 @@ Item
                 id: position
                 backgroundColor: "#00008B"
                 borderColor: "#FFEC8B"
-                rightBorder: AppTheme.dividerSize
-                topBorder: AppTheme.dividerSize
-                bottomBorder: AppTheme.dividerSize
-                width: AppTheme.songProgressBarWidth
-                height: AppTheme.songProgressBarPositionHeight
+                rightBorder: SizeTheme.dividerSize
+                topBorder: SizeTheme.dividerSize
+                bottomBorder: SizeTheme.dividerSize
+                width: SizeTheme.songProgressBarWidth
+                height: SizeTheme.songProgressBarPositionHeight
 
                 Image {
                     source: "qrc:/img/bgProgressBar.png"
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
-                    anchors.leftMargin: AppTheme.songProgressBarMargin
-                    height: position.height - 2 * AppTheme.songProgressBarMargin
-                    width: root.totalTime != 0 ? ((AppTheme.songProgressBarWidth - 2 * AppTheme.songProgressBarMargin) * root.elapsedTime / root.totalTime) : 0
+                    anchors.leftMargin: SizeTheme.songProgressBarMargin
+                    height: position.height - 2 * SizeTheme.songProgressBarMargin
+                    width: root.totalTime != 0 ? ((SizeTheme.songProgressBarWidth - 2 * SizeTheme.songProgressBarMargin) * root.elapsedTime / root.totalTime) : 0
                     Behavior on width {
                         PropertyAnimation {
                             duration: 1000
@@ -91,28 +91,28 @@ Item
                 id: time
                 backgroundColor: "#00008B"
                 borderColor: "#FFEC8B"
-                rightBorder: AppTheme.dividerSize
-                bottomBorder: AppTheme.dividerSize
-                width: AppTheme.songProgressBarWidth
-                height: AppTheme.songProgressBarTimeHeight
+                rightBorder: SizeTheme.dividerSize
+                bottomBorder: SizeTheme.dividerSize
+                width: SizeTheme.songProgressBarWidth
+                height: SizeTheme.songProgressBarTimeHeight
 
                 Text {
                     id: elapsedTimeText
                     anchors.left: parent.left
-                    anchors.leftMargin: AppTheme.songProgressBarTextMargin
+                    anchors.leftMargin: SizeTheme.songProgressBarTextMargin
                     anchors.verticalCenter: parent.verticalCenter
                     text: Qt.formatTime(new Date(root.elapsedTime * 1000), "m:ss")
-                    font.pixelSize: AppTheme.textSizeVerySmall
+                    font.pixelSize: SizeTheme.textSizeVerySmall
                     color: BrandTheme.textColorNormal
                 }
 
                 Text {
                     id: totalTimeText
                     anchors.right: parent.right
-                    anchors.rightMargin: AppTheme.songProgressBarTextMargin
+                    anchors.rightMargin: SizeTheme.songProgressBarTextMargin
                     anchors.verticalCenter: parent.verticalCenter
                     text: Qt.formatTime(new Date(root.totalTime * 1000), "m:ss")
-                    font.pixelSize: AppTheme.textSizeVerySmall
+                    font.pixelSize: SizeTheme.textSizeVerySmall
                     color: BrandTheme.textColorNormal
                 }
             }
@@ -125,8 +125,8 @@ Item
                 backgroundNormal: BrandTheme.bgToolButtonNormalTB
                 backgroundSelected: BrandTheme.bgToolButtonSelected
             }
-            width: AppTheme.toolButtonWidth
-            height: AppTheme.toolButtonHeight
+            width: SizeTheme.toolButtonWidth
+            height: SizeTheme.toolButtonHeight
         }
     }
 

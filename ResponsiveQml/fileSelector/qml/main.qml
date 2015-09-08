@@ -38,8 +38,8 @@ import EmbeddedAuto 1.0
 
 Window {
     title: qsTr("Music")
-    width: AppTheme.screenWidth
-    height: AppTheme.screenHeight
+    width: SizeTheme.screenWidth
+    height: SizeTheme.screenHeight
     visible: true
 
     Column {
@@ -49,7 +49,7 @@ Window {
             id: statusBar
             anchors.left: parent.left
             anchors.right: parent.right
-            height: AppTheme.statusBarHeight
+            height: SizeTheme.statusBarHeight
             visible: height !== 0
         }
 
@@ -57,14 +57,14 @@ Window {
             id: mainPage
             anchors.left: parent.left
             anchors.right: parent.right
-            height: AppTheme.mainPageHeight
+            height: SizeTheme.mainPageHeight
         }
 
         AppToolBar {
             id: applicationBar
             anchors.left: parent.left
             anchors.right: parent.right
-            height: AppTheme.appToolBarHeight
+            height: SizeTheme.appToolBarHeight
             visible: height !== 0
         }
     }

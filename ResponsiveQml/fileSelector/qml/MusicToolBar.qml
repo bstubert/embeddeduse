@@ -87,12 +87,12 @@ Row
                 id: toolButton
                 iconSource: !pressed ? buttonIcon : buttonIconPressed
                 style: ToolButtonStyle {
-                    backgroundNormal: AppTheme.appToolBarHeight !== 0 ? BrandTheme.bgToolButtonNormalRTB : BrandTheme.bgToolButtonNormalRT
+                    backgroundNormal: SizeTheme.appToolBarHeight !== 0 ? BrandTheme.bgToolButtonNormalRTB : BrandTheme.bgToolButtonNormalRT
                     backgroundSelected: BrandTheme.bgToolButtonSelected
                 }
-                width: visible ? AppTheme.toolButtonWidth : 0
-                height: visible ? AppTheme.musicToolBarButtonHeight : 0
-                visible: index < AppTheme.musicToolBarButtonCount
+                width: visible ? SizeTheme.toolButtonWidth : 0
+                height: visible ? SizeTheme.musicToolBarButtonHeight : 0
+                visible: index < SizeTheme.musicToolBarButtonCount
 
                 onClicked: musicBarModel.doAction(index)
             }
@@ -102,10 +102,10 @@ Row
     Button {
         iconSource: !pressed ? "qrc:/img/icMore.png" : "qrc:/img/icMorePressed.png"
         style: ToolButtonStyle {
-            backgroundNormal: AppTheme.appToolBarHeight !== 0 ? BrandTheme.bgToolButtonNormalTB : BrandTheme.bgToolButtonNormalT
+            backgroundNormal: SizeTheme.appToolBarHeight !== 0 ? BrandTheme.bgToolButtonNormalTB : BrandTheme.bgToolButtonNormalT
             backgroundSelected: BrandTheme.bgToolButtonSelected
         }
-        width: AppTheme.toolButtonWidth
-        height: AppTheme.musicToolBarButtonHeight
+        width: SizeTheme.toolButtonWidth
+        height: SizeTheme.musicToolBarButtonHeight
     }
 }

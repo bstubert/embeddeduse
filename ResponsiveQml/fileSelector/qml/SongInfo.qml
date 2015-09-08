@@ -34,41 +34,41 @@ import EmbeddedAuto 1.0
 Item
 {
     id: root
-    width: AppTheme.songInfoWidth
-    height: AppTheme.songInfoHeight
+    width: SizeTheme.songInfoWidth
+    height: SizeTheme.songInfoHeight
 
     Column {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
-        spacing: AppTheme.songInfoTextSpacing
+        spacing: SizeTheme.songInfoTextSpacing
 
         Text {
             text: "Celine Dion"
-            font.pixelSize: AppTheme.textSizeSmall
+            font.pixelSize: SizeTheme.textSizeSmall
             color: BrandTheme.textColorSmall
-            width: AppTheme.songInfoTextFieldWidth
+            width: SizeTheme.songInfoTextFieldWidth
         }
 
         Text {
             text: "It's All Coming Back to Me Now"
-            font.pixelSize: AppTheme.textSizeNormal
+            font.pixelSize: SizeTheme.textSizeNormal
             color: BrandTheme.textColorNormal
-            width: AppTheme.songInfoTextFieldWidth
+            width: SizeTheme.songInfoTextFieldWidth
             wrapMode: Text.Wrap
         }
 
         Text {
             text: "Falling Into You"
-            font.pixelSize: AppTheme.textSizeSmall
+            font.pixelSize: SizeTheme.textSizeSmall
             color: BrandTheme.textColorSmall
-            width: AppTheme.songInfoTextFieldWidth
+            width: SizeTheme.songInfoTextFieldWidth
         }
     }
 
     Image {
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
-        width: AppTheme.songInfoCoverSize
+        width: SizeTheme.songInfoCoverSize
         height: width
         source: "qrc:/img/cvCelineDionFallingIntoYou.png"
     }

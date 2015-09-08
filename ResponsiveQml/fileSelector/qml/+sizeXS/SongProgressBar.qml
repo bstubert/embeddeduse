@@ -51,12 +51,12 @@ Item
 
     Row {
         BorderBackground {
-            width: AppTheme.songProgressBarTextWidth
-            height: AppTheme.songProgressBarPositionHeight
+            width: SizeTheme.songProgressBarTextWidth
+            height: SizeTheme.songProgressBarPositionHeight
             backgroundColor: "#00008B"
             borderColor: "#FFEC8B"
-            rightBorder: AppTheme.dividerSize
-            bottomBorder: AppTheme.dividerSize
+            rightBorder: SizeTheme.dividerSize
+            bottomBorder: SizeTheme.dividerSize
 
             Text {
                 id: elapsedTimeText
@@ -64,26 +64,26 @@ Item
                 text: Qt.formatTime(new Date(root.elapsedTime * 1000), "m:ss")
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                font.pixelSize: AppTheme.textSizeVerySmall
+                font.pixelSize: SizeTheme.textSizeVerySmall
                 color: BrandTheme.textColorNormal
             }
         }
 
         BorderBackground {
-            width: AppTheme.songProgressBarWidth
-            height: AppTheme.songProgressBarPositionHeight
+            width: SizeTheme.songProgressBarWidth
+            height: SizeTheme.songProgressBarPositionHeight
             backgroundColor: "#00008B"
             borderColor: "#FFEC8B"
-            rightBorder: AppTheme.dividerSize
-            bottomBorder: AppTheme.dividerSize
+            rightBorder: SizeTheme.dividerSize
+            bottomBorder: SizeTheme.dividerSize
 
             Image {
                 id: progressBar
-                property real maxProgressBarWidth: AppTheme.songProgressBarWidth - 2 * progressBar.x - parent.rightBorder
+                property real maxProgressBarWidth: SizeTheme.songProgressBarWidth - 2 * progressBar.x - parent.rightBorder
                 source: "qrc:/img/bgProgressBar.png"
-                x: AppTheme.songProgressBarMargin
-                y: AppTheme.songProgressBarMargin
-                height: parent.height - 2 * AppTheme.songProgressBarMargin - parent.bottomBorder
+                x: SizeTheme.songProgressBarMargin
+                y: SizeTheme.songProgressBarMargin
+                height: parent.height - 2 * SizeTheme.songProgressBarMargin - parent.bottomBorder
                 width: root.totalTime !== 0 ? (maxProgressBarWidth * root.elapsedTime) / root.totalTime : 0
                 Behavior on width {
                     PropertyAnimation {
@@ -95,11 +95,11 @@ Item
         }
 
         BorderBackground {
-            width: AppTheme.songProgressBarTextWidth
-            height: AppTheme.songProgressBarPositionHeight
+            width: SizeTheme.songProgressBarTextWidth
+            height: SizeTheme.songProgressBarPositionHeight
             backgroundColor: "#00008B"
             borderColor: "#FFEC8B"
-            bottomBorder: AppTheme.dividerSize
+            bottomBorder: SizeTheme.dividerSize
 
             Text {
                 id: totalTimeText
@@ -107,7 +107,7 @@ Item
                 text: Qt.formatTime(new Date(root.totalTime * 1000), "m:ss")
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                font.pixelSize: AppTheme.textSizeVerySmall
+                font.pixelSize: SizeTheme.textSizeVerySmall
                 color: BrandTheme.textColorNormal
             }
         }

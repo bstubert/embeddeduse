@@ -48,8 +48,8 @@ BorderImage
         id: leftColumn
 
         BorderBackground {
-            width: AppTheme.toolButtonWidth
-            height: AppTheme.screenHeight - AppTheme.toolButtonHeight
+            width: SizeTheme.toolButtonWidth
+            height: SizeTheme.screenHeight - SizeTheme.toolButtonHeight
             backgroundColor: "#00008B"
             borderColor: "#FFEC8B"
             rightBorder: 1
@@ -62,8 +62,8 @@ BorderImage
                 backgroundNormal: BrandTheme.bgToolButtonNormalRT
                 backgroundSelected: BrandTheme.bgToolButtonSelected
             }
-            width: AppTheme.toolButtonWidth
-            height: AppTheme.toolButtonHeight
+            width: SizeTheme.toolButtonWidth
+            height: SizeTheme.toolButtonHeight
             onClicked: categorySwitcher.visible = !categorySwitcher.visible
         }
     }
@@ -76,8 +76,8 @@ BorderImage
     MusicCategorySwitcher {
         id: categorySwitcher
         anchors.left: leftColumn.right
-        width: AppTheme.dialogWidth
-        height: AppTheme.dialogHeight
+        width: SizeTheme.dialogWidth
+        height: SizeTheme.dialogHeight
         visible: false
     }
 }
