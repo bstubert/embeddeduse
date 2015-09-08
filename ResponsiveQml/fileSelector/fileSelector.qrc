@@ -17,7 +17,6 @@
         <file>qml/main.qml</file>
         <file>qml/AppStatusBar.qml</file>
         <file>qml/AppToolBar.qml</file>
-        <file>qml/Divider.qml</file>
         <file>qml/MainMusicPage.qml</file>
         <file>qml/MusicCategorySwitcher.qml</file>
         <file>qml/MusicToolBar.qml</file>
