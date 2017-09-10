@@ -13,7 +13,7 @@ class MainModel : public QObject
 public:
     MainModel(QObject *parent = nullptr)
         : QObject(parent)
-        , m_warningLevel(WarningLevel::Warning)
+        , m_warningLevel(WarningLevel::Enum::Warning)
     {
         qDebug() << "C++: warningLevel = " << m_warningLevel;
     }

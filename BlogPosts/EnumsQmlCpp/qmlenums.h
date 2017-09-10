@@ -2,12 +2,13 @@
 #define QMLENUMS_H
 
 #include <QObject>
+#include <QtGlobal>
 
 class WarningLevel : public QObject
 {
     Q_OBJECT
 public:
-    enum Enum {
+    enum class Enum : quint8 {
         Error,
         Warning,
         Info,
