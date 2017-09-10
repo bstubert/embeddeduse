@@ -14,6 +14,11 @@ Window {
         width: parent.width
         height: 0.5 * parent.height
         color: toColor(mainModel.warningLevel)
+        Text {
+            anchors.centerIn: parent
+            text: toLevel(mainModel.warningLevel)
+            font.pixelSize: 64
+        }
     }
 
     Row {
@@ -27,6 +32,11 @@ Window {
                 width: 0.25 * parent.width
                 height: parent.height
                 color: toColor(modelData)
+                Text {
+                    anchors.centerIn: parent
+                    text: toLevel(modelData)
+                    font.pixelSize: 36
+                }
                 MouseArea {
                     anchors.fill: parent
                     onReleased: mainModel.warningLevel = modelData
@@ -47,6 +57,21 @@ Window {
             return "purple"
         default:
             return "magenta"
+        }
+    }
+
+    function toLevel(level) {
+        switch (level) {
+        case WarningLevel.Error:
+            return "Error"
+        case WarningLevel.Warning:
+            return "Warning"
+        case WarningLevel.Info:
+            return "Info"
+        case WarningLevel.Debug:
+            return "Debug"
+        default:
+            return "Invalid"
         }
     }
 }
