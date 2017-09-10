@@ -2,6 +2,7 @@
 #define MAINMODEL_H
 
 #include <QObject>
+#include <QtDebug>
 #include "qmlenums.h"
 
 class MainModel : public QObject
@@ -14,6 +15,7 @@ public:
         : QObject(parent)
         , m_warningLevel(WarningLevel::Warning)
     {
+        qDebug() << "C++: warningLevel = " << m_warningLevel;
     }
     WarningLevel::Enum warningLevel() const {
         return m_warningLevel;

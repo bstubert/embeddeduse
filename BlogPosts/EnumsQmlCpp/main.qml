@@ -8,9 +8,10 @@ Window {
     height: 480
     title: qsTr("Passing Enums between QML and C++")
 
-    Rectangle {
-        property MainModel mainModel : MainModel {}
+    property MainModel mainModel : MainModel {}
+    Component.onCompleted: console.log("QML: warningLevel = ", mainModel.warningLevel)
 
+    Rectangle {
         anchors.fill: parent
         color: {
             switch (mainModel.warningLevel) {
