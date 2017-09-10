@@ -26,7 +26,9 @@ Window {
             case WarningLevel.Debug:
                 "purple"
                 break
-
+            default:
+                "magenta"
+                break
             }
         }
     }

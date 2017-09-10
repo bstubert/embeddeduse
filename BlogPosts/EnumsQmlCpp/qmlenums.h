@@ -1,13 +1,19 @@
 #ifndef QMLENUMS_H
 #define QMLENUMS_H
 
-#include <QtGlobal>
+#include <QObject>
 
-enum class WarningLevel : quint8 {
-    Error,
-    Warning,
-    Info,
-    Debug
+class WarningLevel : public QObject
+{
+    Q_OBJECT
+public:
+    enum Enum {
+        Error,
+        Warning,
+        Info,
+        Debug
+    };
+    Q_ENUM(Enum)
 };
 
 #endif // QMLENUMS_H
