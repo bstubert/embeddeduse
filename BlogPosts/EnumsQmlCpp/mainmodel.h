@@ -14,9 +14,7 @@ public:
     MainModel(QObject *parent = nullptr)
         : QObject(parent)
         , m_warningLevel(WarningLevel::Enum::Warning)
-    {
-        qDebug() << "C++: warningLevel = " << m_warningLevel;
-    }
+    {}
     WarningLevel::Enum warningLevel() const {
         return m_warningLevel;
     }

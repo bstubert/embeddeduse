@@ -9,28 +9,44 @@ Window {
     title: qsTr("Passing Enums between QML and C++")
 
     property MainModel mainModel : MainModel {}
-    Component.onCompleted: console.log("QML: warningLevel = ", mainModel.warningLevel)
 
     Rectangle {
-        anchors.fill: parent
-        color: {
-            switch (mainModel.warningLevel) {
-            case WarningLevel.Error:
-                "red"
-                break
-            case WarningLevel.Warning:
-                "orange"
-                break
-            case WarningLevel.Info:
-                "green"
-                break
-            case WarningLevel.Debug:
-                "purple"
-                break
-            default:
-                "magenta"
-                break
+        width: parent.width
+        height: 0.5 * parent.height
+        color: toColor(mainModel.warningLevel)
+    }
+
+    Row {
+        anchors.bottom: parent.bottom
+        width: parent.width
+        height: 0.5 * parent.height
+        Repeater {
+            model: [WarningLevel.Error, WarningLevel.Warning, WarningLevel.Info,
+                WarningLevel.Debug]
+            Rectangle {
+                width: 0.25 * parent.width
+                height: parent.height
+                color: toColor(modelData)
+                MouseArea {
+                    anchors.fill: parent
+                    onReleased: mainModel.warningLevel = modelData
+                }
             }
+        }
+    }
+
+    function toColor(level) {
+        switch (level) {
+        case WarningLevel.Error:
+            return "red"
+        case WarningLevel.Warning:
+            return "orange"
+        case WarningLevel.Info:
+            return "green"
+        case WarningLevel.Debug:
+            return "purple"
+        default:
+            return "magenta"
         }
     }
 }
