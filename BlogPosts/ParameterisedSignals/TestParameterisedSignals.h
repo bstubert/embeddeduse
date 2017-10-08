@@ -7,10 +7,9 @@ class TestParameterisedSignals : public QObject
 {
     Q_OBJECT
 
+private slots:
     void testSolution1();
     void testSolution2();
-
-private slots:
     void testSolution3();
 };
 
