@@ -52,7 +52,6 @@ void TestParameterisedSignals::testSolution3()
     sender.connectReceiver(&receiver1, "onNewMessage(QCanBusFrame)", 0x13);
     sender.connectReceiver(&receiver2, "onNewMessage(QCanBusFrame)", 0x21);
     sender.connectReceiver(&receiver3, "onNewMessage(QCanBusFrame)", 0x03);
-
     QBENCHMARK_ONCE {
         sender.sendMessages();
     }
