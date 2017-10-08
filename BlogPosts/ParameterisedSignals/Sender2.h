@@ -17,6 +17,8 @@ signals:
     void newMessage3(const QCanBusFrame &frame);
 
 private:
+    void onFrameReceived(const QCanBusFrame &frame);
+
     // Number of times the signal newMessage() is emitted.
     const int c_messageCount;
 };

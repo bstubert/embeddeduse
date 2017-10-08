@@ -14,7 +14,9 @@ SOURCES += \
     Sender1.cpp \
     Receiver1.cpp \
     Sender2.cpp \
-    Receiver2.cpp
+    Receiver2.cpp \
+    Receiver3.cpp \
+    Sender3.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -32,4 +34,7 @@ HEADERS += \
     Sender1.h \
     Receiver1.h \
     Sender2.h \
-    Receiver2.h
+    Receiver2.h \
+    Receiver3.h \
+    Sender3.h \
+    PointToPointSignalMapper.h

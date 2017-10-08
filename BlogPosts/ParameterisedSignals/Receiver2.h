@@ -6,6 +6,7 @@ class QCanBusFrame;
 
 class Receiver2 : public QObject
 {
+    Q_OBJECT
 public:
     Receiver2(quint8 deviceId, QObject *parent = nullptr);
 
@@ -15,8 +16,6 @@ public slots:
     void onNewMessage(const QCanBusFrame &frame);
 
 private:
-    bool isRelevantMessage(const QCanBusFrame &frame) const;
-
     const quint8 c_deviceId;
     int m_relevantMessageCount;
 };

@@ -4,11 +4,11 @@
 #include <QtGlobal>
 class QCanBusFrame;
 
-class Receiver1 : public QObject
+class Receiver3 : public QObject
 {
     Q_OBJECT
 public:
-    Receiver1(quint8 deviceId, QObject *parent = nullptr);
+    Receiver3(quint8 deviceId, QObject *parent = nullptr);
 
     int relevantMessageCount() const;
 
