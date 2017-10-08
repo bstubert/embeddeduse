@@ -12,7 +12,9 @@ TEMPLATE = app
 SOURCES += \
     TestParameterisedSignals.cpp \
     Sender1.cpp \
-    Receiver1.cpp
+    Receiver1.cpp \
+    Sender2.cpp \
+    Receiver2.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -28,4 +30,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 HEADERS += \
     TestParameterisedSignals.h \
     Sender1.h \
-    Receiver1.h
+    Receiver1.h \
+    Sender2.h \
+    Receiver2.h
