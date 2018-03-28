@@ -38,6 +38,7 @@ void TestByteArrayToUint32::testByteArrayToUint32()
     QCOMPARE(byteArrayToUint32(QByteArray::fromHex("38")), 0x38U);
     QCOMPARE(byteArrayToUint32(QByteArray::fromHex("")), 0x0U);
     QCOMPARE(byteArrayToUint32(QByteArray::fromHex("559020562f")), 0x0U);
+    // The next two checks show the bug.
 //    QCOMPARE(byteArrayToUint32(QByteArray::fromHex("0180")), 0x180U);
 //    QCOMPARE(byteArrayToUint32(QByteArray::fromHex("95")), 0x95U);
 }
