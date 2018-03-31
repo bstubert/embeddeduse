@@ -10,7 +10,7 @@ class TestByteArrayToUint32 : public QObject
     Q_OBJECT
 
 public:
-    quint32 byteArrayToUint32(const QByteArray &bytes)
+    quint32 byteArrayToUint32(const QByteArray &bytes) const
     {
         auto count = bytes.size();
         if (count == 0 || count > 4) {
@@ -25,8 +25,15 @@ public:
         return number;
     }
 
+    quint32 castToUint32(const QByteArray &bytes) const
+    {
+        auto number = reinterpret_cast<const quint32 *>(bytes.data());
+        return *number;
+    }
+
 private Q_SLOTS:
     void testByteArrayToUint32();
+    void testCastToUint32();
 };
 
 
@@ -41,6 +48,13 @@ void TestByteArrayToUint32::testByteArrayToUint32()
     // The next two checks show the bug.
 //    QCOMPARE(byteArrayToUint32(QByteArray::fromHex("0180")), 0x180U);
 //    QCOMPARE(byteArrayToUint32(QByteArray::fromHex("95")), 0x95U);
+}
+
+void TestByteArrayToUint32::testCastToUint32()
+{
+    QCOMPARE(castToUint32(QByteArray::fromHex("8001")), 0x180U);
+    QCOMPARE(castToUint32(QByteArray::fromHex("0180")), 0x8001U);
+    QCOMPARE(castToUint32(QByteArray::fromHex("224931")), 0x314922U);
 }
 
 QTEST_APPLESS_MAIN(TestByteArrayToUint32)
