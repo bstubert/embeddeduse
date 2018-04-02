@@ -12,6 +12,8 @@ Window {
     title: qsTr("EmbeddedUse")
 
     Rectangle {
+        id: view
+        property bool isCustomerInfoShown: false
         anchors.fill: parent
         color: "#EDFFAB"
 
@@ -25,15 +27,16 @@ Window {
             anchors.bottom: parent.bottom
             width: 0.25 * topWindow.width
             height: 0.10 * topWindow.height
-            text: loader.status === Loader.Null ? qsTr("Open") : qsTr("Close")
+            text: !view.isCustomerInfoShown ? qsTr("Open") : qsTr("Close")
             onClicked: {
-                if (loader.status === Loader.Null) {
+                if (!view.isCustomerInfoShown) {
                     loader.setSource("CustomerInfo.qml",
                                      {"customer": g_customerMgr.currentCustomer})
                 }
                 else {
                     loader.setSource("", {})
                 }
+                view.isCustomerInfoShown = !view.isCustomerInfoShown
             }
         }
     }
