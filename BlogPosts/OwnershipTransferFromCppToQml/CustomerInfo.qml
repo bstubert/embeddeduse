@@ -9,6 +9,7 @@ Rectangle
     property Customer customer
     color: "#C8FFBE"
 
+    Component.onCompleted: console.log("### Creating CustomerInfo.qml")
     Component.onDestruction: console.log("@@@ Destroying CustomerInfo.qml")
 
     Text {
