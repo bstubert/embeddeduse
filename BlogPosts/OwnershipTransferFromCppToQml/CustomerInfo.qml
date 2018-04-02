@@ -5,7 +5,6 @@ import Customer.Models 1.0
 
 Rectangle
 {
-    id: root
     property Customer customer
     color: "#C8FFBE"
 
