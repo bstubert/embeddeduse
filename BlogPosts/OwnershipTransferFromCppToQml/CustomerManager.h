@@ -4,7 +4,6 @@
 #define CUSTOMERMANAGER_H
 
 #include <QObject>
-#include <QVector>
 #include "Customer.h"
 
 class CustomerManager : public QObject
@@ -18,16 +17,14 @@ public:
     CustomerManager(QObject *parent = nullptr)
         : QObject(parent)
     {
-        auto customer = new Customer();
-        customer->setFirstName("Joe");
-        customer->setLastName("Smith");
-        m_customers.append(customer);
-        setCurrentCustomer(customer);
+        m_currentCustomer = new Customer();
+        m_currentCustomer->setFirstName("Joe");
+        m_currentCustomer->setLastName("Smith");
     }
 
     ~CustomerManager()
     {
-        qDeleteAll(m_customers);
+        delete m_currentCustomer;
     }
 
     Customer *currentCustomer() const
@@ -47,7 +44,6 @@ signals:
     void currentCustomerChanged();
 
 private:
-    QVector<Customer *> m_customers;
     Customer *m_currentCustomer{};
 };
 
