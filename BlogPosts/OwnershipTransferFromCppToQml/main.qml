@@ -26,7 +26,15 @@ Window {
             width: 0.25 * topWindow.width
             height: 0.10 * topWindow.height
             text: loader.status === Loader.Null ? qsTr("Open") : qsTr("Close")
-            onClicked: loader.source = (loader.status === Loader.Null ? "CustomerInfo.qml" : "")
+            onClicked: {
+                if (loader.status === Loader.Null) {
+                    loader.setSource("CustomerInfo.qml",
+                                     {"customer": g_customerMgr.currentCustomer})
+                }
+                else {
+                    loader.setSource("", {})
+                }
+            }
         }
     }
 }

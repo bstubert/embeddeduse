@@ -1,18 +1,19 @@
 // Copyright (C) 2018 Burkhard Stubert (DBA EmbeddedUse)
 
 import QtQuick 2.9
+import Customer.Models 1.0
 
 Rectangle
 {
     id: root
+    property Customer customer
     color: "#C8FFBE"
 
     Component.onDestruction: console.log("@@@ Destroying CustomerInfo.qml")
 
     Text {
         anchors.centerIn: parent
-        text: g_customerMgr.currentCustomer.firstName + " " +
-              g_customerMgr.currentCustomer.lastName
+        text: customer.firstName + " " + customer.lastName
         font.pixelSize: 64
         color: "#623B5A"
     }
