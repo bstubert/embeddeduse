@@ -22,9 +22,15 @@ public:
         : QObject(parent)
     {}
 
+    Customer(QString firstName, QString lastName, QObject *parent = nullptr)
+        : QObject(parent)
+        , m_firstName(firstName)
+        , m_lastName(lastName)
+    {}
+
     ~Customer()
     {
-        qDebug() << "### Deleting C++ customer object";
+        qDebug() << "############## Deleting C++ customer object";
     }
 
     QString firstName() const

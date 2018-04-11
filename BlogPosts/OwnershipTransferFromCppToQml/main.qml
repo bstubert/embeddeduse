@@ -31,7 +31,7 @@ Window {
             onClicked: {
                 if (!view.isCustomerInfoShown) {
                     loader.setSource("CustomerInfo.qml",
-                                     {"customer": g_customerMgr.currentCustomer})
+                                     {"customer": g_customerMgr.randomCustomer() })
                 }
                 else {
                     loader.setSource("", {})

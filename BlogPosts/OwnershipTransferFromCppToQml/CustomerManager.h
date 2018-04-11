@@ -4,47 +4,34 @@
 #define CUSTOMERMANAGER_H
 
 #include <QObject>
+#include <QVector>
 #include "Customer.h"
 
 class CustomerManager : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(Customer *currentCustomer READ currentCustomer
-               WRITE setCurrentCustomer NOTIFY currentCustomerChanged)
-
 public:
     CustomerManager(QObject *parent = nullptr)
         : QObject(parent)
     {
-        m_currentCustomer = new Customer();
-        m_currentCustomer->setFirstName("Joe");
-        m_currentCustomer->setLastName("Smith");
+        m_customers.append(new Customer("Joe", "Smith"));
+        m_customers.append(new Customer("Jack", "Miller"));
+        m_customers.append(new Customer("Harold", "Beck"));
     }
 
     ~CustomerManager()
     {
-        delete m_currentCustomer;
+        qDeleteAll(m_customers);
     }
 
-    Customer *currentCustomer() const
+    Q_INVOKABLE Customer *randomCustomer() const
     {
-        return m_currentCustomer;
+        return m_customers[qrand() % 3];
     }
-
-    void setCurrentCustomer(Customer *customer)
-    {
-        if (m_currentCustomer != customer) {
-            m_currentCustomer = customer;
-            emit currentCustomerChanged();
-        }
-    }
-
-signals:
-    void currentCustomerChanged();
 
 private:
-    Customer *m_currentCustomer{};
+    QVector<Customer *> m_customers;
 };
 
 #endif // CUSTOMERMANAGER_H
