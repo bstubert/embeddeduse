@@ -8,6 +8,10 @@
 #include <QtDebug>
 #include <QTimer>
 
+// #define SINGLE_SHOT_WITH_SLOT
+// #define SINGLE_SHOT_WITH_LAMBDA
+// #define SINGLE_SHOT_WITH_LAMBDA_AND_CONTEXT
+
 class Customer : public QObject
 {
     Q_OBJECT
@@ -25,7 +29,27 @@ public:
         m_lastName{"Doe"}
     {
         qDebug() << "@@@ Creating Customer";
-        QTimer::singleShot(5000, this, &Customer::printBySlot);
+
+#ifdef SINGLE_SHOT_WITH_SLOT
+        // Printing with slot: No crash
+        QTimer::singleShot(5000, this, &Customer::printWithSlot);
+#endif
+
+#ifdef SINGLE_SHOT_WITH_LAMBDA
+        // Printing with lambda: Crash
+        QTimer::singleShot(5000, [this]() {
+            qDebug() << "*** Single-shot with lambda";
+            qDebug() << "Customer: " << firstName() << lastName();
+        });
+#endif
+
+#ifdef SINGLE_SHOT_WITH_LAMBDA_AND_CONTEXT
+        // Printing with lambda and context: No crash
+        QTimer::singleShot(5000, this, [this]() {
+            qDebug() << "*** Single-shot with lambda and context";
+            qDebug() << "Customer: " << firstName() << lastName();
+        });
+#endif
     }
 
     ~Customer()
@@ -59,12 +83,15 @@ public:
         }
     }
 
+#ifdef SINGLE_SHOT_WITH_SLOT
 private slots:
-    void printBySlot()
+    void printWithSlot()
     {
-        qDebug() << "*** printBySlot";
+        qDebug() << "*** Single-shot with slot";
         qDebug() << "Customer: " << firstName() << lastName();
     }
+
+#endif
 
 signals:
     void firstNameChanged();
