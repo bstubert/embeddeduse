@@ -62,7 +62,7 @@ public:
 private slots:
     void printBySlot()
     {
-        qDebug() << "*** printCustomer";
+        qDebug() << "*** printBySlot";
         qDebug() << "Customer: " << firstName() << lastName();
     }
 
