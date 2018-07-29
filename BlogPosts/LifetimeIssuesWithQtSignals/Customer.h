@@ -36,6 +36,14 @@ public:
         QTimer::singleShot(5000, this, &Customer::printWithSlot);
 #endif
 
+#ifdef SINGLE_SHOT_WITH_LAMBDA
+        // Single-shot with lambda: Crash
+        QTimer::singleShot(5000, [this]() {
+            qDebug() << "*** Single-shot with lambda";
+            qDebug() << "Customer: " << firstName() << lastName();
+        });
+#endif
+
 #ifdef SINGLE_SHOT_WITH_LAMBDA_AND_CONTEXT
         // Single-shot with lambda and context: No crash
         QTimer::singleShot(5000, this, [this]() {
