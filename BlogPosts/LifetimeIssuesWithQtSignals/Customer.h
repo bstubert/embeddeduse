@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QString>
 #include <QtDebug>
+#include <QTimer>
 
 class Customer : public QObject
 {
@@ -23,10 +24,13 @@ public:
         m_firstName{"Jane"},
         m_lastName{"Doe"}
     {
+        qDebug() << "@@@ Creating Customer";
+        QTimer::singleShot(5000, this, &Customer::printBySlot);
     }
 
     ~Customer()
     {
+        qDebug() << "### Destroying Customer";
     }
 
     QString firstName() const
@@ -53,6 +57,13 @@ public:
             m_lastName = lastName;
             emit lastNameChanged();
         }
+    }
+
+private slots:
+    void printBySlot()
+    {
+        qDebug() << "*** printCustomer";
+        qDebug() << "Customer: " << firstName() << lastName();
     }
 
 signals:
