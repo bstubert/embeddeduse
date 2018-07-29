@@ -10,8 +10,8 @@
 
 // #define SINGLE_SHOT_WITH_SLOT
 // #define SINGLE_SHOT_WITH_LAMBDA
-// #define SINGLE_SHOT_WITH_LAMBDA_AND_VALUES
 // #define SINGLE_SHOT_WITH_LAMBDA_AND_CONTEXT
+// #define SINGLE_SHOT_WITH_LAMBDA_AND_VALUES
 
 class Customer : public QObject
 {
@@ -36,29 +36,21 @@ public:
         QTimer::singleShot(5000, this, &Customer::printWithSlot);
 #endif
 
-#ifdef SINGLE_SHOT_WITH_LAMBDA
-        // Single-shot with lambda: Crash
-        QTimer::singleShot(5000, [this]() {
-            qDebug() << "*** Single-shot with lambda";
-            qDebug() << "Customer: " << firstName() << lastName();
-        });
-#endif
-
-#ifdef SINGLE_SHOT_WITH_LAMBDA_AND_VALUES
-        // Single-shot with lambda and values:
-        auto first = firstName();
-        auto last = lastName();
-        QTimer::singleShot(5000, [first, last]() {
-            qDebug() << "*** Single-shot with lambda and values";
-            qDebug() << "Customer: " << first << last;
-        });
-#endif
-
 #ifdef SINGLE_SHOT_WITH_LAMBDA_AND_CONTEXT
         // Single-shot with lambda and context: No crash
         QTimer::singleShot(5000, this, [this]() {
             qDebug() << "*** Single-shot with lambda and context";
             qDebug() << "Customer: " << firstName() << lastName();
+        });
+#endif
+
+#ifdef SINGLE_SHOT_WITH_LAMBDA_AND_VALUES
+        // Single-shot with lambda and values: No crash
+        auto first = firstName();
+        auto last = lastName();
+        QTimer::singleShot(5000, [first, last]() {
+            qDebug() << "*** Single-shot with lambda and values";
+            qDebug() << "Customer: " << first << last;
         });
 #endif
     }
