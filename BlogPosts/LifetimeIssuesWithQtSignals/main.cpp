@@ -4,7 +4,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlEngine>
 
-#include "Customer.h"
+#include "Model.h"
 
 int main(int argc, char *argv[])
 {
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    qmlRegisterType<Customer>("Customer.Models", 1, 0, "Customer");
+    qmlRegisterType<Model>("MyModels", 1, 0, "Model");
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty()) {
         return -1;

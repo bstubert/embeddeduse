@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>CustomerInfo.qml</file>
+        <file>SecondScreen.qml</file>
     </qresource>
 </RCC>

@@ -13,9 +13,15 @@ Window {
 
     Rectangle {
         id: view
-        property bool isCustomerInfoShown: false
+        property bool isSecondScreenShown: false
         anchors.fill: parent
         color: "#EDFFAB"
+
+        Label {
+            anchors.centerIn: parent
+            text: "Main Screen"
+            font.pixelSize: 64
+        }
 
         Loader {
             id: loader
@@ -27,15 +33,15 @@ Window {
             anchors.bottom: parent.bottom
             width: 0.25 * topWindow.width
             height: 0.10 * topWindow.height
-            text: !view.isCustomerInfoShown ? qsTr("Open") : qsTr("Close")
+            text: !view.isSecondScreenShown ? qsTr("Open") : qsTr("Close")
             onClicked: {
-                if (!view.isCustomerInfoShown) {
-                    loader.setSource("CustomerInfo.qml")
+                if (!view.isSecondScreenShown) {
+                    loader.setSource("SecondScreen.qml")
                 }
                 else {
                     loader.setSource("")
                 }
-                view.isCustomerInfoShown = !view.isCustomerInfoShown
+                view.isSecondScreenShown = !view.isSecondScreenShown
             }
         }
     }
