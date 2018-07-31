@@ -7,8 +7,8 @@ import QtQuick.Window 2.2
 Window {
     id: topWindow
     visible: true
-    width: 640
-    height: 480
+    width: 320
+    height: 240
     title: qsTr("EmbeddedUse")
 
     Rectangle {
@@ -18,9 +18,12 @@ Window {
         color: "#EDFFAB"
 
         Label {
-            anchors.centerIn: parent
+            anchors.fill: parent
             text: "Main Screen"
             font.pixelSize: 64
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            wrapMode: Text.WordWrap
         }
 
         Loader {

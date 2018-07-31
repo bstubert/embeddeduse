@@ -8,7 +8,7 @@
 #include <QtDebug>
 #include <QTimer>
 
-// #define SINGLE_SHOT_WITH_SLOT
+ #define SINGLE_SHOT_WITH_SLOT
 // #define SINGLE_SHOT_WITH_LAMBDA
 // #define SINGLE_SHOT_WITH_LAMBDA_AND_CONTEXT
 
@@ -33,14 +33,14 @@ public:
 #ifdef SINGLE_SHOT_WITH_LAMBDA
         // Single-shot with lambda: Crash
         QTimer::singleShot(5000, [this]() {
-            setInfoText("Crashed: Single-shot with lambda");
+            setInfoText("INFO: Lambda");
         });
 #endif
 
 #ifdef SINGLE_SHOT_WITH_LAMBDA_AND_CONTEXT
         // Single-shot with lambda and context: No crash
         QTimer::singleShot(5000, this, [this]() {
-            setInfoText("All good: Single-shot with lambda and context");
+            setInfoText("INFO: Context");
         });
 #endif
     }
@@ -67,7 +67,7 @@ public:
 private slots:
     void updateInfoText()
     {
-        setInfoText("All good: single-shot with slot");
+        setInfoText("INFO: Slot");
     }
 
 #endif
