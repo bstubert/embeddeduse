@@ -27,16 +27,21 @@ Model::Impl::Impl(Model *parent)
 Model::Impl::~Impl()
 {
     qDebug() << "### Model::Impl dtor";
+    for (int i = 0; i < 20; ++i) {
+        setInfoText(QString("Crashed %1!!!").arg(i));
+    }
 }
 
 QString Model::Impl::infoText() const
 {
+    qDebug() << "*** Model::Impl::infoText = " << m_infoText;
     return m_infoText;
 }
 
 void Model::Impl::setInfoText(const QString &text)
 {
     if (m_infoText != text) {
+        qDebug() << "*** Model::Impl::setInfoText = " << text;
         m_infoText = text;
         emit m_iface->infoTextChanged();
     }
@@ -56,6 +61,7 @@ Model::~Model()
 
 QString Model::infoText() const
 {
+    qDebug() << "*** Model::infoText()";
     return m_impl->infoText();
 }
 
