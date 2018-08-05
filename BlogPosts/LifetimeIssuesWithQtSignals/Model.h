@@ -33,14 +33,14 @@ public:
 #ifdef SINGLE_SHOT_WITH_LAMBDA
         // Single-shot with lambda: Crash
         QTimer::singleShot(500, [this]() {
-            setInfoText("INFO: Lambda");
+            this->setInfoText("INFO: Lambda");
         });
 #endif
 
 #ifdef SINGLE_SHOT_WITH_LAMBDA_AND_CONTEXT
         // Single-shot with lambda and context: No crash
         QTimer::singleShot(500, this, [this]() {
-            setInfoText("INFO: Context");
+            this->setInfoText("INFO: Context");
         });
 #endif
     }
@@ -67,7 +67,7 @@ public:
 private slots:
     void updateInfoText()
     {
-        setInfoText("INFO: Slot");
+        this->setInfoText("INFO: Slot");
     }
 
 #endif
