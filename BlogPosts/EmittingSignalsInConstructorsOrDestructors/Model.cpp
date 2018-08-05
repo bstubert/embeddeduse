@@ -27,9 +27,7 @@ Model::Impl::Impl(Model *parent)
 Model::Impl::~Impl()
 {
     qDebug() << "### Model::Impl dtor";
-    for (int i = 0; i < 20; ++i) {
-        setInfoText(QString("Crashed %1!!!").arg(i));
-    }
+    setInfoText("Crashed!!!");
 }
 
 QString Model::Impl::infoText() const
