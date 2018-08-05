@@ -3,6 +3,7 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#include <QMetaMethod>
 #include <QObject>
 #include <QScopedPointer>
 #include <QString>
@@ -15,12 +16,12 @@ class Model : public QObject
 
 public:
     Model(QObject *parent = nullptr);
-
-    ~Model();
-
+    virtual ~Model();
     QString infoText() const;
-
     void setInfoText(const QString &text);
+
+protected:
+    virtual void disconnectNotify(const QMetaMethod &signal);
 
 signals:
     void infoTextChanged();

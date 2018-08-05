@@ -68,4 +68,11 @@ void Model::setInfoText(const QString &text)
     m_impl->setInfoText(text);
 }
 
+void Model::disconnectNotify(const QMetaMethod &signal)
+{
+    if (signal == QMetaMethod::fromSignal(&Model::infoTextChanged)) {
+        qDebug() << "*** Disconnected from signal infoTextChanged!";
+    }
+}
+
 #include "Model.moc"
