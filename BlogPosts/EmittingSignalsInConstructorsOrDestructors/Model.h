@@ -1,16 +1,11 @@
 // Copyright (C) 2018 Burkhard Stubert (DBA EmbeddedUse)
 
-#ifndef CUSTOMER_H
-#define CUSTOMER_H
+#ifndef MODEL_H
+#define MODEL_H
 
 #include <QObject>
+#include <QScopedPointer>
 #include <QString>
-#include <QtDebug>
-#include <QTimer>
-
- #define SINGLE_SHOT_WITH_SLOT
-// #define SINGLE_SHOT_WITH_LAMBDA
-// #define SINGLE_SHOT_WITH_LAMBDA_AND_CONTEXT
 
 class Model : public QObject
 {
@@ -19,64 +14,20 @@ class Model : public QObject
     Q_PROPERTY(QString infoText READ infoText WRITE setInfoText NOTIFY infoTextChanged)
 
 public:
-    Model(QObject *parent = nullptr) :
-        QObject{parent},
-        m_infoText{"Waiting..."}
-    {
-        qDebug() << "@@@ Creating Customer";
+    Model(QObject *parent = nullptr);
 
-#ifdef SINGLE_SHOT_WITH_SLOT
-        // Single-shot with slot: No crash
-        QTimer::singleShot(500, this, &Model::updateInfoText);
-#endif
+    ~Model();
 
-#ifdef SINGLE_SHOT_WITH_LAMBDA
-        // Single-shot with lambda: Crash
-        QTimer::singleShot(500, [this]() {
-            this->setInfoText("INFO: Lambda");
-        });
-#endif
+    QString infoText() const;
 
-#ifdef SINGLE_SHOT_WITH_LAMBDA_AND_CONTEXT
-        // Single-shot with lambda and context: No crash
-        QTimer::singleShot(500, this, [this]() {
-            this->setInfoText("INFO: Context");
-        });
-#endif
-    }
-
-    ~Model()
-    {
-        qDebug() << "### Destroying Customer";
-    }
-
-    QString infoText() const
-    {
-        return m_infoText;
-    }
-
-    void setInfoText(QString text)
-    {
-        if (m_infoText != text) {
-            m_infoText = text;
-            emit infoTextChanged();
-        }
-    }
-
-#ifdef SINGLE_SHOT_WITH_SLOT
-private slots:
-    void updateInfoText()
-    {
-        this->setInfoText("INFO: Slot");
-    }
-
-#endif
+    void setInfoText(const QString &text);
 
 signals:
     void infoTextChanged();
 
 private:
-    QString m_infoText;
+    class Impl;
+    QScopedPointer<Impl> m_impl;
 };
 
-#endif // CUSTOMER_H
+#endif // MODEL_H
