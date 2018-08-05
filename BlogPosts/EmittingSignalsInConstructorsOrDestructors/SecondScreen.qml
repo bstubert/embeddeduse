@@ -9,6 +9,8 @@ Rectangle
     property Model model: Model {}
     color: "#C8FFBE"
 
+    Component.onDestruction: console.log("@@@@@@ Destroyig SecondScreen!")
+
     Label {
         anchors.fill: parent
         text: model.infoText
