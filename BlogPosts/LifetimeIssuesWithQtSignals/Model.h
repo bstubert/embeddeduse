@@ -27,19 +27,19 @@ public:
 
 #ifdef SINGLE_SHOT_WITH_SLOT
         // Single-shot with slot: No crash
-        QTimer::singleShot(5000, this, &Model::updateInfoText);
+        QTimer::singleShot(500, this, &Model::updateInfoText);
 #endif
 
 #ifdef SINGLE_SHOT_WITH_LAMBDA
         // Single-shot with lambda: Crash
-        QTimer::singleShot(5000, [this]() {
+        QTimer::singleShot(500, [this]() {
             setInfoText("INFO: Lambda");
         });
 #endif
 
 #ifdef SINGLE_SHOT_WITH_LAMBDA_AND_CONTEXT
         // Single-shot with lambda and context: No crash
-        QTimer::singleShot(5000, this, [this]() {
+        QTimer::singleShot(500, this, [this]() {
             setInfoText("INFO: Context");
         });
 #endif
