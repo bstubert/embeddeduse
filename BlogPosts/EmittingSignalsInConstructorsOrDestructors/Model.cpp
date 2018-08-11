@@ -40,7 +40,6 @@ Model::Impl::~Impl()
 
 QString Model::Impl::infoText() const
 {
-    qDebug() << __PRETTY_FUNCTION__;
     return m_infoText;
 }
 
@@ -67,13 +66,19 @@ Model::~Model()
 
 QString Model::infoText() const
 {
-    qDebug() << __PRETTY_FUNCTION__;
     return m_impl->infoText();
 }
 
 void Model::setInfoText(const QString &text)
 {
     m_impl->setInfoText(text);
+}
+
+void Model::connectNotify(const QMetaMethod &signal)
+{
+    if (signal == QMetaMethod::fromSignal(&Model::infoTextChanged)) {
+        qDebug() << __PRETTY_FUNCTION__ << ": Connected to signal infoTextChanged!";
+    }
 }
 
 void Model::disconnectNotify(const QMetaMethod &signal)

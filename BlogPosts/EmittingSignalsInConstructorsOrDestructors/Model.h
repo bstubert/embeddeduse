@@ -21,6 +21,7 @@ public:
     void setInfoText(const QString &text);
 
 protected:
+    virtual void connectNotify(const QMetaMethod &signal);
     virtual void disconnectNotify(const QMetaMethod &signal);
 
 signals:
