@@ -4,7 +4,7 @@
 #include "Model.h"
 
 #define EMIT_IN_CONSTRUCTOR
-//#define EMIT_IN_DESTRUCTOR
+#define EMIT_IN_DESTRUCTOR
 
 class Model::Impl : public QObject
 {
