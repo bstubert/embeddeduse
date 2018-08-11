@@ -3,8 +3,7 @@
 #include <QtDebug>
 #include "Model.h"
 
-#define EMIT_IN_CONSTRUCTOR
-#define EMIT_IN_DESTRUCTOR
+//#define PROBLEM_FIXED
 
 class Model::Impl : public QObject
 {
@@ -25,7 +24,7 @@ Model::Impl::Impl(Model *parent) :
     m_infoText{QStringLiteral("Waiting...")}
 {
     qDebug() << __PRETTY_FUNCTION__;
-#ifdef EMIT_IN_CONSTRUCTOR
+#ifndef PROBLEM_FIXED
     setInfoText("Constructor: Oooops!!!");
 #endif
 }
@@ -33,7 +32,7 @@ Model::Impl::Impl(Model *parent) :
 Model::Impl::~Impl()
 {
     qDebug() << __PRETTY_FUNCTION__;
-#ifdef EMIT_IN_DESTRUCTOR
+#ifndef PROBLEM_FIXED
     setInfoText("Destructor: Oooops!!!");
 #endif
 }
@@ -57,11 +56,17 @@ Model::Model(QObject *parent) :
     m_impl{new Impl{this}}
 {
     qDebug() << __PRETTY_FUNCTION__;
+#ifdef PROBLEM_FIXED
+    setInfoText("Constructor: All fine!!!");
+#endif
 }
 
 Model::~Model()
 {
     qDebug() << __PRETTY_FUNCTION__;
+#ifdef PROBLEM_FIXED
+    setInfoText("Destructor: All fine!!!");
+#endif
 }
 
 QString Model::infoText() const
@@ -71,21 +76,8 @@ QString Model::infoText() const
 
 void Model::setInfoText(const QString &text)
 {
+    qDebug() << __PRETTY_FUNCTION__;
     m_impl->setInfoText(text);
-}
-
-void Model::connectNotify(const QMetaMethod &signal)
-{
-    if (signal == QMetaMethod::fromSignal(&Model::infoTextChanged)) {
-        qDebug() << __PRETTY_FUNCTION__ << ": Connected to signal infoTextChanged!";
-    }
-}
-
-void Model::disconnectNotify(const QMetaMethod &signal)
-{
-    if (signal == QMetaMethod::fromSignal(&Model::infoTextChanged)) {
-        qDebug() << __PRETTY_FUNCTION__ << ": Disconnected from signal infoTextChanged!";
-    }
 }
 
 #include "Model.moc"
