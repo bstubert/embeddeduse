@@ -3,6 +3,9 @@
 #include <QtDebug>
 #include "Model.h"
 
+#define EMIT_IN_CONSTRUCTOR
+//#define EMIT_IN_DESTRUCTOR
+
 class Model::Impl : public QObject
 {
     Q_OBJECT
@@ -22,12 +25,17 @@ Model::Impl::Impl(Model *parent) :
     m_infoText{QStringLiteral("Waiting...")}
 {
     qDebug() << __PRETTY_FUNCTION__;
+#ifdef EMIT_IN_CONSTRUCTOR
+    setInfoText("Constructor: Oooops!!!");
+#endif
 }
 
 Model::Impl::~Impl()
 {
     qDebug() << __PRETTY_FUNCTION__;
-    setInfoText("Undefined behaviour!!!");
+#ifdef EMIT_IN_DESTRUCTOR
+    setInfoText("Destructor: Oooops!!!");
+#endif
 }
 
 QString Model::Impl::infoText() const
@@ -47,10 +55,7 @@ void Model::Impl::setInfoText(const QString &text)
 
 Model::Model(QObject *parent) :
     QObject{parent},
-    m_impl{new Impl
-    {
-        this
-    }}
+    m_impl{new Impl{this}}
 {
     qDebug() << __PRETTY_FUNCTION__;
 }

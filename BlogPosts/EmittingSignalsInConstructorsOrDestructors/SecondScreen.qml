@@ -14,7 +14,7 @@ Rectangle
     Label {
         anchors.fill: parent
         text: model.infoText
-        font.pixelSize: 64
+        font.pixelSize: 48
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         wrapMode: Text.WordWrap
