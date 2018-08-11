@@ -16,50 +16,53 @@ public:
     QString m_infoText;
 };
 
-Model::Impl::Impl(Model *parent)
-    : QObject(parent)
-    , m_iface(parent)
-    , m_infoText{QStringLiteral("Waiting...")}
+Model::Impl::Impl(Model *parent) :
+    QObject(parent),
+    m_iface(parent),
+    m_infoText{QStringLiteral("Waiting...")}
 {
-    qDebug() << "@@@ Model::Impl ctor";
+    qDebug() << __PRETTY_FUNCTION__;
 }
 
 Model::Impl::~Impl()
 {
-    qDebug() << "### Model::Impl dtor";
-    setInfoText("Crashed!!!");
+    qDebug() << __PRETTY_FUNCTION__;
+    setInfoText("Undefined behaviour!!!");
 }
 
 QString Model::Impl::infoText() const
 {
-    qDebug() << "*** Model::Impl::infoText = " << m_infoText;
+    qDebug() << __PRETTY_FUNCTION__;
     return m_infoText;
 }
 
 void Model::Impl::setInfoText(const QString &text)
 {
     if (m_infoText != text) {
-        qDebug() << "*** Model::Impl::setInfoText = " << text;
+        qDebug() << __PRETTY_FUNCTION__;
         m_infoText = text;
         emit m_iface->infoTextChanged();
     }
 }
 
-Model::Model(QObject *parent)
-    : QObject{parent}
-    , m_impl{new Impl{this}}
+Model::Model(QObject *parent) :
+    QObject{parent},
+    m_impl{new Impl
+    {
+        this
+    }}
 {
-    qDebug() << "@@@ Model ctor";
+    qDebug() << __PRETTY_FUNCTION__;
 }
 
 Model::~Model()
 {
-    qDebug() << "### Model dtor";
+    qDebug() << __PRETTY_FUNCTION__;
 }
 
 QString Model::infoText() const
 {
-    qDebug() << "*** Model::infoText()";
+    qDebug() << __PRETTY_FUNCTION__;
     return m_impl->infoText();
 }
 
@@ -71,7 +74,7 @@ void Model::setInfoText(const QString &text)
 void Model::disconnectNotify(const QMetaMethod &signal)
 {
     if (signal == QMetaMethod::fromSignal(&Model::infoTextChanged)) {
-        qDebug() << "*** Disconnected from signal infoTextChanged!";
+        qDebug() << __PRETTY_FUNCTION__ << ": Disconnected from signal infoTextChanged!";
     }
 }
 
