@@ -8,13 +8,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     riverstyleplugin.cpp
 
-#HEADERS += \
+QML_CONTROLS_PATH = imports/EmbeddedUse/Controls/River
 
 OTHER_FILES += \
-    imports/RiverStyle/qmldir \
-    imports/RiverStyle/riverstyle.qmltypes
+    $${QML_CONTROLS_PATH}/qmldir \
+    $${QML_CONTROLS_PATH}/riverstyle.qmltypes
 
-RUN_PATH = ../../run/imports/RiverStyle
+RUN_PATH = ../../run/$${QML_CONTROLS_PATH}
 qml.files = $$OTHER_FILES
 qml.path = $$RUN_PATH
 target.path = $$RUN_PATH
