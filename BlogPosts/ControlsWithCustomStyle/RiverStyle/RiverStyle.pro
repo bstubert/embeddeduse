@@ -6,7 +6,8 @@ QT += qml
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
-    riverstyleplugin.cpp
+    riverstyleplugin.cpp \
+    riverstyle.cpp
 
 QML_CONTROLS_PATH = imports/EmbeddedUse/Controls/River
 
@@ -19,3 +20,6 @@ qml.files = $$OTHER_FILES
 qml.path = $$RUN_PATH
 target.path = $$RUN_PATH
 INSTALLS += target qml
+
+HEADERS += \
+    riverstyle.h

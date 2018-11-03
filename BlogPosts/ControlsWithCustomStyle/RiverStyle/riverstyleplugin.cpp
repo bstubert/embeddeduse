@@ -2,6 +2,8 @@
 #include <QQmlExtensionPlugin>
 #include <QtDebug>
 
+#include "riverstyle.h"
+
 class RiverStylePlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
@@ -22,7 +24,7 @@ void RiverStylePlugin::registerTypes(const char *uri)
 {
     qDebug() << "### Registering plugin: " << uri;
     qmlRegisterModule(uri, 1, 0);
-// qmlRegisterUncreatableType<RiverStyle>(uri, 1, 0, "River", tr("River is an attached property"));
+    qmlRegisterUncreatableType<RiverStyle>(uri, 1, 0, "River", "Attached property River");
 // qmlRegisterType(resolvedUrl(QStringLiteral("Button.qml")), uri, 1, 0, "Button");
 }
 
