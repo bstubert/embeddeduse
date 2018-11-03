@@ -3,8 +3,6 @@ TEMPLATE = lib
 CONFIG += plugin
 QT += qml
 
-DESTDIR = imports/RiverStyle
-
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
