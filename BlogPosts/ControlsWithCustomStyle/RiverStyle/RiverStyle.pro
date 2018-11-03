@@ -11,7 +11,8 @@ SOURCES += \
 #HEADERS += \
 
 OTHER_FILES += \
-    imports/RiverStyle/qmldir
+    imports/RiverStyle/qmldir \
+    imports/RiverStyle/riverstyle.qmltypes
 
 qml.files = $$OTHER_FILES
 qml.path = ../../run/imports/RiverStyle
