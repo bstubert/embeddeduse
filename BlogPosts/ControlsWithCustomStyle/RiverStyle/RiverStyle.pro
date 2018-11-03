@@ -14,7 +14,8 @@ OTHER_FILES += \
     imports/RiverStyle/qmldir \
     imports/RiverStyle/riverstyle.qmltypes
 
+RUN_PATH = ../../run/imports/RiverStyle
 qml.files = $$OTHER_FILES
-qml.path = ../../run/imports/RiverStyle
-target.path = ../../run/imports/RiverStyle
+qml.path = $$RUN_PATH
+target.path = $$RUN_PATH
 INSTALLS += target qml
