@@ -30,10 +30,6 @@ Window {
         anchors.fill: parent
         readonly property real buttonHeight: 64
 
-        background: Rectangle {
-            color: River.background
-        }
-
         Label {
             id: pinDisplay
             anchors {

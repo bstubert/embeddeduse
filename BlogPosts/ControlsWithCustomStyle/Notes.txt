@@ -1,0 +1,13 @@
+==================================
+
+Creating qmltypes file for RiverStyle module:
+
+/public/Projects/embeddeduse/BlogPosts/run$ /public/Qt/qt5/qtbase/bin/qmlplugindump \
+    -nonrelocatable RiverStyle 1.0 ./imports > \
+    ../ControlsWithCustomStyle/RiverStyle/imports/RiverStyle/riverstyles.qmltypes
+
+Set
+    QML_IMPORT_PATH = ../../run/imports
+in Main.pro. Then "import RiverStyle 1.0" is not underlined in red by QtCreator any more.
+
+==================================
