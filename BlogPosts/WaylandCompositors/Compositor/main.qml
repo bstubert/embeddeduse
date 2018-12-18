@@ -17,7 +17,7 @@ WaylandCompositor {
             height: 800
 
             StackView {
-                id: appStack
+                id: appContainer
                 anchors.fill: parent
             }
 
@@ -51,6 +51,7 @@ WaylandCompositor {
     Component {
         id: appComponent
         ShellSurfaceItem {
+            property int processId: 0
             anchors.fill: parent
             onSurfaceDestroyed: destroy()
         }
@@ -59,8 +60,11 @@ WaylandCompositor {
     IviApplication {
         onIviSurfaceCreated: {
             console.log("@@@ appId = ", iviSurface.iviId)
-            var appItem = appComponent.createObject(appStack, {"shellSurface": iviSurface})
-            iviSurface.sendConfigure(Qt.size(appStack.width, appStack.height))
+            var appItem = appComponent.createObject(appContainer, {
+                                                        "shellSurface": iviSurface,
+                                                        "processId": iviSurface.iviId
+                                                    })
+            iviSurface.sendConfigure(Qt.size(appContainer.width, appContainer.height))
         }
     }
 }
