@@ -16,15 +16,18 @@ class ApplicationManager : public QAbstractListModel
 
 public:
     enum Role {
-        ROLE_COLOR = Qt::UserRole
+        ROLE_COLOR = Qt::UserRole,
+        ROLE_RUNNING,
+        ROLE_PROCESS_ID
     };
     explicit ApplicationManager(QObject *parent = nullptr);
     QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent = QModelIndex{}) const override;
     QVariant data(const QModelIndex &index, int role) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
 public slots:
-    void startApplication(int row);
+    bool startApplication(int row);
 
 private:
     struct AppInfo {

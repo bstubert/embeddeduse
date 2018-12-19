@@ -7,6 +7,17 @@ import QtWayland.Compositor 1.3
 import EmbeddedUse.Models 1.0
 
 WaylandCompositor {
+    property var appItemColl: []
+    function appItemForProcess(pid) {
+        var ix = 0
+        for (; ix < appItemColl.length; ix++) {
+            if (appItemColl[ix].processId === pid) {
+                return appItemColl[ix]
+            }
+        }
+        return null
+    }
+
     WaylandOutput {
         sizeFollowsWindow: true
 
@@ -16,7 +27,7 @@ WaylandCompositor {
             width: 1280
             height: 800
 
-            Container {
+            Item {
                 id: appContainer
                 anchors.fill: parent
             }
@@ -36,7 +47,14 @@ WaylandCompositor {
                                 radius: parent.height / 2
                                 color: model.color
                             }
-                            onClicked: appMgr.startApplication(index)
+                            onClicked: {
+                                if (running) {
+                                    appContainer.children = appItemForProcess(processId)
+                                }
+                                else {
+                                    running = true
+                                }
+                            }
                         }
                     }
                 }
@@ -63,9 +81,7 @@ WaylandCompositor {
                                                         "shellSurface": iviSurface,
                                                         "processId": iviSurface.iviId
                                                     })
-            appContainer.addItem(appItem)
-            appContainer.contentItem = appItem
-            console.log("@@@ appId = ", iviSurface.iviId, ", #items = ", appContainer.count)
+            appItemColl.push(appItem)
             iviSurface.sendConfigure(Qt.size(appContainer.width, appContainer.height))
         }
     }
