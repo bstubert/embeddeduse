@@ -40,13 +40,11 @@ WaylandCompositor {
                     spacing: 8
                     Repeater {
                         model: appMgr
-                        Button {
+                        RoundButton {
                             height: 60
                             width: height
-                            background: Rectangle {
-                                radius: parent.height / 2
-                                color: model.color
-                            }
+                            radius: height / 2
+                            palette.button: model.color
                             onClicked: {
                                 if (running) {
                                     appContainer.children = appItemForProcess(processId)
