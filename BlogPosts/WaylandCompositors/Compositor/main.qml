@@ -16,7 +16,7 @@ WaylandCompositor {
             width: 1280
             height: 800
 
-            StackView {
+            Container {
                 id: appContainer
                 anchors.fill: parent
             }
@@ -59,11 +59,13 @@ WaylandCompositor {
 
     IviApplication {
         onIviSurfaceCreated: {
-            console.log("@@@ appId = ", iviSurface.iviId)
             var appItem = appComponent.createObject(appContainer, {
                                                         "shellSurface": iviSurface,
                                                         "processId": iviSurface.iviId
                                                     })
+            appContainer.addItem(appItem)
+            appContainer.contentItem = appItem
+            console.log("@@@ appId = ", iviSurface.iviId, ", #items = ", appContainer.count)
             iviSurface.sendConfigure(Qt.size(appContainer.width, appContainer.height))
         }
     }
