@@ -25,16 +25,24 @@ WaylandCompositor {
                 height: 80
 
                 Row {
-                    anchors.centerIn: parent
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    height: parent.height
                     spacing: 16
+
                     Repeater {
                         model: appMgr
+
                         RoundButton {
-                            height: 60
+                            anchors.verticalCenter: parent.verticalCenter
+                            height: home ? 75 : 60
                             width: height
                             radius: height / 2
                             palette.button: model.color
                             onClicked: {
+                                if (home) {
+                                    console.log("@@@ Clicked home button")
+                                    return
+                                }
                                 if (running) {
                                     appContainer.children = appItemForProcess(processId)
                                 }

@@ -3,11 +3,16 @@
 
 #include "applicationmanager.h"
 
+namespace {
+const QString c_home{"black"};
+}
+
 ApplicationManager::ApplicationManager(QObject *parent)
     : QAbstractListModel{parent}
     , m_appInfoColl{
           {QString{"orange"}, nullptr},
           {QString{"lightgreen"}, nullptr},
+          {c_home, nullptr},
           {QString{"cyan"}, nullptr},
           {QString{"magenta"}, nullptr}
       }
@@ -20,6 +25,7 @@ QHash<int, QByteArray> ApplicationManager::roleNames() const
         { ROLE_COLOR, "color" },
         { ROLE_RUNNING, "running" },
         { ROLE_PROCESS_ID, "processId" },
+        { ROLE_HOME, "home" },
     };
     return roleColl;
 }
@@ -41,15 +47,11 @@ QVariant ApplicationManager::data(const QModelIndex &index, int role) const
     case ROLE_COLOR:
         return appInfo.m_color;
     case ROLE_RUNNING:
-        if (appInfo.m_process != nullptr) {
-            return appInfo.m_process->state() == QProcess::Running;
-        }
-        return false;
+        return appInfo.m_process != nullptr && appInfo.m_process->state() == QProcess::Running;
     case ROLE_PROCESS_ID:
-        if (appInfo.m_process != nullptr) {
-            return appInfo.m_process->processId();
-        }
-        return -1;
+        return appInfo.m_process != nullptr ? appInfo.m_process->processId() : -1;
+    case ROLE_HOME:
+        return appInfo.m_color == c_home;
     default:
         return {};
     }

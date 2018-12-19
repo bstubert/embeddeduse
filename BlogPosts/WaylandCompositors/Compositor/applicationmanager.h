@@ -18,7 +18,8 @@ public:
     enum Role {
         ROLE_COLOR = Qt::UserRole,
         ROLE_RUNNING,
-        ROLE_PROCESS_ID
+        ROLE_PROCESS_ID,
+        ROLE_HOME
     };
     explicit ApplicationManager(QObject *parent = nullptr);
     QHash<int, QByteArray> roleNames() const override;
