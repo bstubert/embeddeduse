@@ -7,17 +7,6 @@ import QtWayland.Compositor 1.3
 import EmbeddedUse.Models 1.0
 
 WaylandCompositor {
-    property var appItemColl: []
-    function appItemForProcess(pid) {
-        var ix = 0
-        for (; ix < appItemColl.length; ix++) {
-            if (appItemColl[ix].processId === pid) {
-                return appItemColl[ix]
-            }
-        }
-        return null
-    }
-
     WaylandOutput {
         sizeFollowsWindow: true
 
@@ -37,7 +26,7 @@ WaylandCompositor {
 
                 Row {
                     anchors.centerIn: parent
-                    spacing: 8
+                    spacing: 16
                     Repeater {
                         model: appMgr
                         RoundButton {
@@ -82,5 +71,16 @@ WaylandCompositor {
             appItemColl.push(appItem)
             iviSurface.sendConfigure(Qt.size(appContainer.width, appContainer.height))
         }
+    }
+
+    property var appItemColl: []
+    function appItemForProcess(pid) {
+        var ix = 0
+        for (; ix < appItemColl.length; ix++) {
+            if (appItemColl[ix].processId === pid) {
+                return appItemColl[ix]
+            }
+        }
+        return null
     }
 }
