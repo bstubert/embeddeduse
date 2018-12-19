@@ -53,17 +53,9 @@ WaylandCompositor {
         }
     }
 
-    Component {
-        id: appComponent
-        ShellSurfaceItem {
-            property int processId: 0
-            anchors.fill: parent
-            onSurfaceDestroyed: destroy()
-        }
-    }
-
     IviApplication {
         onIviSurfaceCreated: {
+            var appComponent = Qt.createComponent("ApplicationItem.qml")
             var appItem = appComponent.createObject(appContainer, {
                                                         "shellSurface": iviSurface,
                                                         "processId": iviSurface.iviId
