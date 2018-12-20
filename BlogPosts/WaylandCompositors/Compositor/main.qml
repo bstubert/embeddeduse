@@ -44,7 +44,7 @@ WaylandCompositor {
                                     return
                                 }
                                 if (running) {
-                                    appContainer.children = appItemForProcess(processId)
+                                    appContainer.children = applicationItem
                                 }
                                 else {
                                     running = true
@@ -69,19 +69,8 @@ WaylandCompositor {
                                                         "processId": iviSurface.iviId
                                                     })
             appContainer.children = appItem
-            appItemColl.push(appItem)
+            appMgr.insertApplicationItem(iviSurface.iviId, appItem)
             iviSurface.sendConfigure(Qt.size(appContainer.width, appContainer.height))
         }
-    }
-
-    property var appItemColl: []
-    function appItemForProcess(pid) {
-        var ix = 0
-        for (; ix < appItemColl.length; ix++) {
-            if (appItemColl[ix].processId === pid) {
-                return appItemColl[ix]
-            }
-        }
-        return null
     }
 }

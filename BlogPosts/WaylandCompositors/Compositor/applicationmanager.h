@@ -9,6 +9,7 @@
 #include <QVariant>
 #include <QVector>
 class QProcess;
+class QQuickItem;
 
 class ApplicationManager : public QAbstractListModel
 {
@@ -19,7 +20,8 @@ public:
         ROLE_COLOR = Qt::UserRole,
         ROLE_RUNNING,
         ROLE_PROCESS_ID,
-        ROLE_HOME
+        ROLE_HOME,
+        ROLE_APPLICATION_ITEM
     };
     explicit ApplicationManager(QObject *parent = nullptr);
     QHash<int, QByteArray> roleNames() const override;
@@ -29,12 +31,16 @@ public:
 
 public slots:
     bool startApplication(int row);
+    // The ownership of item stays with the QML engine.
+    void insertApplicationItem(int processId, QQuickItem *item);
 
 private:
     struct AppInfo {
         QString m_color;
         QProcess *m_process;
+        QQuickItem *m_item;
     };
+    int indexOfProcess(int processId) const;
     QVector<AppInfo> m_appInfoColl;
 };
 

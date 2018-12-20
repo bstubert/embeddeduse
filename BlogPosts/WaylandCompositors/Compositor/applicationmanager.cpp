@@ -1,4 +1,5 @@
 #include <QProcess>
+#include <QQuickItem>
 #include <QtDebug>
 
 #include "applicationmanager.h"
@@ -10,11 +11,11 @@ const QString c_home{"black"};
 ApplicationManager::ApplicationManager(QObject *parent)
     : QAbstractListModel{parent}
     , m_appInfoColl{
-          {QString{"orange"}, nullptr},
-          {QString{"lightgreen"}, nullptr},
-          {c_home, nullptr},
-          {QString{"cyan"}, nullptr},
-          {QString{"magenta"}, nullptr}
+          {QString{"orange"}, nullptr, nullptr},
+          {QString{"lightgreen"}, nullptr, nullptr},
+          {c_home, nullptr, nullptr},
+          {QString{"cyan"}, nullptr, nullptr},
+          {QString{"magenta"}, nullptr, nullptr}
       }
 {
 }
@@ -26,6 +27,7 @@ QHash<int, QByteArray> ApplicationManager::roleNames() const
         { ROLE_RUNNING, "running" },
         { ROLE_PROCESS_ID, "processId" },
         { ROLE_HOME, "home" },
+        { ROLE_APPLICATION_ITEM, "applicationItem" },
     };
     return roleColl;
 }
@@ -52,6 +54,11 @@ QVariant ApplicationManager::data(const QModelIndex &index, int role) const
         return appInfo.m_process != nullptr ? appInfo.m_process->processId() : -1;
     case ROLE_HOME:
         return appInfo.m_color == c_home;
+    case ROLE_APPLICATION_ITEM: {
+        QVariant v;
+        v.setValue(static_cast<QObject *>(appInfo.m_item));
+        return v;
+    }
     default:
         return {};
     }
@@ -88,3 +95,21 @@ bool ApplicationManager::startApplication(int row)
     return true;
 }
 
+void ApplicationManager::insertApplicationItem(int processId, QQuickItem *item)
+{
+    auto index = indexOfProcess(processId);
+    if (index != -1) {
+        m_appInfoColl[index].m_item = item;
+    }
+}
+
+int ApplicationManager::indexOfProcess(int processId) const
+{
+    for (int i = 0; i < m_appInfoColl.size(); ++i) {
+        if (m_appInfoColl[i].m_process != nullptr &&
+                m_appInfoColl[i].m_process->processId() == processId) {
+            return i;
+        }
+    }
+    return -1;
+}
