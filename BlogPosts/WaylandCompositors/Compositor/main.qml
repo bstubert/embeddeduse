@@ -64,10 +64,11 @@ WaylandCompositor {
     IviApplication {
         onIviSurfaceCreated: {
             var appComponent = Qt.createComponent("ApplicationItem.qml")
-            var appItem = appComponent.createObject(appContainer, {
+            var appItem = appComponent.createObject(null, {
                                                         "shellSurface": iviSurface,
                                                         "processId": iviSurface.iviId
                                                     })
+            appContainer.children = appItem
             appItemColl.push(appItem)
             iviSurface.sendConfigure(Qt.size(appContainer.width, appContainer.height))
         }
