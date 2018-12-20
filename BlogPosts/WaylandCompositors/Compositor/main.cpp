@@ -1,5 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
 #include <QUrl>
 
 #include "applicationmanager.h"
@@ -8,7 +9,8 @@ int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
-    qmlRegisterType<ApplicationManager>("EmbeddedUse.Models", 1, 0, "ApplicationManager");
+    ApplicationManager appMgr;
+    engine.rootContext()->setContextProperty("gAppMgr", &appMgr);
     engine.load(QUrl(QStringLiteral("qrc:///main.qml")));
     if (engine.rootObjects().isEmpty()) {
         return -1;

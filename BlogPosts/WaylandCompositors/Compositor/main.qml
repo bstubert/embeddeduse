@@ -4,8 +4,6 @@ import QtQuick.Layouts 1.3
 import QtQuick.Window 2.3
 import QtWayland.Compositor 1.3
 
-import EmbeddedUse.Models 1.0
-
 WaylandCompositor {
     WaylandOutput {
         sizeFollowsWindow: true
@@ -30,7 +28,7 @@ WaylandCompositor {
                     spacing: 16
 
                     Repeater {
-                        model: appMgr
+                        model: gAppMgr
 
                         RoundButton {
                             anchors.verticalCenter: parent.verticalCenter
@@ -54,10 +52,6 @@ WaylandCompositor {
                     }
                 }
             }
-
-            ApplicationManager {
-                id: appMgr
-            }
         }
     }
 
@@ -69,7 +63,7 @@ WaylandCompositor {
                                                         "processId": iviSurface.iviId
                                                     })
             appContainer.children = appItem
-            appMgr.insertApplicationItem(iviSurface.iviId, appItem)
+            gAppMgr.insertApplicationItem(iviSurface.iviId, appItem)
             iviSurface.sendConfigure(Qt.size(appContainer.width, appContainer.height))
         }
     }
