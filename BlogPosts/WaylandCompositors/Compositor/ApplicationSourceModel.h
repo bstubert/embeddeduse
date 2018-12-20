@@ -18,9 +18,9 @@ class ApplicationSourceModel : public QAbstractListModel
 public:
     enum Role {
         ROLE_COLOR = Qt::UserRole,
-        ROLE_RUNNING,
+        ROLE_IS_RUNNING,
         ROLE_PROCESS_ID,
-        ROLE_HOME,
+        ROLE_IS_HOME,
         ROLE_APPLICATION_ITEM
     };
     explicit ApplicationSourceModel(QObject *parent = nullptr);

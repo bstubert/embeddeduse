@@ -32,20 +32,20 @@ WaylandCompositor {
 
                         RoundButton {
                             anchors.verticalCenter: parent.verticalCenter
-                            height: home ? 75 : 60
+                            height: isHome ? 75 : 60
                             width: height
                             radius: height / 2
                             palette.button: model.color
                             onClicked: {
-                                if (home) {
+                                if (isHome) {
                                     console.log("@@@ Clicked home button")
                                     return
                                 }
-                                if (running) {
+                                if (isRunning) {
                                     appContainer.children = applicationItem
                                 }
                                 else {
-                                    running = true
+                                    isRunning = true
                                 }
                             }
                         }

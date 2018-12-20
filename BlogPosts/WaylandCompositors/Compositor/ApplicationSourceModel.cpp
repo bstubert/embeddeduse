@@ -25,9 +25,9 @@ QHash<int, QByteArray> ApplicationSourceModel::roleNames() const
 {
     static const QHash<int, QByteArray> roleColl{
         { ROLE_COLOR, "color" },
-        { ROLE_RUNNING, "running" },
+        { ROLE_IS_RUNNING, "isRunning" },
         { ROLE_PROCESS_ID, "processId" },
-        { ROLE_HOME, "home" },
+        { ROLE_IS_HOME, "isHome" },
         { ROLE_APPLICATION_ITEM, "applicationItem" },
     };
     return roleColl;
@@ -49,11 +49,11 @@ QVariant ApplicationSourceModel::data(const QModelIndex &index, int role) const
     switch (role) {
     case ROLE_COLOR:
         return appInfo.m_color;
-    case ROLE_RUNNING:
+    case ROLE_IS_RUNNING:
         return appInfo.m_process != nullptr && appInfo.m_process->state() == QProcess::Running;
     case ROLE_PROCESS_ID:
         return appInfo.m_process != nullptr ? appInfo.m_process->processId() : -1;
-    case ROLE_HOME:
+    case ROLE_IS_HOME:
         return appInfo.m_color == c_home;
     case ROLE_APPLICATION_ITEM: {
         QVariant v;
@@ -68,7 +68,7 @@ QVariant ApplicationSourceModel::data(const QModelIndex &index, int role) const
 bool ApplicationSourceModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     switch (role) {
-    case ROLE_RUNNING:
+    case ROLE_IS_RUNNING:
         if (value.toBool()) {
             return startApplication(index.row());
         }
