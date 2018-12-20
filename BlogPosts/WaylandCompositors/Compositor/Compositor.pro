@@ -2,7 +2,8 @@ QT += gui qml quick
 
 SOURCES += \
     main.cpp \
-    applicationmanager.cpp
+    ApplicationManager.cpp \
+    ApplicationSourceModel.cpp
 
 OTHER_FILES = \
     main.qml \
@@ -11,6 +12,7 @@ OTHER_FILES = \
 RESOURCES += qml.qrc
 
 HEADERS += \
-    applicationmanager.h
+    ApplicationManager.h \
+    ApplicationSourceModel.h
 
 

@@ -1,17 +1,17 @@
-#ifndef APPLICATIONMANAGER_H
-#define APPLICATIONMANAGER_H
+#ifndef APPLICATIONSOURCEMODEL_H
+#define APPLICATIONSOURCEMODEL_H
 
 #include <QAbstractListModel>
 #include <QByteArray>
 #include <QHash>
 #include <QModelIndex>
 #include <QString>
-#include <QVariant>
 #include <QVector>
 class QProcess;
 class QQuickItem;
+class QVariant;
 
-class ApplicationManager : public QAbstractListModel
+class ApplicationSourceModel : public QAbstractListModel
 {
     Q_OBJECT
 
@@ -23,7 +23,7 @@ public:
         ROLE_HOME,
         ROLE_APPLICATION_ITEM
     };
-    explicit ApplicationManager(QObject *parent = nullptr);
+    explicit ApplicationSourceModel(QObject *parent = nullptr);
     QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent = QModelIndex{}) const override;
     QVariant data(const QModelIndex &index, int role) const override;
@@ -44,4 +44,4 @@ private:
     QVector<AppInfo> m_appInfoColl;
 };
 
-#endif // APPLICATIONMANAGER_H
+#endif // APPLICATIONSOURCEMODEL_H

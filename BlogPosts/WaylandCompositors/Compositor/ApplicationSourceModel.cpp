@@ -1,14 +1,15 @@
 #include <QProcess>
 #include <QQuickItem>
 #include <QtDebug>
+#include <QVariant>
 
-#include "applicationmanager.h"
+#include "ApplicationSourceModel.h"
 
 namespace {
 const QString c_home{"black"};
 }
 
-ApplicationManager::ApplicationManager(QObject *parent)
+ApplicationSourceModel::ApplicationSourceModel(QObject *parent)
     : QAbstractListModel{parent}
     , m_appInfoColl{
           {QString{"orange"}, nullptr, nullptr},
@@ -20,7 +21,7 @@ ApplicationManager::ApplicationManager(QObject *parent)
 {
 }
 
-QHash<int, QByteArray> ApplicationManager::roleNames() const
+QHash<int, QByteArray> ApplicationSourceModel::roleNames() const
 {
     static const QHash<int, QByteArray> roleColl{
         { ROLE_COLOR, "color" },
@@ -32,13 +33,13 @@ QHash<int, QByteArray> ApplicationManager::roleNames() const
     return roleColl;
 }
 
-int ApplicationManager::rowCount(const QModelIndex &parent) const
+int ApplicationSourceModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
     return m_appInfoColl.size();
 }
 
-QVariant ApplicationManager::data(const QModelIndex &index, int role) const
+QVariant ApplicationSourceModel::data(const QModelIndex &index, int role) const
 {
     auto row = index.row();
     if (row < 0 || row >= rowCount()) {
@@ -64,7 +65,7 @@ QVariant ApplicationManager::data(const QModelIndex &index, int role) const
     }
 }
 
-bool ApplicationManager::setData(const QModelIndex &index, const QVariant &value, int role)
+bool ApplicationSourceModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     switch (role) {
     case ROLE_RUNNING:
@@ -78,7 +79,7 @@ bool ApplicationManager::setData(const QModelIndex &index, const QVariant &value
     }
 }
 
-bool ApplicationManager::startApplication(int row)
+bool ApplicationSourceModel::startApplication(int row)
 {
     if (row < 0 || row >= rowCount()) {
         return false;
@@ -95,7 +96,7 @@ bool ApplicationManager::startApplication(int row)
     return true;
 }
 
-void ApplicationManager::insertApplicationItem(int processId, QQuickItem *item)
+void ApplicationSourceModel::insertApplicationItem(int processId, QQuickItem *item)
 {
     auto index = indexOfProcess(processId);
     if (index != -1) {
@@ -103,7 +104,7 @@ void ApplicationManager::insertApplicationItem(int processId, QQuickItem *item)
     }
 }
 
-int ApplicationManager::indexOfProcess(int processId) const
+int ApplicationSourceModel::indexOfProcess(int processId) const
 {
     for (int i = 0; i < m_appInfoColl.size(); ++i) {
         if (m_appInfoColl[i].m_process != nullptr &&

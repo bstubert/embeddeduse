@@ -28,7 +28,7 @@ WaylandCompositor {
                     spacing: 16
 
                     Repeater {
-                        model: gAppMgr
+                        model: gAppMgr.allApps
 
                         RoundButton {
                             anchors.verticalCenter: parent.verticalCenter
