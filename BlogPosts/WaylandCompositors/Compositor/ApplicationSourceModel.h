@@ -21,7 +21,8 @@ public:
         ROLE_IS_RUNNING,
         ROLE_PROCESS_ID,
         ROLE_IS_HOME,
-        ROLE_APPLICATION_ITEM
+        ROLE_APPLICATION_ITEM,
+        ROLE_IS_TOP
     };
     explicit ApplicationSourceModel(QObject *parent = nullptr);
     QHash<int, QByteArray> roleNames() const override;
@@ -37,6 +38,7 @@ public slots:
 private:
     struct AppInfo {
         QString m_color;
+        bool m_isTop;
         QProcess *m_process;
         QQuickItem *m_item;
     };

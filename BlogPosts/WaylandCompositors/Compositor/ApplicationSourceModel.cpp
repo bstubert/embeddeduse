@@ -12,11 +12,13 @@ const QString c_home{"black"};
 ApplicationSourceModel::ApplicationSourceModel(QObject *parent)
     : QAbstractListModel{parent}
     , m_appInfoColl{
-          {QString{"orange"}, nullptr, nullptr},
-          {QString{"lightgreen"}, nullptr, nullptr},
-          {c_home, nullptr, nullptr},
-          {QString{"cyan"}, nullptr, nullptr},
-          {QString{"magenta"}, nullptr, nullptr}
+          {QString{"orange"}, true, nullptr, nullptr},
+          {QString{"lightgreen"}, true, nullptr, nullptr},
+          {c_home, true, nullptr, nullptr},
+          {QString{"cyan"}, true, nullptr, nullptr},
+          {QString{"magenta"}, true, nullptr, nullptr},
+          {QString{"yellow"}, false, nullptr, nullptr},
+          {QString{"pink"}, false, nullptr, nullptr}
       }
 {
 }
@@ -29,6 +31,7 @@ QHash<int, QByteArray> ApplicationSourceModel::roleNames() const
         { ROLE_PROCESS_ID, "processId" },
         { ROLE_IS_HOME, "isHome" },
         { ROLE_APPLICATION_ITEM, "applicationItem" },
+        { ROLE_IS_TOP, "isTop" },
     };
     return roleColl;
 }
@@ -60,6 +63,8 @@ QVariant ApplicationSourceModel::data(const QModelIndex &index, int role) const
         v.setValue(static_cast<QObject *>(appInfo.m_item));
         return v;
     }
+    case ROLE_IS_TOP:
+        return appInfo.m_isTop;
     default:
         return {};
     }
