@@ -8,6 +8,6 @@ TopApplicationModel::TopApplicationModel(QObject *parent)
 bool TopApplicationModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     auto sourceIndex = sourceModel()->index(sourceRow, 0, sourceParent);
-    auto isRunning = sourceModel()->data(sourceIndex, filterRole()).toBool();
-    return isRunning;
+    auto isTop = sourceModel()->data(sourceIndex, filterRole()).toBool();
+    return isTop;
 }

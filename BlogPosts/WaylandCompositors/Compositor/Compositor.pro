@@ -4,7 +4,8 @@ SOURCES += \
     main.cpp \
     ApplicationManager.cpp \
     ApplicationSourceModel.cpp \
-    TopApplicationModel.cpp
+    TopApplicationModel.cpp \
+    RunningApplicationModel.cpp
 
 OTHER_FILES = \
     main.qml \
@@ -15,6 +16,7 @@ RESOURCES += qml.qrc
 HEADERS += \
     ApplicationManager.h \
     ApplicationSourceModel.h \
-    TopApplicationModel.h
+    TopApplicationModel.h \
+    RunningApplicationModel.h
 
 

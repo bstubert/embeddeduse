@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>ApplicationItem.qml</file>
+        <file>ApplicationSwitcher.qml</file>
     </qresource>
 </RCC>

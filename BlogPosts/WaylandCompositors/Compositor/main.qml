@@ -39,6 +39,11 @@ WaylandCompositor {
                             onClicked: {
                                 if (isHome) {
                                     console.log("@@@ Clicked home button")
+                                    var comp = Qt.createComponent("ApplicationSwitcher.qml")
+                                    var item = comp.createObject(null, {
+                                                                     "model": gAppMgr.runningApps
+                                                                 })
+                                    appContainer.children = item
                                     return
                                 }
                                 if (isRunning) {
@@ -57,13 +62,13 @@ WaylandCompositor {
 
     IviApplication {
         onIviSurfaceCreated: {
-            var appComponent = Qt.createComponent("ApplicationItem.qml")
-            var appItem = appComponent.createObject(null, {
-                                                        "shellSurface": iviSurface,
-                                                        "processId": iviSurface.iviId
-                                                    })
-            appContainer.children = appItem
-            gAppMgr.insertApplicationItem(iviSurface.iviId, appItem)
+            var comp = Qt.createComponent("ApplicationItem.qml")
+            var item = comp.createObject(null, {
+                                             "shellSurface": iviSurface,
+                                             "processId": iviSurface.iviId
+                                         })
+            appContainer.children = item
+            gAppMgr.insertApplicationItem(iviSurface.iviId, item)
             iviSurface.sendConfigure(Qt.size(appContainer.width, appContainer.height))
         }
     }
