@@ -38,7 +38,17 @@ WaylandCompositor {
                             width: height
                             radius: height / 2
                             palette.button: model.color
-                            onClicked: {
+                            onReleased: {
+                                if (!isHome) {
+                                    if (isRunning) {
+                                        appContainer.children = applicationItem
+                                    }
+                                    else {
+                                        isRunning = true
+                                    }
+                                }
+                            }
+                            onPressAndHold: {
                                 if (isHome) {
                                     if (toolBar.appSwitcher !== null) {
                                         toolBar.appSwitcher.destroy()
@@ -48,13 +58,6 @@ WaylandCompositor {
                                                                                 "model": gAppMgr.runningApps
                                                                             })
                                     appContainer.children = toolBar.appSwitcher
-                                    return
-                                }
-                                if (isRunning) {
-                                    appContainer.children = applicationItem
-                                }
-                                else {
-                                    isRunning = true
                                 }
                             }
                         }
