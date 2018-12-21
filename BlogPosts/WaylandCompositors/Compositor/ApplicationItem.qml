@@ -1,4 +1,5 @@
 import QtQuick 2.12
+import QtQuick.Controls 2.5
 import QtWayland.Compositor 1.3
 
 ShellSurfaceItem {
@@ -7,5 +8,12 @@ ShellSurfaceItem {
     onSurfaceDestroyed: {
         console.log("@@@ Destroying surface of process ", processId)
         destroy()
+    }
+
+    Label {
+        anchors.centerIn: parent
+        text: processId
+        font.pixelSize: 64
+        color: "white"
     }
 }

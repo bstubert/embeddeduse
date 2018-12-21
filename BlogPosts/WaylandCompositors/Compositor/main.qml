@@ -20,6 +20,8 @@ WaylandCompositor {
             }
 
             footer: ToolBar {
+                id: toolBar
+                property Item appSwitcher: null
                 height: 80
 
                 Row {
@@ -38,12 +40,14 @@ WaylandCompositor {
                             palette.button: model.color
                             onClicked: {
                                 if (isHome) {
-                                    console.log("@@@ Clicked home button")
+                                    if (toolBar.appSwitcher !== null) {
+                                        toolBar.appSwitcher.destroy()
+                                    }
                                     var comp = Qt.createComponent("ApplicationSwitcher.qml")
-                                    var item = comp.createObject(null, {
-                                                                     "model": gAppMgr.runningApps
-                                                                 })
-                                    appContainer.children = item
+                                    toolBar.appSwitcher = comp.createObject(appContainer, {
+                                                                                "model": gAppMgr.runningApps
+                                                                            })
+                                    appContainer.children = toolBar.appSwitcher
                                     return
                                 }
                                 if (isRunning) {
@@ -63,7 +67,7 @@ WaylandCompositor {
     IviApplication {
         onIviSurfaceCreated: {
             var comp = Qt.createComponent("ApplicationItem.qml")
-            var item = comp.createObject(null, {
+            var item = comp.createObject(appContainer, {
                                              "shellSurface": iviSurface,
                                              "processId": iviSurface.iviId
                                          })

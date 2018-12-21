@@ -20,11 +20,10 @@ Rectangle {
         preferredHighlightBegin: 0.5 * (width - itemWidth)
         preferredHighlightEnd: preferredHighlightBegin + itemWidth
         snapMode: ListView.SnapToItem
-        delegate: Rectangle {
+        delegate: Item {
             id: droot
             height: droot.ListView.view.itemHeight
             width: droot.ListView.view.itemWidth
-            color: index % 2 == 0 ? "pink" : "purple"
             children: applicationItem
         }
     }

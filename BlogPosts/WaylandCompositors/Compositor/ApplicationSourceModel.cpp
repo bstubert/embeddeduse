@@ -75,7 +75,9 @@ bool ApplicationSourceModel::setData(const QModelIndex &index, const QVariant &v
     switch (role) {
     case ROLE_IS_RUNNING:
         if (value.toBool()) {
-            return startApplication(index.row());
+            auto isRunning = startApplication(index.row());
+            emit dataChanged(index, index);
+            return isRunning;
         }
         // TODO: Stop application
         return false;
@@ -103,9 +105,10 @@ bool ApplicationSourceModel::startApplication(int row)
 
 void ApplicationSourceModel::insertApplicationItem(int processId, QQuickItem *item)
 {
-    auto index = indexOfProcess(processId);
-    if (index != -1) {
-        m_appInfoColl[index].m_item = item;
+    auto row = indexOfProcess(processId);
+    if (row != -1) {
+        m_appInfoColl[row].m_item = item;
+        emit dataChanged(index(row), index(row));
     }
 }
 
