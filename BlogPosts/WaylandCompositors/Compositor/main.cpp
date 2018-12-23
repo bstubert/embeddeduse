@@ -3,7 +3,7 @@
 #include <QQmlContext>
 #include <QUrl>
 
-#include "applicationmanager.h"
+#include "ApplicationManager.h"
 
 int main(int argc, char *argv[])
 {

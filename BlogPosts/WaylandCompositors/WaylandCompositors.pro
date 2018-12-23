@@ -2,6 +2,6 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     ClientApp \
-    HomeApp \
+    ToolBarApp \
     Compositor
 

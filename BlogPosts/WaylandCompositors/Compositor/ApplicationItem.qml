@@ -9,11 +9,4 @@ ShellSurfaceItem {
         console.log("@@@ Destroying surface of process ", processId)
         destroy()
     }
-
-    Label {
-        anchors.centerIn: parent
-        text: processId
-        font.pixelSize: 64
-        color: "white"
-    }
 }
