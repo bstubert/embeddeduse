@@ -2,6 +2,8 @@ import QtQuick 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Window 2.3
 
+import EmbeddedUse.Application 1.0
+
 Window {
     visible: true
     width: 1280
@@ -22,27 +24,27 @@ Window {
                     ListElement {
                         color: "orange"
                         isHome: false
-                        appId: 2
+                        appId: ApplicationId.ORANGE_APP
                     }
                     ListElement {
                         color: "lightgreen"
                         isHome: false
-                        appId: 3
+                        appId: ApplicationId.LIGHTGREEN_APP
                     }
                     ListElement {
                         color: "black"
                         isHome: true
-                        appId: 4
+                        appId: ApplicationId.BLACK_APP
                     }
                     ListElement {
                         color: "cyan"
                         isHome: false
-                        appId: 5
+                        appId: ApplicationId.CYAN_APP
                     }
                     ListElement {
                         color: "magenta"
                         isHome: false
-                        appId: 6
+                        appId: ApplicationId.MAGENTA_APP
                     }
                 }
 

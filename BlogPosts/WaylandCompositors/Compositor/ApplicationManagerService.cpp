@@ -2,6 +2,7 @@
 #include <QProcess>
 #include <QProcessEnvironment>
 #include <QtDebug>
+#include "Application.h"
 #include "ApplicationManagerService.h"
 
 ApplicationManagerService::ApplicationManagerService(QObject *parent)
@@ -9,13 +10,14 @@ ApplicationManagerService::ApplicationManagerService(QObject *parent)
     , m_sourceNode{QUrl{QStringLiteral("local:applicationService")}}
 {
     m_sourceNode.enableRemoting(this);
-    QMetaObject::invokeMethod(this, [this]() { openApplication(1); },  Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, [this]() { openApplication(ApplicationId::TOOLBAR_APP); },
+                              Qt::QueuedConnection);
 }
 
 void ApplicationManagerService::openApplication(int appId)
 {
     qDebug() << "### openApplication: " << appId;
-    if (appId != 1) {
+    if (appId != ApplicationId::TOOLBAR_APP) {
         return;
     }
     auto env = QProcessEnvironment::systemEnvironment();
