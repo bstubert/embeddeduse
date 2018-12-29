@@ -13,6 +13,9 @@ ApplicationManager::ApplicationManager(QObject *parent)
 void ApplicationManager::openApplication(int appId)
 {
     qDebug() << "### openApplication: " << appId;
+    if (appId != 1) {
+        return;
+    }
     auto env = QProcessEnvironment::systemEnvironment();
     env.insert("QT_IVI_SURFACE_ID", QString::number(appId));
     m_toolBarProcess.setProcessEnvironment(env);

@@ -22,22 +22,27 @@ Window {
                     ListElement {
                         color: "orange"
                         isHome: false
+                        appId: 2
                     }
                     ListElement {
                         color: "lightgreen"
                         isHome: false
+                        appId: 3
                     }
                     ListElement {
                         color: "black"
                         isHome: true
+                        appId: 4
                     }
                     ListElement {
                         color: "cyan"
                         isHome: false
+                        appId: 5
                     }
                     ListElement {
                         color: "magenta"
                         isHome: false
+                        appId: 6
                     }
                 }
 
@@ -47,6 +52,7 @@ Window {
                     width: height
                     radius: height / 2
                     palette.button: model.color
+                    onReleased: gAppMgr.openApplication(appId)
 //                    onReleased: {
 //                        if (isHome) {
 //                            return
