@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QProcess>
+#include <QRemoteObjectHost>
 
 #include "rep_ApplicationService_source.h"
 
@@ -17,6 +18,7 @@ public slots:
     void openApplication(int appId) override;
 
 private:
+    QRemoteObjectHost m_sourceNode;
     QProcess m_toolBarProcess;
 };
 

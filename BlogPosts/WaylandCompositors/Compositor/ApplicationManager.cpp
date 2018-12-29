@@ -6,7 +6,9 @@
 
 ApplicationManager::ApplicationManager(QObject *parent)
     : ApplicationServiceSimpleSource{parent}
+    , m_sourceNode{QUrl{QStringLiteral("local:applicationService")}}
 {
+    m_sourceNode.enableRemoting(this);
     QMetaObject::invokeMethod(this, [this]() { openApplication(1); },  Qt::QueuedConnection);
 }
 
