@@ -5,9 +5,9 @@
 #include <QProcess>
 #include <QRemoteObjectHost>
 
-#include "rep_ApplicationService_source.h"
+#include "rep_ApplicationManagerService_source.h"
 
-class ApplicationManagerService : public ApplicationServiceSimpleSource
+class ApplicationManagerService : public ApplicationManagerSimpleSource
 {
     Q_OBJECT
 

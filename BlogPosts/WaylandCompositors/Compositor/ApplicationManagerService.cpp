@@ -5,7 +5,7 @@
 #include "ApplicationManagerService.h"
 
 ApplicationManagerService::ApplicationManagerService(QObject *parent)
-    : ApplicationServiceSimpleSource{parent}
+    : ApplicationManagerSimpleSource{parent}
     , m_sourceNode{QUrl{QStringLiteral("local:applicationService")}}
 {
     m_sourceNode.enableRemoting(this);

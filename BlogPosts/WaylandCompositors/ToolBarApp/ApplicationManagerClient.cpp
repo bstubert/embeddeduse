@@ -5,7 +5,7 @@ ApplicationManagerClient::ApplicationManagerClient(QObject *parent)
     : QObject{parent}
 {
     m_replicaNode.connectToNode(QUrl{QStringLiteral("local:applicationService")});
-    m_applicationManagerService.reset(m_replicaNode.acquire<ApplicationServiceReplica>());
+    m_applicationManagerService.reset(m_replicaNode.acquire<ApplicationManagerReplica>());
 
 }
 

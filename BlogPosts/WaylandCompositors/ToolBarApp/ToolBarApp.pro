@@ -6,7 +6,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp \
     ApplicationManagerClient.cpp
 
-REPC_REPLICA = ../Common/ApplicationService.rep
+REPC_REPLICA = ../Common/ApplicationManagerService.rep
 
 RESOURCES += qml.qrc
 
