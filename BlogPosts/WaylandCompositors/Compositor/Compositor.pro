@@ -9,7 +9,7 @@ HEADERS += \
     ApplicationSourceModel.h \
     ApplicationManagerService.h
 
-REPC_SOURCE = ../Common/ApplicationManagerService.rep
+REPC_SOURCE = ../Common/ApplicationManager.rep
 
 OTHER_FILES = \
     main.qml \

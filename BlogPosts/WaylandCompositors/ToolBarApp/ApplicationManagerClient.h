@@ -5,7 +5,7 @@
 #include <QRemoteObjectNode>
 #include <QSharedPointer>
 
-#include "rep_ApplicationManagerService_replica.h"
+#include "rep_ApplicationManager_replica.h"
 
 class ApplicationManagerClient : public QObject
 {
