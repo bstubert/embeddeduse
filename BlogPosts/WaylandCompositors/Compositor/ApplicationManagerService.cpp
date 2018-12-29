@@ -8,6 +8,14 @@
 ApplicationManagerService::ApplicationManagerService(QObject *parent)
     : ApplicationManagerSimpleSource{parent}
     , m_sourceNode{QUrl{QStringLiteral("local:applicationService")}}
+    , m_appInfoColl{
+          {ApplicationId::TOOLBAR_APP, {"../ToolBarApp/ToolBarApp -platform wayland", nullptr}},
+          {ApplicationId::ORANGE_APP, {"../ClientApp/ClientApp -platform wayland orange", nullptr}},
+          {ApplicationId::LIGHTGREEN_APP, {"../ClientApp/ClientApp -platform wayland lightgreen", nullptr}},
+          {ApplicationId::BLACK_APP, {"../ClientApp/ClientApp -platform wayland black", nullptr}},
+          {ApplicationId::CYAN_APP, {"../ClientApp/ClientApp -platform wayland cyan", nullptr}},
+          {ApplicationId::MAGENTA_APP, {"../ClientApp/ClientApp -platform wayland magenta", nullptr}},
+      }
 {
     m_sourceNode.enableRemoting(this);
     QMetaObject::invokeMethod(this, [this]() { openApplication(ApplicationId::TOOLBAR_APP); },
@@ -16,12 +24,19 @@ ApplicationManagerService::ApplicationManagerService(QObject *parent)
 
 void ApplicationManagerService::openApplication(int appId)
 {
-    qDebug() << "### openApplication: " << appId;
-    if (appId != ApplicationId::TOOLBAR_APP) {
+    auto &appInfo = m_appInfoColl[appId];
+    if (appInfo.m_command.isEmpty()) {
         return;
     }
-    auto env = QProcessEnvironment::systemEnvironment();
-    env.insert("QT_IVI_SURFACE_ID", QString::number(appId));
-    m_toolBarProcess.setProcessEnvironment(env);
-    m_toolBarProcess.start("../ToolBarApp/ToolBarApp -platform wayland");
+    if (appInfo.m_process == nullptr) {
+        qDebug() << "@@@ ApplicationManagerService::openApplication/create: " << appId;
+        appInfo.m_process = new QProcess{this};
+        auto env = QProcessEnvironment::systemEnvironment();
+        env.insert("QT_IVI_SURFACE_ID", QString::number(appId));
+        appInfo.m_process->setProcessEnvironment(env);
+        appInfo.m_process->start(appInfo.m_command);
+    }
+    else {
+        qDebug() << "@@@ ApplicationManagerService::openApplication/raise: " << appId;
+    }
 }

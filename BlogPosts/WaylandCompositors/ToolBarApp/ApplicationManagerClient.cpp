@@ -15,6 +15,5 @@ ApplicationManagerClient::ApplicationManagerClient(QObject *parent)
 
 void ApplicationManagerClient::openApplication(int appId)
 {
-    qDebug() << "### ApplicationManagerClient::openApplication: " << appId;
     m_applicationManagerService->openApplication(appId);
 }
