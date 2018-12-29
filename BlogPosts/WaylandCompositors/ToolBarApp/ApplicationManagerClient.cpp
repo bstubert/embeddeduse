@@ -1,11 +1,12 @@
 #include <QtDebug>
 #include "ApplicationManagerClient.h"
 
-ApplicationManagerClient::ApplicationManagerClient(
-        QSharedPointer<ApplicationServiceReplica> replica, QObject *parent)
+ApplicationManagerClient::ApplicationManagerClient(QObject *parent)
     : QObject{parent}
-    , m_applicationManagerService{replica}
 {
+    m_replicaNode.connectToNode(QUrl{QStringLiteral("local:applicationService")});
+    m_applicationManagerService.reset(m_replicaNode.acquire<ApplicationServiceReplica>());
+
 }
 
 void ApplicationManagerClient::openApplication(int appId)

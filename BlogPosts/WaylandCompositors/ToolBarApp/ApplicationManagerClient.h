@@ -2,6 +2,7 @@
 #define APPLICATIONMANAGERCLIENT_H
 
 #include <QObject>
+#include <QRemoteObjectNode>
 #include <QSharedPointer>
 
 #include "rep_ApplicationService_replica.h"
@@ -10,13 +11,13 @@ class ApplicationManagerClient : public QObject
 {
     Q_OBJECT
 public:
-    explicit ApplicationManagerClient(QSharedPointer<ApplicationServiceReplica> replica,
-                                      QObject *parent = nullptr);
+    explicit ApplicationManagerClient(QObject *parent = nullptr);
 
 public slots:
     void openApplication(int appId);
 
 private:
+    QRemoteObjectNode m_replicaNode;
     QSharedPointer<ApplicationServiceReplica> m_applicationManagerService;
 };
 
