@@ -29,6 +29,7 @@ void ApplicationManagerService::openApplication(int appId)
 {
     auto &appInfo = m_appInfoColl[appId];
     if (appInfo.m_command.isEmpty()) {
+        qDebug() << "### No application found for ID " << appId;
         return;
     }
     if (appInfo.m_process == nullptr) {
