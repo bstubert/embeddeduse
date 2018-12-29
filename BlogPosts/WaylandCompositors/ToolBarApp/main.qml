@@ -62,6 +62,7 @@ Window {
         Text {
             anchors {
                 right: parent.right
+                rightMargin: 8
                 verticalCenter: parent.verticalCenter
             }
             text: "Upside Down?"
