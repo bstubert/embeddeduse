@@ -1,6 +1,7 @@
 #include <QMetaObject>
 #include <QProcess>
 #include <QProcessEnvironment>
+#include <QQmlEngine>
 #include <QtDebug>
 #include "Application.h"
 #include "ApplicationManagerService.h"
@@ -17,6 +18,8 @@ ApplicationManagerService::ApplicationManagerService(QObject *parent)
           {ApplicationId::MAGENTA_APP, {"../ClientApp/ClientApp -platform wayland magenta", nullptr}},
       }
 {
+    qmlRegisterUncreatableType<ApplicationId>("EmbeddedUse.Application", 1, 0, "ApplicationId",
+                                              "Creating ApplicationId in QML not allowed");
     m_sourceNode.enableRemoting(this);
     QMetaObject::invokeMethod(this, [this]() { openApplication(ApplicationId::TOOLBAR_APP); },
                               Qt::QueuedConnection);

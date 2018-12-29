@@ -3,6 +3,8 @@ import QtQuick.Controls 2.5
 import QtQuick.Window 2.3
 import QtWayland.Compositor 1.3
 
+import EmbeddedUse.Application 1.0
+
 WaylandCompositor {
     WaylandOutput {
         sizeFollowsWindow: true
@@ -40,7 +42,7 @@ WaylandCompositor {
     IviApplication {
         onIviSurfaceCreated: {
             console.log("@@@ Created surface for app ", iviSurface.iviId)
-            var area = iviSurface.iviId === 1 ? toolBarArea : mainArea
+            var area = iviSurface.iviId === ApplicationId.TOOLBAR_APP ? toolBarArea : mainArea
             var comp = Qt.createComponent("ApplicationItem.qml")
             var item = comp.createObject(area, {
                                              "shellSurface": iviSurface,
