@@ -48,7 +48,7 @@ WaylandCompositor {
                                              "shellSurface": iviSurface,
                                              "appId": iviSurface.iviId
                                          })
-            iviSurface.sendConfigure(Qt.size(toolBarArea.width, toolBarArea.height))
+            item.doResize()
         }
     }
 

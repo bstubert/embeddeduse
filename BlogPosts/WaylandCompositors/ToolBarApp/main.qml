@@ -55,32 +55,16 @@ Window {
                     radius: height / 2
                     palette.button: model.color
                     onReleased: gAppMgr.openApplication(appId)
-//                    onReleased: {
-//                        if (isHome) {
-//                            return
-//                        }
-//                        if (isRunning) {
-//                            appContainer.children = applicationItem
-//                        }
-//                        else {
-//                            isRunning = true
-//                        }
-//                    }
-//                    onPressAndHold: {
-//                        if (!isHome) {
-//                            return
-//                        }
-//                        if (toolBar.appSwitcher !== null) {
-//                            toolBar.appSwitcher.destroy()
-//                        }
-//                        var comp = Qt.createComponent("ApplicationSwitcher.qml")
-//                        toolBar.appSwitcher = comp.createObject(
-//                                    appContainer, {"model": gAppMgr.runningApps})
-//                        appContainer.children = toolBar.appSwitcher
-//                    }
-//                }
                 }
             }
+        }
+
+        Text {
+            anchors {
+                right: parent.right
+                verticalCenter: parent.verticalCenter
+            }
+            text: "Upside Down?"
         }
     }
 }
