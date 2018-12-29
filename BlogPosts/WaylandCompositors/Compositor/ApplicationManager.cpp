@@ -5,7 +5,7 @@
 #include "ApplicationManager.h"
 
 ApplicationManager::ApplicationManager(QObject *parent)
-    : QObject{parent}
+    : ApplicationServiceSimpleSource{parent}
 {
     QMetaObject::invokeMethod(this, [this]() { openApplication(1); },  Qt::QueuedConnection);
 }

@@ -1,0 +1,4 @@
+class ApplicationService
+{
+    SLOT(openApplication(int appId));
+};

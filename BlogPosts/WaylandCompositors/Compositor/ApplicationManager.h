@@ -4,7 +4,9 @@
 #include <QObject>
 #include <QProcess>
 
-class ApplicationManager : public QObject
+#include "rep_ApplicationService_source.h"
+
+class ApplicationManager : public ApplicationServiceSimpleSource
 {
     Q_OBJECT
 
@@ -12,7 +14,7 @@ public:
     explicit ApplicationManager(QObject *parent = nullptr);
 
 public slots:
-    void openApplication(int appId);
+    void openApplication(int appId) override;
 
 private:
     QProcess m_toolBarProcess;
