@@ -19,6 +19,9 @@ public:
 public slots:
     void openApplication(int appId) override;
 
+signals:
+    void raiseApplicationRequested(int appId);
+
 private:
     QRemoteObjectHost m_sourceNode;
 

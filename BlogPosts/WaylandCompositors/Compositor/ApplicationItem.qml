@@ -3,10 +3,10 @@ import QtQuick.Controls 2.5
 import QtWayland.Compositor 1.3
 
 ShellSurfaceItem {
-    property int processId: 0
+    property int appId: 0
     anchors.fill: parent
     onSurfaceDestroyed: {
-        console.log("@@@ Destroying surface of process ", processId)
+        console.log("@@@ Destroying surface of application ", appId)
         destroy()
     }
 }

@@ -41,5 +41,6 @@ void ApplicationManagerService::openApplication(int appId)
     }
     else {
         qDebug() << "@@@ ApplicationManagerService::openApplication/raise: " << appId;
+        emit raiseApplicationRequested(appId);
     }
 }

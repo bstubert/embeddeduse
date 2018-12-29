@@ -46,9 +46,22 @@ WaylandCompositor {
             var comp = Qt.createComponent("ApplicationItem.qml")
             var item = comp.createObject(area, {
                                              "shellSurface": iviSurface,
-                                             "processId": iviSurface.iviId
+                                             "appId": iviSurface.iviId
                                          })
             iviSurface.sendConfigure(Qt.size(toolBarArea.width, toolBarArea.height))
+        }
+    }
+
+    Connections {
+        target: gAppMgr
+        onRaiseApplicationRequested: {
+            for (var i = 0; i < mainArea.children.length; i++) {
+                if (mainArea.children[i].appId === appId) {
+                    console.log("@@@ Raising application ", appId)
+                    mainArea.children[i].raise()
+                    return
+                }
+            }
         }
     }
 }
