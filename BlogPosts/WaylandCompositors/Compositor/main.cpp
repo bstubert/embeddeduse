@@ -3,12 +3,12 @@
 #include <QQmlContext>
 #include <QUrl>
 
-#include "ApplicationManager.h"
+#include "ApplicationManagerService.h"
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
-    ApplicationManager appMgr;
+    ApplicationManagerService appMgr;
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("gAppMgr", &appMgr);
     engine.load(QUrl(QStringLiteral("qrc:///main.qml")));

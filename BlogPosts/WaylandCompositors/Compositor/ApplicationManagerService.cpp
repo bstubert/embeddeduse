@@ -2,9 +2,9 @@
 #include <QProcess>
 #include <QProcessEnvironment>
 #include <QtDebug>
-#include "ApplicationManager.h"
+#include "ApplicationManagerService.h"
 
-ApplicationManager::ApplicationManager(QObject *parent)
+ApplicationManagerService::ApplicationManagerService(QObject *parent)
     : ApplicationServiceSimpleSource{parent}
     , m_sourceNode{QUrl{QStringLiteral("local:applicationService")}}
 {
@@ -12,7 +12,7 @@ ApplicationManager::ApplicationManager(QObject *parent)
     QMetaObject::invokeMethod(this, [this]() { openApplication(1); },  Qt::QueuedConnection);
 }
 
-void ApplicationManager::openApplication(int appId)
+void ApplicationManagerService::openApplication(int appId)
 {
     qDebug() << "### openApplication: " << appId;
     if (appId != 1) {

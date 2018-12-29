@@ -2,12 +2,12 @@ QT += gui qml quick remoteobjects
 
 SOURCES += \
     main.cpp \
-    ApplicationManager.cpp \
-    ApplicationSourceModel.cpp
+    ApplicationSourceModel.cpp \
+    ApplicationManagerService.cpp
 
 HEADERS += \
-    ApplicationManager.h \
-    ApplicationSourceModel.h
+    ApplicationSourceModel.h \
+    ApplicationManagerService.h
 
 REPC_SOURCE = ../Common/ApplicationService.rep
 

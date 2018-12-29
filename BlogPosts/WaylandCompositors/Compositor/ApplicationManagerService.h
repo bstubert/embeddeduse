@@ -7,12 +7,12 @@
 
 #include "rep_ApplicationService_source.h"
 
-class ApplicationManager : public ApplicationServiceSimpleSource
+class ApplicationManagerService : public ApplicationServiceSimpleSource
 {
     Q_OBJECT
 
 public:
-    explicit ApplicationManager(QObject *parent = nullptr);
+    explicit ApplicationManagerService(QObject *parent = nullptr);
 
 public slots:
     void openApplication(int appId) override;
