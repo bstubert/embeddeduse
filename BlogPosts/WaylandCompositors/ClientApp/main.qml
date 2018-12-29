@@ -23,7 +23,7 @@ ApplicationWindow {
             height: 60
             text: "Darker"
             onReleased: {
-                console.log("@ Lighter button released")
+                console.log("@ Darker button released")
                 parent.color = Qt.darker(parent.color, 1.5)
             }
         }
