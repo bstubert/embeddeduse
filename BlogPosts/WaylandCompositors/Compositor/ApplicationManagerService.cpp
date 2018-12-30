@@ -37,6 +37,7 @@ void ApplicationManagerService::openApplication(int appId)
         appInfo.m_process = new QProcess{this};
         auto env = QProcessEnvironment::systemEnvironment();
         env.insert("QT_IVI_SURFACE_ID", QString::number(appId));
+        env.insert("QT_WAYLAND_SHELL_INTEGRATION", "ivi-shell");
         appInfo.m_process->setProcessEnvironment(env);
         appInfo.m_process->start(appInfo.m_command);
     }
