@@ -9,6 +9,8 @@
 ApplicationManagerService::ApplicationManagerService(QObject *parent)
     : ApplicationManagerSimpleSource{parent}
     , m_sourceNode{QUrl{QStringLiteral("local:applicationService")}}
+    // Platform "wayland-egl" must be specified for EGL backend. Apps don't work properly
+    // otherwise (upside-down, no mouse forwarding).
     , m_appInfoColl{
           {ApplicationId::TOOLBAR_APP, {"../ToolBarApp/ToolBarApp -platform wayland-egl", nullptr}},
           {ApplicationId::ORANGE_APP, {"../ClientApp/ClientApp -platform wayland-egl orange", nullptr}},
@@ -36,6 +38,9 @@ void ApplicationManagerService::openApplication(int appId)
         qDebug() << "@@@ ApplicationManagerService::openApplication/create: " << appId;
         appInfo.m_process = new QProcess{this};
         auto env = QProcessEnvironment::systemEnvironment();
+        // QT_WAYLAND_CLIENT_BUFFER_INTEGRATION and QT_XCB_GL_INTEGRATION must be removed,
+        // because they are only relevant for the compositor and confuse the other apps
+        // (upside-down, no mouse forwarding).
         env.remove("QT_WAYLAND_CLIENT_BUFFER_INTEGRATION");
         env.remove("QT_XCB_GL_INTEGRATION");
         env.insert("QT_IVI_SURFACE_ID", QString::number(appId));
