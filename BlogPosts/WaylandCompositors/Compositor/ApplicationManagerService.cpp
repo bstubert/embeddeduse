@@ -10,12 +10,12 @@ ApplicationManagerService::ApplicationManagerService(QObject *parent)
     : ApplicationManagerSimpleSource{parent}
     , m_sourceNode{QUrl{QStringLiteral("local:applicationService")}}
     , m_appInfoColl{
-          {ApplicationId::TOOLBAR_APP, {"../ToolBarApp/ToolBarApp -platform wayland", nullptr}},
-          {ApplicationId::ORANGE_APP, {"../ClientApp/ClientApp -platform wayland orange", nullptr}},
-          {ApplicationId::LIGHTGREEN_APP, {"../ClientApp/ClientApp -platform wayland lightgreen", nullptr}},
-          {ApplicationId::BLACK_APP, {"../ClientApp/ClientApp -platform wayland black", nullptr}},
-          {ApplicationId::CYAN_APP, {"../ClientApp/ClientApp -platform wayland cyan", nullptr}},
-          {ApplicationId::MAGENTA_APP, {"../ClientApp/ClientApp -platform wayland magenta", nullptr}},
+          {ApplicationId::TOOLBAR_APP, {"../ToolBarApp/ToolBarApp -platform wayland-egl", nullptr}},
+          {ApplicationId::ORANGE_APP, {"../ClientApp/ClientApp -platform wayland-egl orange", nullptr}},
+          {ApplicationId::LIGHTGREEN_APP, {"../ClientApp/ClientApp -platform wayland-egl lightgreen", nullptr}},
+          {ApplicationId::BLACK_APP, {"../ClientApp/ClientApp -platform wayland-egl black", nullptr}},
+          {ApplicationId::CYAN_APP, {"../ClientApp/ClientApp -platform wayland-egl cyan", nullptr}},
+          {ApplicationId::MAGENTA_APP, {"../ClientApp/ClientApp -platform wayland-egl magenta", nullptr}},
       }
 {
     qmlRegisterUncreatableType<ApplicationId>("EmbeddedUse.Application", 1, 0, "ApplicationId",
@@ -36,6 +36,8 @@ void ApplicationManagerService::openApplication(int appId)
         qDebug() << "@@@ ApplicationManagerService::openApplication/create: " << appId;
         appInfo.m_process = new QProcess{this};
         auto env = QProcessEnvironment::systemEnvironment();
+        env.remove("QT_WAYLAND_CLIENT_BUFFER_INTEGRATION");
+        env.remove("QT_XCB_GL_INTEGRATION");
         env.insert("QT_IVI_SURFACE_ID", QString::number(appId));
         env.insert("QT_WAYLAND_SHELL_INTEGRATION", "ivi-shell");
         appInfo.m_process->setProcessEnvironment(env);
