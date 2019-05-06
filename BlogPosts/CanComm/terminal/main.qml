@@ -22,9 +22,24 @@ ApplicationWindow {
 
         Button {
             id: txOverflow
+            anchors {
+                left: parent.left
+                top: parent.top
+            }
             text: "Tx buffer overflow"
             font.pixelSize: 24
             onReleased: gSimulator.simulateTxBufferOverflow()
+        }
+
+        Button {
+            id: clear
+            anchors {
+                right: parent.right
+                top: parent.top
+            }
+            text: "Clear"
+            font.pixelSize: 24
+            onReleased: output.clear()
         }
 
         ScrollView {
