@@ -14,6 +14,8 @@ find_package(Qt5Quick)
 add_executable(
   ${PROJECT_NAME}
   main.cpp
+  cansimulator.cpp
+  cansimulator.h
   main.qml
   qml.qrc
 )

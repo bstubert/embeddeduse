@@ -12,9 +12,46 @@ ApplicationWindow {
     height: 800
 
 
-    Rectangle {
+    Pane {
         id: mainItem
         anchors.fill: parent
-        color: "lightgreen"
+        padding: 16
+        background: Rectangle {
+            color: "#effbd8"
+        }
+
+        Button {
+            id: txOverflow
+            text: "Tx buffer overflow"
+            font.pixelSize: 24
+            onReleased: gSimulator.simulateTxBufferOverflow()
+        }
+
+        ScrollView {
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: txOverflow.bottom
+                topMargin: 32
+                bottom: parent.bottom
+            }
+            background: Rectangle {
+                color: "#e2f9b8"
+            }
+            clip: true
+            contentWidth: output.paintedWidth
+            contentHeight: output.paintedHeight
+
+            TextEdit {
+                id: output
+                readOnly: true
+                font.pixelSize: 16
+
+                Connections {
+                    target: gSimulator
+                    onLogMessage: output.append(msg)
+                }
+            }
+        }
    }
 }
