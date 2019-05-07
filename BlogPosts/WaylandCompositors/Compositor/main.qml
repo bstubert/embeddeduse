@@ -24,12 +24,6 @@ WaylandCompositor {
                     bottom: toolBarArea.top
                 }
                 color: "pink"
-                transform: Rotation {
-                    origin.x: 0
-                    origin.y: mainArea.height / 2
-                    axis { x: 1; y: 0; z: 0 }
-                    angle: 180
-                }
             }
 
             Rectangle {
@@ -41,12 +35,6 @@ WaylandCompositor {
                 }
                 height: 80
                 color: "purple"
-                transform: Rotation {
-                    origin.x: 0
-                    origin.y: toolBarArea.height / 2
-                    axis { x: 1; y: 0; z: 0 }
-                    angle: 180
-                }
             }
         }
     }
