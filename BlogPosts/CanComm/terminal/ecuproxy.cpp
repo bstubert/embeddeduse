@@ -37,6 +37,7 @@ void EcuProxy::readParameter(quint16 pid)
     qToLittleEndian(quint8(1), payload.data());
     qToLittleEndian(pid, payload.data() + 1);
     QCanBusFrame frame(0x18ef0201U, payload);
+    emit logMessage(QString("Sending: ") + frame.toString());
     m_canBusDevice->writeFrame(frame);
 
 //    auto value = QRandomGenerator::global()->generate();
@@ -45,5 +46,5 @@ void EcuProxy::readParameter(quint16 pid)
 
 void EcuProxy::onErrorOccurred(QCanBusDevice::CanBusError error)
 {
-    emit errorMessage(QString("ERROR: %1 (%2).").arg(m_canBusDevice->errorString()).arg(error));
+    emit logMessage(QString("ERROR: %1 (%2).").arg(m_canBusDevice->errorString()).arg(error));
 }

@@ -22,7 +22,7 @@ public slots:
     void readParameter(quint16 pid);
 
 signals:
-    void errorMessage(const QString &msg);
+    void logMessage(const QString &msg);
     void parameterRead(quint16 pid, quint32 value);
 
 private slots:
