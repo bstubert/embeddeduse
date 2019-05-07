@@ -1,7 +1,6 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
-#ifndef ECUPROXY_H
-#define ECUPROXY_H
+#pragma once
 
 #include <memory>
 #include <QByteArray>
@@ -31,5 +30,3 @@ private slots:
 private:
     std::unique_ptr<QCanBusDevice> m_canBusDevice;
 };
-
-#endif // ECUPROXY_H

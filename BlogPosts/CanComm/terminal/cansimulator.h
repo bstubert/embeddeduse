@@ -1,7 +1,6 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
-#ifndef CANSIMULATOR_H
-#define CANSIMULATOR_H
+#pragma once
 
 #include <QObject>
 #include <QString>
@@ -28,5 +27,3 @@ private slots:
 private:
     EcuProxy *m_ecuProxy{nullptr};
 };
-
-#endif // CANSIMULATOR_H

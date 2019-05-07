@@ -39,9 +39,6 @@ void EcuProxy::readParameter(quint16 pid)
     QCanBusFrame frame(0x18ef0201U, payload);
     emit logMessage(QString("Sending: ") + frame.toString());
     m_canBusDevice->writeFrame(frame);
-
-//    auto value = QRandomGenerator::global()->generate();
-//    emit parameterRead(pid, value);
 }
 
 void EcuProxy::onErrorOccurred(QCanBusDevice::CanBusError error)
