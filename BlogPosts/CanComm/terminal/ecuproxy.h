@@ -16,17 +16,18 @@ public:
                       QObject *parent = nullptr);
     virtual ~EcuProxy();
     bool isConnected() const;
+    bool isReadParameterFrame(const QCanBusFrame &frame) const;
 
 public slots:
-    void readParameter(quint16 pid);
+    void onErrorOccurred(QCanBusDevice::CanBusError error);
+    void onFramesReceived();
+    void sendReadParameter(quint16 pid);
 
 signals:
     void logMessage(const QString &msg);
-    void parameterRead(quint16 pid, quint32 value);
-
-private slots:
-    void onErrorOccurred(QCanBusDevice::CanBusError error);
 
 private:
+    void receiveReadParameter(const QCanBusFrame &frame);
+
     std::unique_ptr<QCanBusDevice> m_canBusDevice;
 };

@@ -19,7 +19,6 @@ signals:
 
 public slots:
     void simulateTxBufferOverflow();
-    void onParameterRead(quint16 pid, quint32 value);
 
 private slots:
     void initLater();

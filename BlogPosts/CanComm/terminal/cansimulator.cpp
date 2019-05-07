@@ -16,13 +16,8 @@ void CanSimulator::simulateTxBufferOverflow()
         return;
     }
     for (quint16 i = 1; i <= 50; ++i) {
-        m_ecuProxy->readParameter(i);
+        m_ecuProxy->sendReadParameter(i);
     }
-}
-
-void CanSimulator::onParameterRead(quint16 pid, quint32 value)
-{
-    emit logMessage(QString("%1 -> %2").arg(pid).arg(value));
 }
 
 void CanSimulator::initLater()
@@ -34,6 +29,4 @@ void CanSimulator::initLater()
     }
     connect(m_ecuProxy, &EcuProxy::logMessage,
             this, &CanSimulator::logMessage);
-    connect(m_ecuProxy, &EcuProxy::parameterRead,
-            this, &CanSimulator::onParameterRead);
 }
