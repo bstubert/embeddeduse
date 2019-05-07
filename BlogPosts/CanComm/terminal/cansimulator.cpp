@@ -15,7 +15,8 @@ void CanSimulator::simulateTxBufferOverflow()
     if (m_ecuProxy == nullptr) {
         return;
     }
-    for (quint16 i = 0; i < 50; ++i) {
+    for (quint16 i = 1; i <= 50; ++i) {
+        emit logMessage(QString("readParameter(%1)").arg(i));
         m_ecuProxy->readParameter(i);
     }
 }
@@ -32,6 +33,8 @@ void CanSimulator::initLater()
         emit logMessage(QStringLiteral("ERROR: Could not connect to CAN bus device."));
         return;
     }
+    connect(m_ecuProxy, &EcuProxy::errorMessage,
+            this, &CanSimulator::logMessage);
     connect(m_ecuProxy, &EcuProxy::parameterRead,
             this, &CanSimulator::onParameterRead);
 }

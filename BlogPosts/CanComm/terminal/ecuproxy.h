@@ -4,6 +4,7 @@
 #define ECUPROXY_H
 
 #include <memory>
+#include <QByteArray>
 #include <QCanBusDevice>
 #include <QObject>
 #include <QString>
@@ -21,7 +22,11 @@ public slots:
     void readParameter(quint16 pid);
 
 signals:
+    void errorMessage(const QString &msg);
     void parameterRead(quint16 pid, quint32 value);
+
+private slots:
+    void onErrorOccurred(QCanBusDevice::CanBusError error);
 
 private:
     std::unique_ptr<QCanBusDevice> m_canBusDevice;
