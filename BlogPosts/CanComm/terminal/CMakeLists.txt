@@ -16,6 +16,8 @@ add_executable(
   main.cpp
   cansimulator.cpp
   cansimulator.h
+  ecuproxy.cpp
+  ecuproxy.h
   main.qml
   qml.qrc
 )
