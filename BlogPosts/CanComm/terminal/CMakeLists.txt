@@ -10,6 +10,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt5Gui)
 find_package(Qt5Qml)
 find_package(Qt5Quick)
+find_package(Qt5SerialBus)
 
 add_executable(
   ${PROJECT_NAME}
@@ -22,4 +23,4 @@ add_executable(
   qml.qrc
 )
 
-target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Qml Qt5::Quick)
+target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Qml Qt5::Quick Qt5::SerialBus)

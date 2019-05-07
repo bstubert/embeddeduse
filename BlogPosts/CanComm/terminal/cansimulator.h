@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QString>
 #include "ecuproxy.h"
+class EcuProxy;
 
 class CanSimulator : public QObject
 {
@@ -19,11 +20,13 @@ signals:
 
 public slots:
     void simulateTxBufferOverflow();
-
     void onParameterRead(quint16 pid, quint32 value);
 
+private slots:
+    void initLater();
+
 private:
-    EcuProxy m_ecuProxy;
+    EcuProxy *m_ecuProxy{nullptr};
 };
 
 #endif // CANSIMULATOR_H
