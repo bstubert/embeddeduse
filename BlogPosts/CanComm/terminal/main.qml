@@ -21,14 +21,38 @@ ApplicationWindow {
         }
 
         Button {
-            id: txOverflow
+            id: tx100
             anchors {
                 left: parent.left
                 top: parent.top
             }
-            text: "Tx buffer overflow"
+            text: "Tx 100"
             font.pixelSize: 24
-            onReleased: gSimulator.simulateTxBufferOverflow()
+            onReleased: gSimulator.simulateTxBufferOverflow(100)
+        }
+
+        Button {
+            id: tx200
+            anchors {
+                left: tx100.right
+                leftMargin: 16
+                top: parent.top
+            }
+            text: "Tx 200"
+            font.pixelSize: 24
+            onReleased: gSimulator.simulateTxBufferOverflow(200)
+        }
+
+        Button {
+            id: tx500
+            anchors {
+                left: tx200.right
+                leftMargin: 16
+                top: parent.top
+            }
+            text: "Tx 500"
+            font.pixelSize: 24
+            onReleased: gSimulator.simulateTxBufferOverflow(500)
         }
 
         Button {
@@ -46,7 +70,7 @@ ApplicationWindow {
             anchors {
                 left: parent.left
                 right: parent.right
-                top: txOverflow.bottom
+                top: clear.bottom
                 topMargin: 32
                 bottom: parent.bottom
             }

@@ -10,12 +10,12 @@ CanSimulator::CanSimulator(QObject *parent)
     QMetaObject::invokeMethod(this, &CanSimulator::initLater, Qt::QueuedConnection);
 }
 
-void CanSimulator::simulateTxBufferOverflow()
+void CanSimulator::simulateTxBufferOverflow(int count)
 {
     if (m_ecuProxy == nullptr) {
         return;
     }
-    for (quint16 i = 1; i <= 50; ++i) {
+    for (quint16 i = 1; i <= count; ++i) {
         m_ecuProxy->sendReadParameter(i);
     }
 }

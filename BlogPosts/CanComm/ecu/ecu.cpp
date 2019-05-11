@@ -58,12 +58,15 @@ void Ecu::readParameter(quint16 pid)
 void Ecu::onErrorOccurred(QCanBusDevice::CanBusError error)
 {
     // TODO: Print m_canBusDevice->state(), too.
-    emit logMessage(QString("ERROR: %1 (%2).").arg(m_canBusDevice->errorString()).arg(error));
+    auto msg = QString("ERROR: %1 (%2).").arg(m_canBusDevice->errorString()).arg(error);
+    qWarning() << msg;
+    emit logMessage(msg);
 }
 
 void Ecu::onFramesReceived()
 {
     auto count = m_canBusDevice->framesAvailable();
+    emit logMessage(QString("Frames count = %1").arg(count));
     for (qint64 i = count; i > 0; --i) {
         auto frame = m_canBusDevice->readFrame();
         emit logMessage(QString("E-Recv: ") + frame.toString());

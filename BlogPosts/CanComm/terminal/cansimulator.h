@@ -18,7 +18,7 @@ signals:
     void logMessage(const QString &msg);
 
 public slots:
-    void simulateTxBufferOverflow();
+    void simulateTxBufferOverflow(int count);
 
 private slots:
     void initLater();

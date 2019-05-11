@@ -59,7 +59,9 @@ void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)
 
 void EcuProxy::onErrorOccurred(QCanBusDevice::CanBusError error)
 {
-    emit logMessage(QString("ERROR: %1 (%2).").arg(m_canBusDevice->errorString()).arg(error));
+    auto msg = QString("ERROR: %1 (%2).").arg(m_canBusDevice->errorString()).arg(error);
+    qWarning() << msg;
+    emit logMessage(msg);
 }
 
 void EcuProxy::onFramesReceived()
