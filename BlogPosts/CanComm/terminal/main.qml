@@ -50,9 +50,9 @@ ApplicationWindow {
                 leftMargin: 16
                 top: parent.top
             }
-            text: "Tx 500"
+            text: "Tx 800"
             font.pixelSize: 24
-            onReleased: gSimulator.simulateTxBufferOverflow(500)
+            onReleased: gSimulator.simulateTxBufferOverflow(800)
         }
 
         Button {
@@ -66,7 +66,7 @@ ApplicationWindow {
             onReleased: output.clear()
         }
 
-        ScrollView {
+        Rectangle {
             anchors {
                 left: parent.left
                 right: parent.right
@@ -74,23 +74,27 @@ ApplicationWindow {
                 topMargin: 32
                 bottom: parent.bottom
             }
-            background: Rectangle {
-                color: "#e2f9b8"
-            }
-            clip: true
-            contentWidth: output.paintedWidth
-            contentHeight: output.paintedHeight
+            color: "#e2f9b8"
 
-            TextEdit {
-                id: output
-                readOnly: true
-                font.pixelSize: 16
+            Flickable {
+                id: scrollView
+                anchors.fill: parent
+                clip: true
+                contentWidth: output.paintedWidth
+                contentHeight: output.paintedHeight
 
-                Connections {
-                    target: gSimulator
-                    onLogMessage: output.append(msg)
+                TextEdit {
+                    id: output
+                    readOnly: true
+                    font.pixelSize: 16
+                    onCursorRectangleChanged: scrollView.contentY = output.cursorRectangle.y
+
+                    Connections {
+                        target: gSimulator
+                        onLogMessage: output.append(msg)
+                    }
                 }
             }
         }
-   }
+    }
 }

@@ -51,13 +51,10 @@ void Ecu::readParameter(quint16 pid)
     QCanBusFrame frame(0x18ef0102U, payload);
     emit logMessage(QString("E-Send: ") + frame.toString());
     m_canBusDevice->writeFrame(frame);
-
-//    emit parameterRead(pid, value);
 }
 
 void Ecu::onErrorOccurred(QCanBusDevice::CanBusError error)
 {
-    // TODO: Print m_canBusDevice->state(), too.
     auto msg = QString("ERROR: %1 (%2).").arg(m_canBusDevice->errorString()).arg(error);
     qWarning() << msg;
     emit logMessage(msg);
@@ -66,7 +63,7 @@ void Ecu::onErrorOccurred(QCanBusDevice::CanBusError error)
 void Ecu::onFramesReceived()
 {
     auto count = m_canBusDevice->framesAvailable();
-    emit logMessage(QString("Frames count = %1").arg(count));
+    emit logMessage(QString("BEGIN> Frames count = %1").arg(count));
     for (qint64 i = count; i > 0; --i) {
         auto frame = m_canBusDevice->readFrame();
         emit logMessage(QString("E-Recv: ") + frame.toString());
@@ -75,4 +72,5 @@ void Ecu::onFramesReceived()
             readParameter(static_cast<quint16>(pid));
         }
     }
+    emit logMessage(QString("END> Frames count = %1").arg(count));
 }
