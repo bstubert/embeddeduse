@@ -19,6 +19,7 @@ public:
     bool isReadParameterFrame(const QCanBusFrame &frame) const;
     bool isLogging() const;
     void setLogging(bool enabled);
+    void displayCanConfiguration();
 
 public slots:
     void onErrorOccurred(QCanBusDevice::CanBusError error);

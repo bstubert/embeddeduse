@@ -19,6 +19,7 @@ EcuProxy::EcuProxy(const QString &pluginName, const QString &canBusName, QObject
             this, &EcuProxy::onErrorOccurred);
     connect(m_canBusDevice.get(), &QCanBusDevice::framesReceived,
             this, &EcuProxy::onFramesReceived);
+//    m_canBusDevice->setConfigurationParameter(QCanBusDevice::ReceiveOwnKey, true);
 }
 
 EcuProxy::~EcuProxy()
@@ -48,6 +49,14 @@ void EcuProxy::setLogging(bool enabled)
     m_logging = enabled;
 }
 
+// Default values:
+// ReceiveOwnKey = 0 (false)
+void EcuProxy::displayCanConfiguration()
+{
+    auto receiveOwnKey = m_canBusDevice->configurationParameter(QCanBusDevice::ReceiveOwnKey).toBool();
+    emit logMessage(QString("ReceiveOwnKey = %1").arg(receiveOwnKey));
+}
+
 void EcuProxy::sendReadParameter(quint16 pid)
 {
     QByteArray payload(8, 0x00);
@@ -57,7 +66,9 @@ void EcuProxy::sendReadParameter(quint16 pid)
     if (isLogging()) {
         emit logMessage(QString("T-Send: Read(%1)").arg(pid, 0, 16));
     }
-    m_canBusDevice->writeFrame(frame);
+    if (!m_canBusDevice->writeFrame(frame)) {
+        emit logMessage(QString("Error writing frame for %1").arg(pid));
+    }
 }
 
 void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)
@@ -73,9 +84,7 @@ void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)
 
 void EcuProxy::onErrorOccurred(QCanBusDevice::CanBusError error)
 {
-    auto msg = QString("ERROR: %1 (%2).").arg(m_canBusDevice->errorString()).arg(error);
-    qWarning() << msg;
-    emit logMessage(msg);
+    emit logMessage(QString("ERROR: %1 (%2).").arg(m_canBusDevice->errorString()).arg(error));
 }
 
 void EcuProxy::onFramesReceived()
