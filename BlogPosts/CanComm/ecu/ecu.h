@@ -18,6 +18,8 @@ public:
     virtual ~Ecu();
     bool isConnected() const;
     bool isReadParameterFrame(const QCanBusFrame &frame) const;
+    bool isLogging() const;
+    void setLogging(bool enabled);
 
 public slots:
     void onErrorOccurred(QCanBusDevice::CanBusError error);
@@ -30,4 +32,5 @@ signals:
 
 private:
     std::unique_ptr<QCanBusDevice> m_canBusDevice;
+    bool m_logging{true};
 };

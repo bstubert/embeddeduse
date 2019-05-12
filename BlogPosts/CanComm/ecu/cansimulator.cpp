@@ -17,13 +17,14 @@ void CanSimulator::onParameterRead(quint16 pid, quint32 value)
 
 void CanSimulator::initLater()
 {
-    m_ecuProxy = new Ecu{QStringLiteral("socketcan"), QStringLiteral("can0"), this};
-    if (!m_ecuProxy->isConnected()) {
+    m_ecu = new Ecu{QStringLiteral("socketcan"), QStringLiteral("can0"), this};
+    m_ecu->setLogging(true);
+    if (!m_ecu->isConnected()) {
         emit logMessage(QStringLiteral("ERROR: Could not connect to CAN bus device."));
         return;
     }
-    connect(m_ecuProxy, &Ecu::logMessage,
+    connect(m_ecu, &Ecu::logMessage,
             this, &CanSimulator::logMessage);
-    connect(m_ecuProxy, &Ecu::parameterRead,
+    connect(m_ecu, &Ecu::parameterRead,
             this, &CanSimulator::onParameterRead);
 }

@@ -24,5 +24,5 @@ private slots:
     void initLater();
 
 private:
-    Ecu *m_ecuProxy{nullptr};
+    Ecu *m_ecu{nullptr};
 };

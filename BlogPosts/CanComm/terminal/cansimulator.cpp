@@ -23,6 +23,7 @@ void CanSimulator::simulateTxBufferOverflow(int count)
 void CanSimulator::initLater()
 {
     m_ecuProxy = new EcuProxy{QStringLiteral("socketcan"), QStringLiteral("can0"), this};
+    m_ecuProxy->setLogging(true);
     if (!m_ecuProxy->isConnected()) {
         emit logMessage(QStringLiteral("ERROR: Could not connect to CAN bus device."));
         return;

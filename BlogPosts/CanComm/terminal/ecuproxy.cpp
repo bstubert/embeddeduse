@@ -38,13 +38,25 @@ bool EcuProxy::isReadParameterFrame(const QCanBusFrame &frame) const
     return frame.frameId() == 0x18ef0102U && frame.payload()[0] == char(1);
 }
 
+bool EcuProxy::isLogging() const
+{
+    return m_logging;
+}
+
+void EcuProxy::setLogging(bool enabled)
+{
+    m_logging = enabled;
+}
+
 void EcuProxy::sendReadParameter(quint16 pid)
 {
     QByteArray payload(8, 0x00);
     qToLittleEndian(quint8(1), payload.data());
     qToLittleEndian(pid, payload.data() + 1);
     QCanBusFrame frame(0x18ef0201U, payload);
-    emit logMessage(QString("T-Send: Read(%1)").arg(pid, 0, 16));
+    if (isLogging()) {
+        emit logMessage(QString("T-Send: Read(%1)").arg(pid, 0, 16));
+    }
     m_canBusDevice->writeFrame(frame);
 }
 
@@ -53,8 +65,10 @@ void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)
     const auto &payload = frame.payload();
     auto pid = qFromLittleEndian<qint16>(payload.data() + 1);
     auto value = qFromLittleEndian<qint32>(payload.data() + 3);
-    emit logMessage(QString("T-Recv: Read(0x%1, 0x%2)").arg(quint16(pid), 0, 16)
-                    .arg(quint32(value), 0, 16));
+    if (isLogging()) {
+        emit logMessage(QString("T-Recv: Read(0x%1, 0x%2)").arg(quint16(pid), 0, 16)
+                        .arg(quint32(value), 0, 16));
+    }
 }
 
 void EcuProxy::onErrorOccurred(QCanBusDevice::CanBusError error)
