@@ -41,8 +41,3 @@ void TerminalModel::simulateTxBufferOverflow(int count)
         m_a2Proxy->sendReadParameter(i);
     }
 }
-
-void TerminalModel::initLater()
-{
-    emit logMessage(QStringLiteral("ERROR: Could not connect to CAN bus \'can0\'."));
-}

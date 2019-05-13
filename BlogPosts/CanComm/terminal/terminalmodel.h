@@ -24,9 +24,6 @@ signals:
 public slots:
     void simulateTxBufferOverflow(int count);
 
-private slots:
-    void initLater();
-
 private:
     QSharedPointer<QCanBusDevice> m_can0;
     QSharedPointer<EcuProxy> m_a2Proxy;
