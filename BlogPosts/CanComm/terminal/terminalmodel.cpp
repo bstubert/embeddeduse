@@ -2,7 +2,7 @@
 
 #include <QMetaObject>
 #include <QtDebug>
-#include "cansimulator.h"
+#include "terminalmodel.h"
 
 TerminalModel::TerminalModel(QObject *parent)
     : QObject{parent}

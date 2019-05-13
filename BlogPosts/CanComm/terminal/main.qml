@@ -28,7 +28,7 @@ ApplicationWindow {
             }
             text: "Tx 10"
             font.pixelSize: 24
-            onReleased: gSimulator.simulateTxBufferOverflow(10)
+            onReleased: gTerminal.simulateTxBufferOverflow(10)
         }
 
         Button {
@@ -40,7 +40,7 @@ ApplicationWindow {
             }
             text: "Tx 50"
             font.pixelSize: 24
-            onReleased: gSimulator.simulateTxBufferOverflow(50)
+            onReleased: gTerminal.simulateTxBufferOverflow(50)
         }
 
         Button {
@@ -52,7 +52,7 @@ ApplicationWindow {
             }
             text: "Tx 500"
             font.pixelSize: 24
-            onReleased: gSimulator.simulateTxBufferOverflow(500)
+            onReleased: gTerminal.simulateTxBufferOverflow(500)
         }
 
         Button {
@@ -90,7 +90,7 @@ ApplicationWindow {
                     onCursorRectangleChanged: scrollView.contentY = output.cursorRectangle.y
 
                     Connections {
-                        target: gSimulator
+                        target: gTerminal
                         onLogMessage: output.append(msg)
                     }
                 }

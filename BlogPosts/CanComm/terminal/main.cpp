@@ -3,7 +3,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include "cansimulator.h"
+#include "terminalmodel.h"
 
 
 int main(int argc, char *argv[])
@@ -12,10 +12,10 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("terminal");
     QGuiApplication app(argc, argv);
 
-    TerminalModel simulator;
+    TerminalModel model;
 
     auto engine = new QQmlApplicationEngine(&app);
-    engine->rootContext()->setContextProperty("gSimulator", &simulator);
+    engine->rootContext()->setContextProperty("gTerminal", &model);
     engine->load(QUrl(QLatin1String("qrc:/main.qml")));
     return app.exec();
 }
