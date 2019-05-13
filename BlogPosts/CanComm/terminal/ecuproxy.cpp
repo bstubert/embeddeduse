@@ -57,7 +57,7 @@ void EcuProxy::sendReadParameter(quint16 pid)
 void EcuProxy::writeCanFrame(const QCanBusFrame &frame)
 {
     if (isLogging()) {
-        emit logMessage(QString("T-Send: %1").arg(m_outgoingQueue.first().toString()));
+        emit logMessage(QString("T-Send: %1").arg(frame.toString()));
     }
     m_canBusDevice->writeFrame(frame);
 }

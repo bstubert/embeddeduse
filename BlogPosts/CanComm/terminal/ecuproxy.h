@@ -36,5 +36,4 @@ private:
 
     std::unique_ptr<QCanBusDevice> m_canBusDevice;
     bool m_logging{true};
-    QVector<QCanBusFrame> m_outgoingQueue;
 };
