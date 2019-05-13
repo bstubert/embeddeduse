@@ -3,21 +3,18 @@
 #pragma once
 
 #include <memory>
-#include <QByteArray>
 #include <QCanBusDevice>
-#include <QCanBusFrame>
 #include <QObject>
-#include <QString>
-#include <QVector>
+#include <QSharedPointer>
+class QCanBusFrame;
+class QString;
 
 class EcuProxy : public QObject
 {
     Q_OBJECT
 public:
-    explicit EcuProxy(const QString &pluginName, const QString &canBusName,
-                      QObject *parent = nullptr);
+    explicit EcuProxy(int ecuId, QSharedPointer<QCanBusDevice> canBus, QObject *parent = nullptr);
     virtual ~EcuProxy();
-    bool isConnected() const;
     bool isReadParameterFrame(const QCanBusFrame &frame) const;
     bool isLogging() const;
     void setLogging(bool enabled);
@@ -34,6 +31,7 @@ private:
     void receiveReadParameter(const QCanBusFrame &frame);
     void writeCanFrame(const QCanBusFrame &frame);
 
-    std::unique_ptr<QCanBusDevice> m_canBusDevice;
+    int m_ecuId;
+    QSharedPointer<QCanBusDevice> m_canBus;
     bool m_logging{true};
 };

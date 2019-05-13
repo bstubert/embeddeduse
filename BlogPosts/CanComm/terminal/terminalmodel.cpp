@@ -1,5 +1,6 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
+#include <QCanBus>
 #include <QMetaObject>
 #include <QtDebug>
 #include "terminalmodel.h"
@@ -7,27 +8,41 @@
 TerminalModel::TerminalModel(QObject *parent)
     : QObject{parent}
 {
-    QMetaObject::invokeMethod(this, &TerminalModel::initLater, Qt::QueuedConnection);
+    auto errorMsg = QString{};
+    m_can0.reset(QCanBus::instance()->createDevice(QStringLiteral("socketcan"),
+                                                   QStringLiteral("can0"),
+                                                   &errorMsg));
+    if (m_can0 == nullptr) {
+        QMetaObject::invokeMethod(this,
+                                  [this, errorMsg]() { emit logMessage(errorMsg); },
+                                  Qt::QueuedConnection);
+    }
+    if (m_can0 != nullptr && !m_can0->connectDevice()) {
+        QMetaObject::invokeMethod(this,
+                                  [this]() { emit logMessage(m_can0->errorString()); },
+                                  Qt::QueuedConnection);
+    }
+    m_a2Proxy.reset(new EcuProxy{2, m_can0});
+    m_a2Proxy->setLogging(false);
+    connect(m_a2Proxy.get(), &EcuProxy::logMessage,
+            this, &TerminalModel::logMessage);
+}
+
+TerminalModel::~TerminalModel()
+{
+    if (m_can0 != nullptr && m_can0->state() == QCanBusDevice::ConnectedState) {
+        m_can0->disconnectDevice();
+    }
 }
 
 void TerminalModel::simulateTxBufferOverflow(int count)
 {
-    if (m_ecuProxy == nullptr) {
-        return;
-    }
     for (quint16 i = 1; i <= count; ++i) {
-        m_ecuProxy->sendReadParameter(i);
+        m_a2Proxy->sendReadParameter(i);
     }
 }
 
 void TerminalModel::initLater()
 {
-    m_ecuProxy = new EcuProxy{QStringLiteral("socketcan"), QStringLiteral("can0"), this};
-    m_ecuProxy->setLogging(false);
-    if (!m_ecuProxy->isConnected()) {
-        emit logMessage(QStringLiteral("ERROR: Could not connect to CAN bus device."));
-        return;
-    }
-    connect(m_ecuProxy, &EcuProxy::logMessage,
-            this, &TerminalModel::logMessage);
+    emit logMessage(QStringLiteral("ERROR: Could not connect to CAN bus \'can0\'."));
 }

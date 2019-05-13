@@ -2,9 +2,12 @@
 
 #pragma once
 
+#include <QCanBusDevice>
+#include <QSharedPointer>
 #include <QObject>
 #include <QString>
 #include "ecuproxy.h"
+class QCanBusDevice;
 class EcuProxy;
 
 class TerminalModel : public QObject
@@ -13,6 +16,7 @@ class TerminalModel : public QObject
 
 public:
     explicit TerminalModel(QObject *parent = nullptr);
+    virtual ~TerminalModel();
 
 signals:
     void logMessage(const QString &msg);
@@ -24,5 +28,6 @@ private slots:
     void initLater();
 
 private:
-    EcuProxy *m_ecuProxy{nullptr};
+    QSharedPointer<QCanBusDevice> m_can0;
+    QSharedPointer<EcuProxy> m_a2Proxy;
 };

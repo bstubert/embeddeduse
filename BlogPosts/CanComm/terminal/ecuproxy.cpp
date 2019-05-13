@@ -1,33 +1,27 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
-#include <QCanBus>
+#include <QCanBusFrame>
+#include <QString>
 #include <QtDebug>
 #include <QtEndian>
 #include "ecuproxy.h"
 
-EcuProxy::EcuProxy(const QString &pluginName, const QString &canBusName, QObject *parent)
+EcuProxy::EcuProxy(int ecuId, QSharedPointer<QCanBusDevice> canBus, QObject *parent)
     : QObject{parent}
+    , m_ecuId{ecuId}
+    , m_canBus{canBus}
 {
-    m_canBusDevice.reset(QCanBus::instance()->createDevice(pluginName, canBusName));
-    if (m_canBusDevice == nullptr || !m_canBusDevice->connectDevice()) {
+    if (m_canBus == nullptr) {
         return;
     }
-    connect(m_canBusDevice.get(), &QCanBusDevice::errorOccurred,
+    connect(m_canBus.get(), &QCanBusDevice::errorOccurred,
             this, &EcuProxy::onErrorOccurred);
-    connect(m_canBusDevice.get(), &QCanBusDevice::framesReceived,
+    connect(m_canBus.get(), &QCanBusDevice::framesReceived,
             this, &EcuProxy::onFramesReceived);
 }
 
 EcuProxy::~EcuProxy()
 {
-    if (isConnected()) {
-        m_canBusDevice->disconnectDevice();
-    }
-}
-
-bool EcuProxy::isConnected() const
-{
-    return m_canBusDevice != nullptr && m_canBusDevice->state() == QCanBusDevice::ConnectedState;
 }
 
 bool EcuProxy::isReadParameterFrame(const QCanBusFrame &frame) const
@@ -56,10 +50,13 @@ void EcuProxy::sendReadParameter(quint16 pid)
 
 void EcuProxy::writeCanFrame(const QCanBusFrame &frame)
 {
+    if (m_canBus == nullptr) {
+        return;
+    }
     if (isLogging()) {
         emit logMessage(QString("T-Send: %1").arg(frame.toString()));
     }
-    m_canBusDevice->writeFrame(frame);
+    m_canBus->writeFrame(frame);
 }
 
 void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)
@@ -75,14 +72,17 @@ void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)
 
 void EcuProxy::onErrorOccurred(QCanBusDevice::CanBusError error)
 {
-    emit logMessage(QString("ERROR: %1 (%2).").arg(m_canBusDevice->errorString()).arg(error));
+    emit logMessage(QString("ERROR: %1 (%2).").arg(m_canBus->errorString()).arg(error));
 }
 
 void EcuProxy::onFramesReceived()
 {
-    auto count = m_canBusDevice->framesAvailable();
+    if (m_canBus == nullptr) {
+        return;
+    }
+    auto count = m_canBus->framesAvailable();
     for (qint64 i = count; i > 0; --i) {
-        auto frame = m_canBusDevice->readFrame();
+        auto frame = m_canBus->readFrame();
         if (isReadParameterFrame(frame)) {
             receiveReadParameter(frame);
         }
