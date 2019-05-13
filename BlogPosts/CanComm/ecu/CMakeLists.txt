@@ -15,8 +15,8 @@ find_package(Qt5SerialBus)
 add_executable(
   ${PROJECT_NAME}
   main.cpp
-  cansimulator.cpp
-  cansimulator.h
+  ecumodel.cpp
+  ecumodel.h
   ecu.cpp
   ecu.h
   main.qml

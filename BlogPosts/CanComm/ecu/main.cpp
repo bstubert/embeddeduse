@@ -3,7 +3,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include "cansimulator.h"
+#include "ecumodel.h"
 
 
 int main(int argc, char *argv[])
@@ -12,10 +12,10 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("ecu");
     QGuiApplication app(argc, argv);
 
-    CanSimulator simulator;
+    EcuModel model;
 
     auto engine = new QQmlApplicationEngine(&app);
-    engine->rootContext()->setContextProperty("gSimulator", &simulator);
+    engine->rootContext()->setContextProperty("gEcu", &model);
     engine->load(QUrl(QLatin1String("qrc:/main.qml")));
     return app.exec();
 }

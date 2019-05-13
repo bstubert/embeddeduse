@@ -2,20 +2,20 @@
 
 #include <QMetaObject>
 #include <QtDebug>
-#include "cansimulator.h"
+#include "ecumodel.h"
 
-CanSimulator::CanSimulator(QObject *parent)
+EcuModel::EcuModel(QObject *parent)
     : QObject{parent}
 {
-    QMetaObject::invokeMethod(this, &CanSimulator::initLater, Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, &EcuModel::initLater, Qt::QueuedConnection);
 }
 
-void CanSimulator::onParameterRead(quint16 pid, quint32 value)
+void EcuModel::onParameterRead(quint16 pid, quint32 value)
 {
     emit logMessage(QString("%1 -> %2").arg(pid).arg(value));
 }
 
-void CanSimulator::initLater()
+void EcuModel::initLater()
 {
     m_ecu = new Ecu{QStringLiteral("socketcan"), QStringLiteral("can0"), this};
     m_ecu->setLogging(true);
@@ -24,7 +24,7 @@ void CanSimulator::initLater()
         return;
     }
     connect(m_ecu, &Ecu::logMessage,
-            this, &CanSimulator::logMessage);
+            this, &EcuModel::logMessage);
     connect(m_ecu, &Ecu::parameterRead,
-            this, &CanSimulator::onParameterRead);
+            this, &EcuModel::onParameterRead);
 }

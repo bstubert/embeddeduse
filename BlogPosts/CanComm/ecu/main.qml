@@ -55,7 +55,7 @@ ApplicationWindow {
                     onCursorRectangleChanged: scrollView.contentY = output.cursorRectangle.y
 
                     Connections {
-                        target: gSimulator
+                        target: gEcu
                         onLogMessage: output.append(msg)
                     }
                 }

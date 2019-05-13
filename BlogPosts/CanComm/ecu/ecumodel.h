@@ -7,12 +7,12 @@
 #include "ecu.h"
 class Ecu;
 
-class CanSimulator : public QObject
+class EcuModel : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit CanSimulator(QObject *parent = nullptr);
+    explicit EcuModel(QObject *parent = nullptr);
 
 signals:
     void logMessage(const QString &msg);
