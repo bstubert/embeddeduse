@@ -4,13 +4,13 @@
 #include <QtDebug>
 #include "cansimulator.h"
 
-CanSimulator::CanSimulator(QObject *parent)
+TerminalModel::TerminalModel(QObject *parent)
     : QObject{parent}
 {
-    QMetaObject::invokeMethod(this, &CanSimulator::initLater, Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, &TerminalModel::initLater, Qt::QueuedConnection);
 }
 
-void CanSimulator::simulateTxBufferOverflow(int count)
+void TerminalModel::simulateTxBufferOverflow(int count)
 {
     if (m_ecuProxy == nullptr) {
         return;
@@ -20,7 +20,7 @@ void CanSimulator::simulateTxBufferOverflow(int count)
     }
 }
 
-void CanSimulator::initLater()
+void TerminalModel::initLater()
 {
     m_ecuProxy = new EcuProxy{QStringLiteral("socketcan"), QStringLiteral("can0"), this};
     m_ecuProxy->setLogging(false);
@@ -29,5 +29,5 @@ void CanSimulator::initLater()
         return;
     }
     connect(m_ecuProxy, &EcuProxy::logMessage,
-            this, &CanSimulator::logMessage);
+            this, &TerminalModel::logMessage);
 }

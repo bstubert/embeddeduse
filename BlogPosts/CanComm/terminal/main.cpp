@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("terminal");
     QGuiApplication app(argc, argv);
 
-    CanSimulator simulator;
+    TerminalModel simulator;
 
     auto engine = new QQmlApplicationEngine(&app);
     engine->rootContext()->setContextProperty("gSimulator", &simulator);

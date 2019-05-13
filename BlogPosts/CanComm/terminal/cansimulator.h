@@ -7,12 +7,12 @@
 #include "ecuproxy.h"
 class EcuProxy;
 
-class CanSimulator : public QObject
+class TerminalModel : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit CanSimulator(QObject *parent = nullptr);
+    explicit TerminalModel(QObject *parent = nullptr);
 
 signals:
     void logMessage(const QString &msg);
