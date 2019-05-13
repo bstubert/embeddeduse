@@ -30,5 +30,4 @@ void CanSimulator::initLater()
     }
     connect(m_ecuProxy, &EcuProxy::logMessage,
             this, &CanSimulator::logMessage);
-    m_ecuProxy->displayCanConfiguration();
 }

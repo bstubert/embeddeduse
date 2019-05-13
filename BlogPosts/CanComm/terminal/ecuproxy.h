@@ -19,10 +19,8 @@ public:
     virtual ~EcuProxy();
     bool isConnected() const;
     bool isReadParameterFrame(const QCanBusFrame &frame) const;
-    bool isOwnFrame(const QCanBusFrame &frame) const;
     bool isLogging() const;
     void setLogging(bool enabled);
-    void displayCanConfiguration();
 
 public slots:
     void onErrorOccurred(QCanBusDevice::CanBusError error);
@@ -34,8 +32,6 @@ signals:
 
 private:
     void receiveReadParameter(const QCanBusFrame &frame);
-    void enqueueOutgoingFrame(const QCanBusFrame &frame);
-    void dequeueOutgoingFrame();
     void writeCanFrame(const QCanBusFrame &frame);
 
     std::unique_ptr<QCanBusDevice> m_canBusDevice;
