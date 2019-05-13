@@ -5,9 +5,6 @@
 #include <QtEndian>
 #include "ecuproxy.h"
 
-// sudo ip link set can0 up type can bitrate 250000
-// sudo ip link set can0 txqueuelen 128
-
 EcuProxy::EcuProxy(const QString &pluginName, const QString &canBusName, QObject *parent)
     : QObject{parent}
 {
@@ -39,6 +36,12 @@ bool EcuProxy::isReadParameterFrame(const QCanBusFrame &frame) const
     return frame.frameId() == 0x18ef0102U && frame.payload()[0] == char(1);
 }
 
+bool EcuProxy::isOwnFrame(const QCanBusFrame &frame) const
+{
+    return frame.frameId() == m_outgoingQueue.first().frameId() &&
+            frame.payload() == m_outgoingQueue.first().payload();
+}
+
 bool EcuProxy::isLogging() const
 {
     return m_logging;
@@ -63,12 +66,33 @@ void EcuProxy::sendReadParameter(quint16 pid)
     qToLittleEndian(quint8(1), payload.data());
     qToLittleEndian(pid, payload.data() + 1);
     QCanBusFrame frame(0x18ef0201U, payload);
+    writeCanFrame(frame);
+//    enqueueOutgoingFrame(frame);
+}
+
+void EcuProxy::enqueueOutgoingFrame(const QCanBusFrame &frame)
+{
+    auto empty = m_outgoingQueue.isEmpty();
+    m_outgoingQueue.append(frame);
+    if (empty) {
+        writeCanFrame(frame);
+    }
+}
+
+void EcuProxy::dequeueOutgoingFrame()
+{
+    m_outgoingQueue.removeFirst();
+    if (!m_outgoingQueue.isEmpty()) {
+        writeCanFrame(m_outgoingQueue.first());
+    }
+}
+
+void EcuProxy::writeCanFrame(const QCanBusFrame &frame)
+{
     if (isLogging()) {
-        emit logMessage(QString("T-Send: Read(%1)").arg(pid, 0, 16));
+        emit logMessage(QString("T-Send: %1").arg(m_outgoingQueue.first().toString()));
     }
-    if (!m_canBusDevice->writeFrame(frame)) {
-        emit logMessage(QString("Error writing frame for %1").arg(pid));
-    }
+    m_canBusDevice->writeFrame(frame);
 }
 
 void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)
@@ -92,6 +116,10 @@ void EcuProxy::onFramesReceived()
     auto count = m_canBusDevice->framesAvailable();
     for (qint64 i = count; i > 0; --i) {
         auto frame = m_canBusDevice->readFrame();
+//        if (isOwnFrame(frame)) {
+//            dequeueOutgoingFrame();
+//        }
+//        else
         if (isReadParameterFrame(frame)) {
             receiveReadParameter(frame);
         }

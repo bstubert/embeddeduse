@@ -7,9 +7,6 @@
 #include <QtEndian>
 #include "ecu.h"
 
-// sudo ip link set can0 up type can bitrate 250000
-// sudo ip link set can0 txqueuelen 128
-
 Ecu::Ecu(const QString &pluginName, const QString &canBusName, QObject *parent)
     : QObject{parent}
 {

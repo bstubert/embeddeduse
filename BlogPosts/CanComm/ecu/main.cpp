@@ -9,7 +9,7 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QCoreApplication::setApplicationName("terminal");
+    QCoreApplication::setApplicationName("ecu");
     QGuiApplication app(argc, argv);
 
     CanSimulator simulator;

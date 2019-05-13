@@ -5,8 +5,10 @@
 #include <memory>
 #include <QByteArray>
 #include <QCanBusDevice>
+#include <QCanBusFrame>
 #include <QObject>
 #include <QString>
+#include <QVector>
 
 class EcuProxy : public QObject
 {
@@ -17,6 +19,7 @@ public:
     virtual ~EcuProxy();
     bool isConnected() const;
     bool isReadParameterFrame(const QCanBusFrame &frame) const;
+    bool isOwnFrame(const QCanBusFrame &frame) const;
     bool isLogging() const;
     void setLogging(bool enabled);
     void displayCanConfiguration();
@@ -31,7 +34,11 @@ signals:
 
 private:
     void receiveReadParameter(const QCanBusFrame &frame);
+    void enqueueOutgoingFrame(const QCanBusFrame &frame);
+    void dequeueOutgoingFrame();
+    void writeCanFrame(const QCanBusFrame &frame);
 
     std::unique_ptr<QCanBusDevice> m_canBusDevice;
     bool m_logging{true};
+    QVector<QCanBusFrame> m_outgoingQueue;
 };
