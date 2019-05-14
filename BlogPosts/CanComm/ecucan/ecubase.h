@@ -6,6 +6,7 @@
 #include <QCanBusDevice>
 #include <QObject>
 #include <QSharedPointer>
+class QByteArray;
 class QCanBusFrame;
 
 class EcuBase : public QObject
@@ -31,7 +32,7 @@ public slots:
     void onFramesReceived();
 
 protected:
-    void encodeReadParameter(quint32 frameId, quint16 pid, quint32 value);
+    QByteArray encodeReadParameter(quint16 pid, quint32 value);
     std::tuple<quint16, quint32> decodeReadParameter(const QCanBusFrame &frame);
     void emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value);
 

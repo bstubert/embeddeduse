@@ -1,5 +1,6 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
+#include <QByteArray>
 #include <QCanBusFrame>
 #include <QLatin1Char>
 #include <QtEndian>
@@ -91,14 +92,13 @@ void EcuBase::onFramesReceived()
     }
 }
 
-void EcuBase::encodeReadParameter(quint32 frameId, quint16 pid, quint32 value)
+QByteArray EcuBase::encodeReadParameter(quint16 pid, quint32 value)
 {
     QByteArray payload(8, 0x00);
     qToLittleEndian(quint8(1), payload.data());
     qToLittleEndian(pid, payload.data() + 1);
     qToLittleEndian(value, payload.data() + 3);
-    QCanBusFrame frame(frameId, payload);
-    canBus()->writeFrame(frame);
+    return payload;
 }
 
 std::tuple<quint16, quint32> EcuBase::decodeReadParameter(const QCanBusFrame &frame)
