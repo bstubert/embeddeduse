@@ -23,4 +23,4 @@ add_executable(
   qml.qrc
 )
 
-target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Qml Qt5::Quick Qt5::SerialBus)
+target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Qml Qt5::Quick EmUse::ecucan)

@@ -3,12 +3,10 @@
 #pragma once
 
 #include <QCanBusDevice>
-#include <QSharedPointer>
 #include <QObject>
+#include <QSharedPointer>
 #include <QString>
 #include "ecuproxy.h"
-class QCanBusDevice;
-class EcuProxy;
 
 class TerminalModel : public QObject
 {

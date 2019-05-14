@@ -2,10 +2,11 @@
 
 #pragma once
 
+#include <QCanBusDevice>
 #include <QObject>
+#include <QSharedPointer>
 #include <QString>
 #include "ecu.h"
-class Ecu;
 
 class EcuModel : public QObject
 {
@@ -13,16 +14,12 @@ class EcuModel : public QObject
 
 public:
     explicit EcuModel(QObject *parent = nullptr);
+    virtual ~EcuModel();
 
 signals:
     void logMessage(const QString &msg);
 
-public slots:
-    void onParameterRead(quint16 pid, quint32 value);
-
-private slots:
-    void initLater();
-
 private:
-    Ecu *m_ecu{nullptr};
+    QSharedPointer<QCanBusDevice> m_can0;
+    QSharedPointer<Ecu> m_a2;
 };

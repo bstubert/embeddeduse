@@ -2,35 +2,21 @@
 
 #pragma once
 
-#include <memory>
-#include <QByteArray>
-#include <QCanBusDevice>
-#include <QObject>
-#include <QString>
+#include "ecubase.h"
 class QCanBusFrame;
 
-class Ecu : public QObject
+class Ecu : public EcuBase
 {
     Q_OBJECT
 public:
-    explicit Ecu(const QString &pluginName, const QString &canBusName,
-                      QObject *parent = nullptr);
+    explicit Ecu(int ecuId, QSharedPointer<QCanBusDevice> canBus, QObject *parent = nullptr);
     virtual ~Ecu();
-    bool isConnected() const;
-    bool isReadParameterFrame(const QCanBusFrame &frame) const;
-    bool isLogging() const;
-    void setLogging(bool enabled);
+    virtual bool isReadParameter(const QCanBusFrame &frame) const override;
 
 public slots:
-    void onErrorOccurred(QCanBusDevice::CanBusError error);
-    void onFramesReceived();
-    void readParameter(quint16 pid);
+    virtual void sendReadParameter(quint16 pid, quint32 value = 0U) override;
+    virtual void receiveReadParameter(quint16 pid, quint32 value = 0U) override;
 
 signals:
-    void logMessage(const QString &msg);
     void parameterRead(quint16 pid, quint32 value);
-
-private:
-    std::unique_ptr<QCanBusDevice> m_canBusDevice;
-    bool m_logging{true};
 };

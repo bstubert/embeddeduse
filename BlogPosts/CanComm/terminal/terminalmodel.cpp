@@ -1,8 +1,6 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
 #include <QCanBus>
-#include <QMetaObject>
-#include <QtDebug>
 #include "terminalmodel.h"
 
 TerminalModel::TerminalModel(QObject *parent)
