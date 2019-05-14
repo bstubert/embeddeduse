@@ -28,6 +28,10 @@ public slots:
     void onErrorOccurred(QCanBusDevice::CanBusError error);
     void onFramesReceived();
 
+protected:
+    void encodeReadParameter(quint32 frameId, quint16 pid, quint32 value);
+    void emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value);
+
 private:
     int m_ecuId;
     QSharedPointer<QCanBusDevice> m_canBus;
