@@ -21,13 +21,13 @@ public:
     void setLogging(bool enabled);
     void writeCanFrame(const QCanBusFrame &frame);
     virtual bool isReadParameter(const QCanBusFrame &frame) const;
+    virtual void sendReadParameter(quint16 pid, quint32 value = 0U);
+    virtual void receiveReadParameter(const QCanBusFrame &frame);
 
 signals:
     void logMessage(const QString &msg);
 
 public slots:
-    virtual void sendReadParameter(quint16 pid, quint32 value = 0U);
-    virtual void receiveReadParameter(quint16 pid, quint32 value = 0U);
     void onErrorOccurred(QCanBusDevice::CanBusError error);
     void onFramesReceived();
 

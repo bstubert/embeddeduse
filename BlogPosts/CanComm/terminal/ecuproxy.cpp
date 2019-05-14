@@ -1,5 +1,6 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
+#include <tuple>
 #include <QCanBusFrame>
 #include <QString>
 #include "ecuproxy.h"
@@ -25,7 +26,10 @@ void EcuProxy::sendReadParameter(quint16 pid, quint32 value)
 
 }
 
-void EcuProxy::receiveReadParameter(quint16 pid, quint32 value)
+void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)
 {
+    quint16 pid = 0U;
+    quint32 value = 0U;
+    std::tie(pid, value) = decodeReadParameter(frame);
     emitReadParameterMessage(QStringLiteral("Trm/Recv"), pid, value);
 }

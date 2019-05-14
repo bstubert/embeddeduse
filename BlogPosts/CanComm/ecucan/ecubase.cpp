@@ -64,10 +64,9 @@ void EcuBase::sendReadParameter(quint16 pid, quint32 value)
     Q_UNUSED(value)
 }
 
-void EcuBase::receiveReadParameter(quint16 pid, quint32 value)
+void EcuBase::receiveReadParameter(const QCanBusFrame &frame)
 {
-    Q_UNUSED(pid)
-    Q_UNUSED(value)
+    Q_UNUSED(frame)
 }
 
 void EcuBase::onErrorOccurred(QCanBusDevice::CanBusError error)
@@ -84,10 +83,7 @@ void EcuBase::onFramesReceived()
     for (qint64 i = count; i > 0; --i) {
         auto frame = canBus()->readFrame();
         if (isReadParameter(frame)) {
-            quint16 pid = 0U;
-            quint32 value = 0U;
-            std::tie(pid, value) = decodeReadParameter(frame);
-            receiveReadParameter(pid, value);
+            receiveReadParameter(frame);
         }
     }
 }

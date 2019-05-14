@@ -1,5 +1,6 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
+#include <tuple>
 #include <QCanBusFrame>
 #include <QRandomGenerator>
 #include <QString>
@@ -25,8 +26,11 @@ void Ecu::sendReadParameter(quint16 pid, quint32 value)
     canBus()->writeFrame(QCanBusFrame(0x18ef0102U, encodeReadParameter(pid, value)));
 }
 
-void Ecu::receiveReadParameter(quint16 pid, quint32 value)
+void Ecu::receiveReadParameter(const QCanBusFrame &frame)
 {
+    quint16 pid = 0U;
+    quint32 value = 0U;
+    std::tie(pid, value) = decodeReadParameter(frame);
     emitReadParameterMessage(QStringLiteral("Ecu/Recv"), pid, value);
     sendReadParameter(pid, QRandomGenerator::global()->generate());
 }

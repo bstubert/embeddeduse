@@ -12,10 +12,8 @@ public:
     explicit Ecu(int ecuId, QSharedPointer<QCanBusDevice> canBus, QObject *parent = nullptr);
     virtual ~Ecu();
     virtual bool isReadParameter(const QCanBusFrame &frame) const override;
-
-public slots:
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U) override;
-    virtual void receiveReadParameter(quint16 pid, quint32 value = 0U) override;
+    virtual void receiveReadParameter(const QCanBusFrame &frame) override;
 
 signals:
     void parameterRead(quint16 pid, quint32 value);
