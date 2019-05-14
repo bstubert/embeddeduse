@@ -2,9 +2,11 @@
 
 #pragma once
 
+#include <tuple>
 #include <QCanBusDevice>
 #include <QObject>
 #include <QSharedPointer>
+class QCanBusFrame;
 
 class EcuBase : public QObject
 {
@@ -30,6 +32,7 @@ public slots:
 
 protected:
     void encodeReadParameter(quint32 frameId, quint16 pid, quint32 value);
+    std::tuple<quint16, quint32> decodeReadParameter(const QCanBusFrame &frame);
     void emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value);
 
 private:

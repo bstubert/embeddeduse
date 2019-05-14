@@ -1,5 +1,6 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
+#include <QCanBusFrame>
 #include <QLatin1Char>
 #include <QtEndian>
 #include "ecubase.h"
@@ -82,9 +83,9 @@ void EcuBase::onFramesReceived()
     for (qint64 i = count; i > 0; --i) {
         auto frame = canBus()->readFrame();
         if (isReadParameter(frame)) {
-            const auto &payload = frame.payload();
-            auto pid = qFromLittleEndian<qint16>(payload.data() + 1);
-            auto value = qFromLittleEndian<qint32>(payload.data() + 3);
+            quint16 pid = 0U;
+            quint32 value = 0U;
+            std::tie(pid, value) = decodeReadParameter(frame);
             receiveReadParameter(pid, value);
         }
     }
@@ -98,6 +99,14 @@ void EcuBase::encodeReadParameter(quint32 frameId, quint16 pid, quint32 value)
     qToLittleEndian(value, payload.data() + 3);
     QCanBusFrame frame(frameId, payload);
     canBus()->writeFrame(frame);
+}
+
+std::tuple<quint16, quint32> EcuBase::decodeReadParameter(const QCanBusFrame &frame)
+{
+    const auto &payload = frame.payload();
+    quint16 pid = qFromLittleEndian<qint16>(payload.data() + 1);
+    quint32 value = qFromLittleEndian<qint32>(payload.data() + 3);
+    return std::make_tuple(pid, value);
 }
 
 void EcuBase::emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value)
