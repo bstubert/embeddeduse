@@ -1,23 +1,17 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
-#include <QCanBus>
+#include "canbus.h"
 #include "ecumodel.h"
 
 EcuModel::EcuModel(QObject *parent)
     : QObject{parent}
 {
-    auto errorMsg = QString{};
-    m_can0.reset(QCanBus::instance()->createDevice(QStringLiteral("socketcan"),
-                                                   QStringLiteral("can0"),
-                                                   &errorMsg));
-    if (m_can0 == nullptr) {
+    auto errorStr = QString{};
+    m_can0.reset(CanBus::setUp(QStringLiteral("socketcan"), QStringLiteral("can0"),
+                                     errorStr));
+    if (!errorStr.isEmpty()) {
         QMetaObject::invokeMethod(this,
-                                  [this, errorMsg]() { emit logMessage(errorMsg); },
-                                  Qt::QueuedConnection);
-    }
-    if (m_can0 != nullptr && !m_can0->connectDevice()) {
-        QMetaObject::invokeMethod(this,
-                                  [this]() { emit logMessage(m_can0->errorString()); },
+                                  [this, errorStr]() { emit logMessage(errorStr); },
                                   Qt::QueuedConnection);
     }
 
@@ -29,7 +23,5 @@ EcuModel::EcuModel(QObject *parent)
 
 EcuModel::~EcuModel()
 {
-    if (m_can0 != nullptr && m_can0->state() == QCanBusDevice::ConnectedState) {
-        m_can0->disconnectDevice();
-    }
+    CanBus::tearDown(m_can0.get());
 }

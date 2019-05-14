@@ -1,25 +1,20 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
-#include <QCanBus>
+#include "canbus.h"
 #include "terminalmodel.h"
 
 TerminalModel::TerminalModel(QObject *parent)
     : QObject{parent}
 {
-    auto errorMsg = QString{};
-    m_can0.reset(QCanBus::instance()->createDevice(QStringLiteral("socketcan"),
-                                                   QStringLiteral("can0"),
-                                                   &errorMsg));
-    if (m_can0 == nullptr) {
+    auto errorStr = QString{};
+    m_can0.reset(CanBus::setUp(QStringLiteral("socketcan"), QStringLiteral("can0"),
+                               errorStr));
+    if (!errorStr.isEmpty()) {
         QMetaObject::invokeMethod(this,
-                                  [this, errorMsg]() { emit logMessage(errorMsg); },
+                                  [this, errorStr]() { emit logMessage(errorStr); },
                                   Qt::QueuedConnection);
     }
-    if (m_can0 != nullptr && !m_can0->connectDevice()) {
-        QMetaObject::invokeMethod(this,
-                                  [this]() { emit logMessage(m_can0->errorString()); },
-                                  Qt::QueuedConnection);
-    }
+
     m_a2Proxy.reset(new EcuProxy{2, m_can0});
     m_a2Proxy->setLogging(true);
     connect(m_a2Proxy.get(), &EcuProxy::logMessage,
@@ -28,9 +23,7 @@ TerminalModel::TerminalModel(QObject *parent)
 
 TerminalModel::~TerminalModel()
 {
-    if (m_can0 != nullptr && m_can0->state() == QCanBusDevice::ConnectedState) {
-        m_can0->disconnectDevice();
-    }
+    CanBus::tearDown(m_can0.get());
 }
 
 void TerminalModel::simulateTxBufferOverflow(int count)

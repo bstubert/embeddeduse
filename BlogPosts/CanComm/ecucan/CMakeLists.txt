@@ -12,6 +12,8 @@ find_package(Qt5SerialBus)
 
 add_library(
     ${PROJECT_NAME} STATIC
+    canbus.cpp
+    canbus.h
     ecubase.cpp
     ecubase.h
 )
