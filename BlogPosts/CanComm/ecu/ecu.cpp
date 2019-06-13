@@ -23,7 +23,7 @@ bool Ecu::isReadParameter(const QCanBusFrame &frame) const
 void Ecu::sendReadParameter(quint16 pid, quint32 value)
 {
     emitReadParameterMessage(QStringLiteral("Ecu/Send"), pid, value);
-    canBus()->writeFrame(QCanBusFrame(0x18ef0102U, encodeReadParameter(pid, value)));
+    enqueueOutgoingFrame(QCanBusFrame(0x18ef0102U, encodeReadParameter(pid, value)));
 }
 
 void Ecu::receiveReadParameter(const QCanBusFrame &frame)

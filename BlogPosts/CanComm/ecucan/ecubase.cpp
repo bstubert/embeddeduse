@@ -84,6 +84,7 @@ void EcuBase::onFramesReceived()
         auto frame = canBus()->readFrame();
         if (isReadParameter(frame)) {
             receiveReadParameter(frame);
+            dequeueOutgoingFrame();
         }
     }
 }
@@ -111,5 +112,24 @@ void EcuBase::emitReadParameterMessage(const QString &prefix, quint16 pid, quint
         emit logMessage(QString("%1: Read(0x%2, 0x%3)").arg(prefix)
                         .arg(quint16(pid), 4, 16, QLatin1Char('0'))
                         .arg(quint32(value), 8, 16, QLatin1Char('0')));
+    }
+}
+
+void EcuBase::enqueueOutgoingFrame(const QCanBusFrame &frame)
+{
+    auto empty = m_outgoingQueue.isEmpty();
+    m_outgoingQueue.append(frame);
+    if (empty) {
+        canBus()->writeFrame(frame);
+    }
+}
+
+void EcuBase::dequeueOutgoingFrame()
+{
+    if (!m_outgoingQueue.isEmpty()) {
+        m_outgoingQueue.removeFirst();
+    }
+    if (!m_outgoingQueue.isEmpty()) {
+        canBus()->writeFrame(m_outgoingQueue.first());
     }
 }

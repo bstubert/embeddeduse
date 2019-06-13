@@ -4,6 +4,7 @@
 
 #include <tuple>
 #include <QCanBusDevice>
+#include <QList>
 #include <QObject>
 #include <QSharedPointer>
 class QByteArray;
@@ -35,10 +36,13 @@ protected:
     QByteArray encodeReadParameter(quint16 pid, quint32 value);
     std::tuple<quint16, quint32> decodeReadParameter(const QCanBusFrame &frame);
     void emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value);
+    void enqueueOutgoingFrame(const QCanBusFrame &frame);
+    void dequeueOutgoingFrame();
 
 private:
     int m_ecuId;
     QSharedPointer<QCanBusDevice> m_canBus;
     bool m_logging{true};
+    QList<QCanBusFrame> m_outgoingQueue;
 };
 

@@ -1,0 +1,227 @@
+==============================
+
+Versions:
+
+can-comm-1:
+Tx10 works fine; "Tx50 produces ERROR: No buffer space available (2)"; no fix for this error;
+old structure with lots of duplication.
+
+can-comm-2:
+Removed duplication from can-comm-1 by heavy refactoring. Code is now presentable.
+
+
+===============================
+
+
+
+==============================
+
+References:
+
+(1) SocketCAN documentation: https://www.kernel.org/doc/html/v4.17/networking/can.html
+
+(2) How to configure and use CAN bus: https://developer.ridgerun.com/wiki/index.php/How_to_configure_and_use_CAN_bus
+
+
+
+=============================
+
+terminal/PC -> ecu/SoC
+
+The terminal runs on the PC, the ECU on the SoC.
+
+The terminal sends 500 requests without any delay.
+
+The ECU cannot keep up answering the requests. At some point, it stops answering and ignores
+the requests. There aren't any error messages - neither on terminal nor ECU side.
+
+The ECU responses appear in the terminal with significant delay of several seconds - until
+they stop appearing at all.
+
+If I remove emitting E-Recv and E-Send and print the messages on the console instead, the ECU
+can answer all the 500 requests easily. It seems that the problem is displaying the messages
+E-Recv and E-Send.
+
+If neither the ECU nor the terminal emits any messages for display, the terminal produces lots of
+messages "ERROR: No buffer space available (2).".
+
+=============================
+
+Analysing "ERROR: No buffer space available (2)."
+
+How to reproduce:
+* Disable logging in EcuProxy. Hence, there is no delay by displaying CAN messages in GUI.
+* Press button "Tx 100" to send 100 ReadParameter requests.
+
+============================================
+
+// sudo ip link set can0 up type can bitrate 250000
+// sudo ip link set can0 txqueuelen 10
+
+
+*********
+Configuring CAN on terminal (OLD):
+
+root@ropa:~# cat /etc/systemd/network/can0.network
+[Match]
+Name=can0
+
+[CAN]
+BitRate=250000
+RestartSec="0.1s"
+
+
+root@ropa:~# cat /lib/systemd/system/can0.service
+[Unit]
+Description=CAN0/FCAN starten
+
+[Service]
+ExecStart=/sbin/ip link set can0 txqueuelen 128
+Restart=on-failure
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target
+
+
+*********
+Configuring CAN on terminal (NEW):
+
+Set can0 up and set txqueuelen at the same time:
+    ifconfig can0 up txqueuelen 32
+
+Remove can0.network
+
+Change can0.service to:
+
+[Unit]
+Description=can0
+
+[Service]
+ExecStartPre=/sbin/ip link set can0 type can bitrate 250000 restart-ms 100
+ExecStart=/sbin/ifconfig can0 up txqueuelen 10
+Restart=on-failure
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+*********
+Configuring CAN on PC (NEW):
+
+Restarting networking service:
+    sudo /etc/init.d/networking restart
+
+Add following to /etc/network/interfaces:
+
+auto can0
+iface can0 inet manual
+    pre-up /sbin/ip link set $IFACE type can bitrate 250000 restart-ms 100
+    up /sbin/ifconfig $IFACE up txqueuelen 10
+    down /sbin/ifconfig $IFACE down
+
+auto can1
+iface can1 inet manual
+    pre-up /sbin/ip link set $IFACE type can bitrate 250000 restart-ms 100
+    up /sbin/ifconfig $IFACE up txqueuelen 10
+    down /sbin/ifconfig $IFACE down
+
+
+=======================================
+
+From https://www.freedesktop.org/software/systemd/man/systemd.network.html
+
+[CAN] Section Options
+
+The "[CAN]" section manages the Controller Area Network (CAN bus) and accepts the following keys.
+
+BitRate=
+
+    The bitrate of CAN device in bits per second. The usual SI prefixes (K, M) with the base of
+    1000 can be used here.
+SamplePoint=
+
+    Optional sample point in percent with one decimal (e.g. "75%", "87.5%") or permille (e.g. "875‰").
+RestartSec=
+
+    Automatic restart delay time. If set to a non-zero value, a restart of the CAN controller
+    will be triggered automatically in case of a bus-off condition after the specified delay
+    time. Subsecond delays can be specified using decimals (e.g. "0.1s") or a "ms" or "us" postfix. Using "infinity" or "0" will turn the automatic restart off. By default automatic restart is disabled.
+TripleSampling=
+
+    Takes a boolean. When "yes", three samples (instead of one) are used to determine the value
+    of a received bit by majority rule. When unset, the kernel's default will be used.
+
+
+=========================================
+
++bool EcuProxy::isOwnFrame(const QCanBusFrame &frame) const
++{
++    return frame.frameId() == m_outgoingQueue.first().frameId() &&
++            frame.payload() == m_outgoingQueue.first().payload();
++}
++
+ bool EcuProxy::isLogging() const
+ {
+     return m_logging;
+@@ -63,12 +66,33 @@ void EcuProxy::sendReadParameter(quint16 pid)
+     qToLittleEndian(quint8(1), payload.data());
+     qToLittleEndian(pid, payload.data() + 1);
+     QCanBusFrame frame(0x18ef0201U, payload);
+-    if (isLogging()) {
+-        emit logMessage(QString("T-Send: Read(%1)").arg(pid, 0, 16));
++    writeCanFrame(frame);
++//    enqueueOutgoingFrame(frame);
++}
++
++void EcuProxy::enqueueOutgoingFrame(const QCanBusFrame &frame)
++{
++    auto empty = m_outgoingQueue.isEmpty();
++    m_outgoingQueue.append(frame);
++    if (empty) {
++        writeCanFrame(frame);
+     }
+-    if (!m_canBusDevice->writeFrame(frame)) {
+-        emit logMessage(QString("Error writing frame for %1").arg(pid));
++}
++
++void EcuProxy::dequeueOutgoingFrame()
++{
++    m_outgoingQueue.removeFirst();
++    if (!m_outgoingQueue.isEmpty()) {
++        writeCanFrame(m_outgoingQueue.first());
++    }
++}
++
++void EcuProxy::writeCanFrame(const QCanBusFrame &frame)
++{
++    if (isLogging()) {
++        emit logMessage(QString("T-Send: %1").arg(m_outgoingQueue.first().toString()));
+     }
++    m_canBusDevice->writeFrame(frame);
+ }
+
+ void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)
+@@ -92,6 +116,10 @@ void EcuProxy::onFramesReceived()
+     auto count = m_canBusDevice->framesAvailable();
+     for (qint64 i = count; i > 0; --i) {
+         auto frame = m_canBusDevice->readFrame();
++//        if (isOwnFrame(frame)) {
++//            dequeueOutgoingFrame();
++//        }
++//        else
+         if (isReadParameterFrame(frame)) {
+             receiveReadParameter(frame);
+         }
+
+================================================
+
+PROBLEM:
+
+Multiple ECU proxies send read-parameter requests over the same (!) CAN bus. They share the
+same write buffer in the CAN controller. Hence, the write queue must be in the QCanBusDevice or
+in the wrapper of the QCanBusDevice.
+
+================================================
