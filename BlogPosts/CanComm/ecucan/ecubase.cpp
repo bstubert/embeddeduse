@@ -93,6 +93,9 @@ void EcuBase::setSkipResponseEnabled(bool enabled)
     if (m_skipResponseEnabled != enabled) {
         m_skipResponseEnabled = enabled;
         emit skipResponseEnabledChanged();
+        if (m_skipResponseEnabled) {
+            setMissingResponsesEnabled(false);
+        }
     }
 }
 
@@ -106,6 +109,9 @@ void EcuBase::setMissingResponsesEnabled(bool enabled)
     if (m_missingResponsesEnabled != enabled) {
         m_missingResponsesEnabled = enabled;
         emit missingResponsesEnabledChanged();
+        if (m_missingResponsesEnabled) {
+            setSkipResponseEnabled(false);
+        }
     }
 }
 
