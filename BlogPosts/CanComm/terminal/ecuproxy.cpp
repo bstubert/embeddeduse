@@ -23,7 +23,6 @@ void EcuProxy::sendReadParameter(quint16 pid, quint32 value)
 {
     emitReadParameterMessage(QStringLiteral("Trm/Send"), pid, value);
     enqueueOutgoingFrame(QCanBusFrame(0x18ef0201U, encodeReadParameter(pid, value)));
-
 }
 
 void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)

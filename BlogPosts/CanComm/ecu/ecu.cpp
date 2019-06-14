@@ -31,6 +31,9 @@ void Ecu::receiveReadParameter(const QCanBusFrame &frame)
     quint16 pid = 0U;
     quint32 value = 0U;
     std::tie(pid, value) = decodeReadParameter(frame);
+    if (pid == 5U) { // Don't respond to request for pid 5
+        return;
+    }
     emitReadParameterMessage(QStringLiteral("Ecu/Recv"), pid, value);
     sendReadParameter(pid, QRandomGenerator::global()->generate());
 }

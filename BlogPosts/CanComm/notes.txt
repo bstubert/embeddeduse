@@ -224,4 +224,18 @@ Multiple ECU proxies send read-parameter requests over the same (!) CAN bus. The
 same write buffer in the CAN controller. Hence, the write queue must be in the QCanBusDevice or
 in the wrapper of the QCanBusDevice.
 
+Things get even more complicated, when we have multiple applications writing to the same CAN bus.
+Only solution is to run CAN bus router in process of its own.
+
+Scenarios with second terminal.
+
 ================================================
+
+Error cases:
+
+(1) Response does not arrive. Sending next request is postponed indefinitely.
+
+(2) The response for request N is lost.
+
+(3) A second terminal requests same parameters. First terminals sees responses as well and
+    sends next request.

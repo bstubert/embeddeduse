@@ -7,6 +7,7 @@
 #include <QList>
 #include <QObject>
 #include <QSharedPointer>
+#include <QTimer>
 class QByteArray;
 class QCanBusFrame;
 
@@ -44,5 +45,6 @@ private:
     QSharedPointer<QCanBusDevice> m_canBus;
     bool m_logging{true};
     QList<QCanBusFrame> m_outgoingQueue;
+    QTimer m_receiptTimer;
 };
 

@@ -2,9 +2,24 @@
 
 #include <QByteArray>
 #include <QCanBusFrame>
+#include <QDateTime>
 #include <QLatin1Char>
+#include <QtDebug>
 #include <QtEndian>
 #include "ecubase.h"
+
+namespace
+{
+QCanBusFrame::TimeStamp currentTimeStampSinceEpoch()
+{
+    return QCanBusFrame::TimeStamp::fromMicroSeconds(1000 * QDateTime::currentMSecsSinceEpoch());
+}
+
+qint64 toMs(QCanBusFrame::TimeStamp stamp)
+{
+    return (stamp.seconds() * 1000) + (stamp.microSeconds() / 1000);
+}
+}
 
 EcuBase::EcuBase(int ecuId, QSharedPointer<QCanBusDevice> canBus, QObject *parent)
     : QObject(parent)
@@ -18,6 +33,14 @@ EcuBase::EcuBase(int ecuId, QSharedPointer<QCanBusDevice> canBus, QObject *paren
             this, &EcuBase::onErrorOccurred);
     connect(m_canBus.get(), &QCanBusDevice::framesReceived,
             this, &EcuBase::onFramesReceived);
+    connect(&m_receiptTimer, &QTimer::timeout, [this]() {
+        if (!m_outgoingQueue.isEmpty()) {
+            if (QDateTime::currentMSecsSinceEpoch() - toMs(m_outgoingQueue.first().timeStamp()) > 100) {
+                dequeueOutgoingFrame();
+            }
+        }
+    });
+    m_receiptTimer.start(100);
 }
 
 EcuBase::~EcuBase()
@@ -83,6 +106,7 @@ void EcuBase::onFramesReceived()
     for (qint64 i = count; i > 0; --i) {
         auto frame = canBus()->readFrame();
         if (isReadParameter(frame)) {
+            qDebug() << "@@@ Received " << frame.toString() << " at " << toMs(frame.timeStamp());
             receiveReadParameter(frame);
             dequeueOutgoingFrame();
         }
@@ -120,16 +144,24 @@ void EcuBase::enqueueOutgoingFrame(const QCanBusFrame &frame)
     auto empty = m_outgoingQueue.isEmpty();
     m_outgoingQueue.append(frame);
     if (empty) {
-        canBus()->writeFrame(frame);
+        m_outgoingQueue.first().setTimeStamp(currentTimeStampSinceEpoch());
+        qDebug() << "### Written/1 " << m_outgoingQueue.first().toString() << " at "
+                 << toMs(m_outgoingQueue.first().timeStamp());
+        canBus()->writeFrame(m_outgoingQueue.first());
     }
 }
 
 void EcuBase::dequeueOutgoingFrame()
 {
     if (!m_outgoingQueue.isEmpty()) {
+        auto frame = m_outgoingQueue.first();
+        qDebug() << "@@@ Dequeued " << frame.toString() << " at " << toMs(frame.timeStamp());
         m_outgoingQueue.removeFirst();
     }
     if (!m_outgoingQueue.isEmpty()) {
+        m_outgoingQueue.first().setTimeStamp(currentTimeStampSinceEpoch());
+        qDebug() << "### Written/2 " << m_outgoingQueue.first().toString() << " at "
+                 << toMs(m_outgoingQueue.first().timeStamp());
         canBus()->writeFrame(m_outgoingQueue.first());
     }
 }
