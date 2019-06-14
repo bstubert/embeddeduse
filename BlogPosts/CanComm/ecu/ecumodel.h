@@ -15,15 +15,21 @@ class EcuModel : public QObject
     Q_PROPERTY(bool skipResponseEnabled READ isSkipResponseEnabled WRITE setSkipResponseEnabled
                NOTIFY skipResponseEnabledChanged)
 
+    Q_PROPERTY(bool missingResponsesEnabled READ isMissingResponsesEnabled
+               WRITE setMissingResponsesEnabled NOTIFY missingResponsesEnabledChanged)
+
 public:
     explicit EcuModel(QObject *parent = nullptr);
     virtual ~EcuModel();
     bool isSkipResponseEnabled() const;
     void setSkipResponseEnabled(bool enabled);
+    bool isMissingResponsesEnabled() const;
+    void setMissingResponsesEnabled(bool enabled);
 
 signals:
     void logMessage(const QString &msg);
     void skipResponseEnabledChanged();
+    void missingResponsesEnabledChanged();
 
 private:
     QSharedPointer<QCanBusDevice> m_can0;

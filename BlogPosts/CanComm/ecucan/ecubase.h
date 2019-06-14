@@ -25,6 +25,8 @@ public:
     void setSkipWriteEnabled(bool enabled);
     bool isSkipResponseEnabled() const;
     void setSkipResponseEnabled(bool enabled);
+    bool isMissingResponsesEnabled() const;
+    void setMissingResponsesEnabled(bool enabled);
 
     qint64 receiptTimeOut() const;
     void setReceiptTimeOut(qint64 timeout);
@@ -38,6 +40,7 @@ signals:
     void logMessage(const QString &msg);
     void skipWriteEnabledChanged();
     void skipResponseEnabledChanged();
+    void missingResponsesEnabledChanged();
 
 public slots:
     void onErrorOccurred(QCanBusDevice::CanBusError error);
@@ -58,6 +61,7 @@ private:
     bool m_logging{true};
     bool m_skipWriteEnabled{false};
     bool m_skipResponseEnabled{true};
+    bool m_missingResponsesEnabled{false};
     QList<QCanBusFrame> m_outgoingQueue;
     qint64 m_receiptTimeout{100};
     QTimer m_receiptTimer;

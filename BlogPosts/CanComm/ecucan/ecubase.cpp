@@ -96,6 +96,19 @@ void EcuBase::setSkipResponseEnabled(bool enabled)
     }
 }
 
+bool EcuBase::isMissingResponsesEnabled() const
+{
+    return m_missingResponsesEnabled;
+}
+
+void EcuBase::setMissingResponsesEnabled(bool enabled)
+{
+    if (m_missingResponsesEnabled != enabled) {
+        m_missingResponsesEnabled = enabled;
+        emit missingResponsesEnabledChanged();
+    }
+}
+
 qint64 EcuBase::receiptTimeOut() const
 {
     return m_receiptTimeout;

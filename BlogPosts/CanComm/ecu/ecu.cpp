@@ -31,10 +31,9 @@ void Ecu::receiveReadParameter(const QCanBusFrame &frame)
     quint16 pid = 0U;
     quint32 value = 0U;
     std::tie(pid, value) = decodedReadParameter(frame);
-    // Uncomment the following code to make the ECU skip every 8th response.
-//    if (pid % 8U == 0U) {
-//        return;
-//    }
+    if (isMissingResponsesEnabled() && pid % 8U == 0U) {
+        return;
+    }
     emitReadParameterMessage(QStringLiteral("Ecu/Recv"), pid, value);
     if (!isSkipResponseEnabled()) {
         sendReadParameter(pid, QRandomGenerator::global()->generate());

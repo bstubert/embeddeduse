@@ -22,6 +22,8 @@ EcuModel::EcuModel(QObject *parent)
             this, &EcuModel::logMessage);
     connect(m_a2.get(), &Ecu::skipResponseEnabledChanged,
             this, &EcuModel::skipResponseEnabledChanged);
+    connect(m_a2.get(), &Ecu::missingResponsesEnabledChanged,
+            this, &EcuModel::missingResponsesEnabledChanged);
 }
 
 EcuModel::~EcuModel()
@@ -37,4 +39,14 @@ bool EcuModel::isSkipResponseEnabled() const
 void EcuModel::setSkipResponseEnabled(bool enabled)
 {
     m_a2->setSkipResponseEnabled(enabled);
+}
+
+bool EcuModel::isMissingResponsesEnabled() const
+{
+    return m_a2->isMissingResponsesEnabled();
+}
+
+void EcuModel::setMissingResponsesEnabled(bool enabled)
+{
+    m_a2->setMissingResponsesEnabled(enabled);
 }

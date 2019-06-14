@@ -21,6 +21,19 @@ ApplicationWindow {
         }
 
         CheckBox {
+            id: missingResponses
+            anchors {
+                right: skipResponse.left
+                rightMargin: 16
+                top: parent.top
+            }
+            checked: gEcu.missingResponsesEnabled
+            text: "Miss Resp"
+            font.pixelSize: 24
+            onReleased: gEcu.missingResponsesEnabled = !gEcu.missingResponsesEnabled
+        }
+
+        CheckBox {
             id: skipResponse
             anchors {
                 right: clear.left
@@ -28,7 +41,7 @@ ApplicationWindow {
                 top: parent.top
             }
             checked: gEcu.skipResponseEnabled
-            text: "Skip Resp"
+            text: "No Resp"
             font.pixelSize: 24
             onReleased: gEcu.skipResponseEnabled = !gEcu.skipResponseEnabled
         }
