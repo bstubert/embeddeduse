@@ -24,6 +24,7 @@ public:
     qint64 receiptTimeOut() const;
     void setReceiptTimeOut(qint64 timeout);
     bool isReceiptMissing(qint64 stamp) const;
+    bool isOwnFrame(const QCanBusFrame &frame) const;
     virtual bool isReadParameter(const QCanBusFrame &frame) const;
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U);
     virtual void receiveReadParameter(const QCanBusFrame &frame);

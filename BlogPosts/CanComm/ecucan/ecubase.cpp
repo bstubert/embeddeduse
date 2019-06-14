@@ -1,5 +1,6 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
+#include <tuple>
 #include <QByteArray>
 #include <QCanBusFrame>
 #include <QDateTime>
@@ -37,7 +38,7 @@ EcuBase::EcuBase(int ecuId, QSharedPointer<QCanBusDevice> canBus, QObject *paren
     connect(&m_receiptTimer, &QTimer::timeout, [this]() {
         if (!m_outgoingQueue.isEmpty() &&
                 isReceiptMissing(toMs(m_outgoingQueue.first()))) {
-            emit logMessage(QString("ERROR: No response for request %1.")
+            emit logMessage(QString("ERROR: Frame not written to CAN bus: %1.")
                             .arg(m_outgoingQueue.first().toString()));
             dequeueOutgoingFrame();
         }
@@ -84,6 +85,13 @@ bool EcuBase::isReceiptMissing(qint64 stamp) const
     return QDateTime::currentMSecsSinceEpoch() - stamp > receiptTimeOut();
 }
 
+bool EcuBase::isOwnFrame(const QCanBusFrame &frame) const
+{
+    return !m_outgoingQueue.isEmpty() &&
+            frame.frameId() == m_outgoingQueue.first().frameId() &&
+            frame.payload() == m_outgoingQueue.first().payload();
+}
+
 bool EcuBase::isReadParameter(const QCanBusFrame &frame) const
 {
     Q_UNUSED(frame)
@@ -114,9 +122,11 @@ void EcuBase::onFramesReceived()
     auto count = canBus()->framesAvailable();
     for (qint64 i = count; i > 0; --i) {
         auto frame = canBus()->readFrame();
-        if (isReadParameter(frame)) {
-            receiveReadParameter(frame);
+        if (isOwnFrame(frame)) {
             dequeueOutgoingFrame();
+        }
+        else if (isReadParameter(frame)) {
+            receiveReadParameter(frame);
         }
     }
 }
@@ -164,6 +174,13 @@ void EcuBase::dequeueOutgoingFrame()
     }
     if (!m_outgoingQueue.isEmpty()) {
         m_outgoingQueue.first().setTimeStamp(currentTimeStampSinceEpoch());
+        // Uncomment the following code to make the terminal skip every 8th writeFrame call.
+//        quint16 pid = 0U;
+//        quint32 value = 0U;
+//        std::tie(pid, value) = decodeReadParameter(m_outgoingQueue.first());
+//        if (pid % 8U == 0U) {
+//            return;
+//        }
         canBus()->writeFrame(m_outgoingQueue.first());
     }
 }

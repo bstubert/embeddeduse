@@ -14,6 +14,7 @@ EcuModel::EcuModel(QObject *parent)
                                   [this, errorStr]() { emit logMessage(errorStr); },
                                   Qt::QueuedConnection);
     }
+    m_can0->setConfigurationParameter(QCanBusDevice::ReceiveOwnKey, true);
 
     m_a2.reset(new Ecu{2, m_can0});
     m_a2->setLogging(true);

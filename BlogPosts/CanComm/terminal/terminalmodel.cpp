@@ -14,6 +14,7 @@ TerminalModel::TerminalModel(QObject *parent)
                                   [this, errorStr]() { emit logMessage(errorStr); },
                                   Qt::QueuedConnection);
     }
+    m_can0->setConfigurationParameter(QCanBusDevice::ReceiveOwnKey, true);
 
     m_a2Proxy.reset(new EcuProxy{2, m_can0});
     m_a2Proxy->setLogging(false);
