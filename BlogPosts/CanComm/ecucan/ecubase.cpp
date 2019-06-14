@@ -83,6 +83,19 @@ void EcuBase::setSkipWriteEnabled(bool enabled)
     }
 }
 
+bool EcuBase::isSkipResponseEnabled() const
+{
+    return m_skipResponseEnabled;
+}
+
+void EcuBase::setSkipResponseEnabled(bool enabled)
+{
+    if (m_skipResponseEnabled != enabled) {
+        m_skipResponseEnabled = enabled;
+        emit skipResponseEnabledChanged();
+    }
+}
+
 qint64 EcuBase::receiptTimeOut() const
 {
     return m_receiptTimeout;

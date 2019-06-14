@@ -20,6 +20,19 @@ ApplicationWindow {
             color: "#effbd8"
         }
 
+        CheckBox {
+            id: skipResponse
+            anchors {
+                right: clear.left
+                rightMargin: 16
+                top: parent.top
+            }
+            checked: gEcu.skipResponseEnabled
+            text: "Skip Resp"
+            font.pixelSize: 24
+            onReleased: gEcu.skipResponseEnabled = !gEcu.skipResponseEnabled
+        }
+
         Button {
             id: clear
             anchors {

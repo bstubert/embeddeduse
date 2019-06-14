@@ -20,9 +20,21 @@ EcuModel::EcuModel(QObject *parent)
     m_a2->setLogging(true);
     connect(m_a2.get(), &Ecu::logMessage,
             this, &EcuModel::logMessage);
+    connect(m_a2.get(), &Ecu::skipResponseEnabledChanged,
+            this, &EcuModel::skipResponseEnabledChanged);
 }
 
 EcuModel::~EcuModel()
 {
     CanBus::tearDown(m_can0.get());
+}
+
+bool EcuModel::isSkipResponseEnabled() const
+{
+    return m_a2->isSkipResponseEnabled();
+}
+
+void EcuModel::setSkipResponseEnabled(bool enabled)
+{
+    m_a2->setSkipResponseEnabled(enabled);
 }

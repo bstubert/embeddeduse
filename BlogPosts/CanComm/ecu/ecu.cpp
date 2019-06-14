@@ -36,6 +36,7 @@ void Ecu::receiveReadParameter(const QCanBusFrame &frame)
 //        return;
 //    }
     emitReadParameterMessage(QStringLiteral("Ecu/Recv"), pid, value);
-    // Uncomment the next line, if you want to test request and response for ReceiveOwnKey.
-//    sendReadParameter(pid, QRandomGenerator::global()->generate());
+    if (!isSkipResponseEnabled()) {
+        sendReadParameter(pid, QRandomGenerator::global()->generate());
+    }
 }
