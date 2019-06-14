@@ -20,11 +20,23 @@ TerminalModel::TerminalModel(QObject *parent)
     m_a2Proxy->setLogging(false);
     connect(m_a2Proxy.get(), &EcuProxy::logMessage,
             this, &TerminalModel::logMessage);
+    connect(m_a2Proxy.get(), &EcuProxy::skipWriteEnabledChanged,
+            this, &TerminalModel::skipWriteEnabledChanged);
 }
 
 TerminalModel::~TerminalModel()
 {
     CanBus::tearDown(m_can0.get());
+}
+
+bool TerminalModel::isSkipWriteEnabled() const
+{
+    return m_a2Proxy->isSkipWriteEnabled();
+}
+
+void TerminalModel::setSkipWriteEnabled(bool enabled)
+{
+    m_a2Proxy->setSkipWriteEnabled(enabled);
 }
 
 void TerminalModel::simulateTxBufferOverflow(int count)

@@ -70,6 +70,19 @@ void EcuBase::setLogging(bool enabled)
     m_logging = enabled;
 }
 
+bool EcuBase::isSkipWriteEnabled() const
+{
+    return m_skipWriteEnabled;
+}
+
+void EcuBase::setSkipWriteEnabled(bool enabled)
+{
+    if (m_skipWriteEnabled != enabled) {
+        m_skipWriteEnabled = enabled;
+        emit skipWriteEnabledChanged();
+    }
+}
+
 qint64 EcuBase::receiptTimeOut() const
 {
     return m_receiptTimeout;
@@ -131,7 +144,7 @@ void EcuBase::onFramesReceived()
     }
 }
 
-QByteArray EcuBase::encodeReadParameter(quint16 pid, quint32 value)
+QByteArray EcuBase::encodedReadParameter(quint16 pid, quint32 value) const
 {
     QByteArray payload(8, 0x00);
     qToLittleEndian(quint8(1), payload.data());
@@ -140,7 +153,7 @@ QByteArray EcuBase::encodeReadParameter(quint16 pid, quint32 value)
     return payload;
 }
 
-std::tuple<quint16, quint32> EcuBase::decodeReadParameter(const QCanBusFrame &frame)
+std::tuple<quint16, quint32> EcuBase::decodedReadParameter(const QCanBusFrame &frame) const
 {
     const auto &payload = frame.payload();
     quint16 pid = qFromLittleEndian<qint16>(payload.data() + 1);
@@ -163,6 +176,9 @@ void EcuBase::enqueueOutgoingFrame(const QCanBusFrame &frame)
     m_outgoingQueue.append(frame);
     if (empty) {
         m_outgoingQueue.first().setTimeStamp(currentTimeStampSinceEpoch());
+        if (skipWrite(m_outgoingQueue.first())) {
+            return;
+        }
         canBus()->writeFrame(m_outgoingQueue.first());
     }
 }
@@ -174,13 +190,20 @@ void EcuBase::dequeueOutgoingFrame()
     }
     if (!m_outgoingQueue.isEmpty()) {
         m_outgoingQueue.first().setTimeStamp(currentTimeStampSinceEpoch());
-        // Uncomment the following code to make the terminal skip every 8th writeFrame call.
-//        quint16 pid = 0U;
-//        quint32 value = 0U;
-//        std::tie(pid, value) = decodeReadParameter(m_outgoingQueue.first());
-//        if (pid % 8U == 0U) {
-//            return;
-//        }
+        if (skipWrite(m_outgoingQueue.first())) {
+            return;
+        }
         canBus()->writeFrame(m_outgoingQueue.first());
     }
+}
+
+bool EcuBase::skipWrite(const QCanBusFrame &frame) const
+{
+    if (!isSkipWriteEnabled()) {
+        return false;
+    }
+    quint16 pid = 0U;
+    quint32 value = 0U;
+    std::tie(pid, value) = decodedReadParameter(frame);
+    return pid % 8U == 0U;
 }

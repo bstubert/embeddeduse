@@ -21,6 +21,9 @@ public:
     QSharedPointer<QCanBusDevice> canBus() const;
     bool isLogging() const;
     void setLogging(bool enabled);
+    bool isSkipWriteEnabled() const;
+    void setSkipWriteEnabled(bool enabled);
+
     qint64 receiptTimeOut() const;
     void setReceiptTimeOut(qint64 timeout);
     bool isReceiptMissing(qint64 stamp) const;
@@ -31,22 +34,26 @@ public:
 
 signals:
     void logMessage(const QString &msg);
+    void skipWriteEnabledChanged();
 
 public slots:
     void onErrorOccurred(QCanBusDevice::CanBusError error);
     void onFramesReceived();
 
 protected:
-    QByteArray encodeReadParameter(quint16 pid, quint32 value);
-    std::tuple<quint16, quint32> decodeReadParameter(const QCanBusFrame &frame);
+    QByteArray encodedReadParameter(quint16 pid, quint32 value) const;
+    std::tuple<quint16, quint32> decodedReadParameter(const QCanBusFrame &frame) const;
     void emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value);
     void enqueueOutgoingFrame(const QCanBusFrame &frame);
     void dequeueOutgoingFrame();
 
 private:
+    bool skipWrite(const QCanBusFrame &frame) const;
+
     int m_ecuId;
     QSharedPointer<QCanBusDevice> m_canBus;
     bool m_logging{true};
+    bool m_skipWriteEnabled{false};
     QList<QCanBusFrame> m_outgoingQueue;
     qint64 m_receiptTimeout{100};
     QTimer m_receiptTimer;
