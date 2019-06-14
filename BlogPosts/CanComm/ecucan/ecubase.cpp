@@ -15,8 +15,9 @@ QCanBusFrame::TimeStamp currentTimeStampSinceEpoch()
     return QCanBusFrame::TimeStamp::fromMicroSeconds(1000 * QDateTime::currentMSecsSinceEpoch());
 }
 
-qint64 toMs(QCanBusFrame::TimeStamp stamp)
+qint64 toMs(const QCanBusFrame &frame)
 {
+    auto stamp = frame.timeStamp();
     return (stamp.seconds() * 1000) + (stamp.microSeconds() / 1000);
 }
 }
@@ -34,13 +35,14 @@ EcuBase::EcuBase(int ecuId, QSharedPointer<QCanBusDevice> canBus, QObject *paren
     connect(m_canBus.get(), &QCanBusDevice::framesReceived,
             this, &EcuBase::onFramesReceived);
     connect(&m_receiptTimer, &QTimer::timeout, [this]() {
-        if (!m_outgoingQueue.isEmpty()) {
-            if (QDateTime::currentMSecsSinceEpoch() - toMs(m_outgoingQueue.first().timeStamp()) > 100) {
-                dequeueOutgoingFrame();
-            }
+        if (!m_outgoingQueue.isEmpty() &&
+                isReceiptMissing(toMs(m_outgoingQueue.first()))) {
+            emit logMessage(QString("ERROR: No response for request %1.")
+                            .arg(m_outgoingQueue.first().toString()));
+            dequeueOutgoingFrame();
         }
     });
-    m_receiptTimer.start(100);
+    m_receiptTimer.start(receiptTimeOut() / 2);
 }
 
 EcuBase::~EcuBase()
@@ -67,12 +69,19 @@ void EcuBase::setLogging(bool enabled)
     m_logging = enabled;
 }
 
-void EcuBase::writeCanFrame(const QCanBusFrame &frame)
+qint64 EcuBase::receiptTimeOut() const
 {
-    if (canBus() == nullptr) {
-        return;
-    }
-    canBus()->writeFrame(frame);
+    return m_receiptTimeout;
+}
+
+void EcuBase::setReceiptTimeOut(qint64 timeout)
+{
+    m_receiptTimeout = timeout;
+}
+
+bool EcuBase::isReceiptMissing(qint64 stamp) const
+{
+    return QDateTime::currentMSecsSinceEpoch() - stamp > receiptTimeOut();
 }
 
 bool EcuBase::isReadParameter(const QCanBusFrame &frame) const
@@ -106,7 +115,6 @@ void EcuBase::onFramesReceived()
     for (qint64 i = count; i > 0; --i) {
         auto frame = canBus()->readFrame();
         if (isReadParameter(frame)) {
-            qDebug() << "@@@ Received " << frame.toString() << " at " << toMs(frame.timeStamp());
             receiveReadParameter(frame);
             dequeueOutgoingFrame();
         }
@@ -145,8 +153,6 @@ void EcuBase::enqueueOutgoingFrame(const QCanBusFrame &frame)
     m_outgoingQueue.append(frame);
     if (empty) {
         m_outgoingQueue.first().setTimeStamp(currentTimeStampSinceEpoch());
-        qDebug() << "### Written/1 " << m_outgoingQueue.first().toString() << " at "
-                 << toMs(m_outgoingQueue.first().timeStamp());
         canBus()->writeFrame(m_outgoingQueue.first());
     }
 }
@@ -154,14 +160,10 @@ void EcuBase::enqueueOutgoingFrame(const QCanBusFrame &frame)
 void EcuBase::dequeueOutgoingFrame()
 {
     if (!m_outgoingQueue.isEmpty()) {
-        auto frame = m_outgoingQueue.first();
-        qDebug() << "@@@ Dequeued " << frame.toString() << " at " << toMs(frame.timeStamp());
         m_outgoingQueue.removeFirst();
     }
     if (!m_outgoingQueue.isEmpty()) {
         m_outgoingQueue.first().setTimeStamp(currentTimeStampSinceEpoch());
-        qDebug() << "### Written/2 " << m_outgoingQueue.first().toString() << " at "
-                 << toMs(m_outgoingQueue.first().timeStamp());
         canBus()->writeFrame(m_outgoingQueue.first());
     }
 }

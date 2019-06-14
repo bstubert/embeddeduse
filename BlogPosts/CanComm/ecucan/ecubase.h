@@ -21,7 +21,9 @@ public:
     QSharedPointer<QCanBusDevice> canBus() const;
     bool isLogging() const;
     void setLogging(bool enabled);
-    void writeCanFrame(const QCanBusFrame &frame);
+    qint64 receiptTimeOut() const;
+    void setReceiptTimeOut(qint64 timeout);
+    bool isReceiptMissing(qint64 stamp) const;
     virtual bool isReadParameter(const QCanBusFrame &frame) const;
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U);
     virtual void receiveReadParameter(const QCanBusFrame &frame);
@@ -45,6 +47,7 @@ private:
     QSharedPointer<QCanBusDevice> m_canBus;
     bool m_logging{true};
     QList<QCanBusFrame> m_outgoingQueue;
+    qint64 m_receiptTimeout{100};
     QTimer m_receiptTimer;
 };
 
