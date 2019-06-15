@@ -21,10 +21,6 @@ public:
     QSharedPointer<QCanBusDevice> canBus() const;
     bool isLogging() const;
     void setLogging(bool enabled);
-    bool isSkipResponseEnabled() const;
-    void setSkipResponseEnabled(bool enabled);
-    bool isMissingResponsesEnabled() const;
-    void setMissingResponsesEnabled(bool enabled);
 
     qint64 receiptTimeOut() const;
     void setReceiptTimeOut(qint64 timeout);
@@ -36,8 +32,6 @@ public:
 
 signals:
     void logMessage(const QString &msg);
-    void skipResponseEnabledChanged();
-    void missingResponsesEnabledChanged();
 
 public slots:
     void onErrorOccurred(QCanBusDevice::CanBusError error);
@@ -54,8 +48,6 @@ protected:
     int m_ecuId;
     QSharedPointer<QCanBusDevice> m_canBus;
     bool m_logging{true};
-    bool m_skipResponseEnabled{true};
-    bool m_missingResponsesEnabled{false};
     QList<QCanBusFrame> m_outgoingQueue;
     qint64 m_receiptTimeout{100};
     QTimer m_receiptTimer;

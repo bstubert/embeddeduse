@@ -39,3 +39,37 @@ void Ecu::receiveReadParameter(const QCanBusFrame &frame)
         sendReadParameter(pid, QRandomGenerator::global()->generate());
     }
 }
+
+bool Ecu::isSkipResponseEnabled() const
+{
+    return m_skipResponseEnabled;
+}
+
+void Ecu::setSkipResponseEnabled(bool enabled)
+{
+    if (m_skipResponseEnabled != enabled) {
+        m_skipResponseEnabled = enabled;
+        emit skipResponseEnabledChanged();
+        if (m_skipResponseEnabled) {
+            setMissingResponsesEnabled(false);
+        }
+    }
+}
+
+bool Ecu::isMissingResponsesEnabled() const
+{
+    return m_missingResponsesEnabled;
+}
+
+void Ecu::setMissingResponsesEnabled(bool enabled)
+{
+    if (m_missingResponsesEnabled != enabled) {
+        m_missingResponsesEnabled = enabled;
+        emit missingResponsesEnabledChanged();
+        if (m_missingResponsesEnabled) {
+            setSkipResponseEnabled(false);
+        }
+    }
+}
+
+
