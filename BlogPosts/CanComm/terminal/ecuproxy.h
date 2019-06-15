@@ -11,7 +11,17 @@ class EcuProxy : public EcuBase
 public:
     explicit EcuProxy(int ecuId, QSharedPointer<QCanBusDevice> canBus, QObject *parent = nullptr);
     virtual ~EcuProxy();
+
     virtual bool isReadParameter(const QCanBusFrame &frame) const override;
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U) override;
     virtual void receiveReadParameter(const QCanBusFrame &frame) override;
+
+    bool isDirectWriteEnabled() const;
+    void setDirectWriteEnabled(bool enabled);
+
+signals:
+    void directWriteEnabledChanged();
+
+private:
+    bool m_directWriteEnabled{false};
 };

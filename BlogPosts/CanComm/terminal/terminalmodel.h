@@ -15,15 +15,21 @@ class TerminalModel : public QObject
     Q_PROPERTY(bool skipWriteEnabled READ isSkipWriteEnabled WRITE setSkipWriteEnabled
                NOTIFY skipWriteEnabledChanged)
 
+    Q_PROPERTY(bool directWriteEnabled READ isDirectWriteEnabled WRITE setDirectWriteEnabled
+               NOTIFY directWriteEnabledChanged)
+
 public:
     explicit TerminalModel(QObject *parent = nullptr);
     virtual ~TerminalModel();
     bool isSkipWriteEnabled() const;
     void setSkipWriteEnabled(bool enabled);
+    bool isDirectWriteEnabled() const;
+    void setDirectWriteEnabled(bool enabled);
 
 signals:
     void logMessage(const QString &msg);
     void skipWriteEnabledChanged();
+    void directWriteEnabledChanged();
 
 public slots:
     void simulateTxBufferOverflow(int count);

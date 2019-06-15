@@ -22,6 +22,8 @@ TerminalModel::TerminalModel(QObject *parent)
             this, &TerminalModel::logMessage);
     connect(m_a2Proxy.get(), &EcuProxy::skipWriteEnabledChanged,
             this, &TerminalModel::skipWriteEnabledChanged);
+    connect(m_a2Proxy.get(), &EcuProxy::directWriteEnabledChanged,
+            this, &TerminalModel::directWriteEnabledChanged);
 }
 
 TerminalModel::~TerminalModel()
@@ -37,6 +39,16 @@ bool TerminalModel::isSkipWriteEnabled() const
 void TerminalModel::setSkipWriteEnabled(bool enabled)
 {
     m_a2Proxy->setSkipWriteEnabled(enabled);
+}
+
+bool TerminalModel::isDirectWriteEnabled() const
+{
+    return m_a2Proxy->isDirectWriteEnabled();
+}
+
+void TerminalModel::setDirectWriteEnabled(bool enabled)
+{
+    m_a2Proxy->setDirectWriteEnabled(enabled);
 }
 
 void TerminalModel::simulateTxBufferOverflow(int count)

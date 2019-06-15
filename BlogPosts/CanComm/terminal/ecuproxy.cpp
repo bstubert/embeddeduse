@@ -22,7 +22,12 @@ bool EcuProxy::isReadParameter(const QCanBusFrame &frame) const
 void EcuProxy::sendReadParameter(quint16 pid, quint32 value)
 {
     emitReadParameterMessage(QStringLiteral("Trm/Send"), pid, value);
-    enqueueOutgoingFrame(QCanBusFrame(0x18ef0201U, encodedReadParameter(pid, value)));
+    if (isDirectWriteEnabled()) {
+        canBus()->writeFrame(QCanBusFrame(0x18ef0201U, encodedReadParameter(pid, value)));
+    }
+    else {
+        enqueueOutgoingFrame(QCanBusFrame(0x18ef0201U, encodedReadParameter(pid, value)));
+    }
 }
 
 void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)
@@ -31,4 +36,17 @@ void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)
     quint32 value = 0U;
     std::tie(pid, value) = decodedReadParameter(frame);
     emitReadParameterMessage(QStringLiteral("Trm/Recv"), pid, value);
+}
+
+bool EcuProxy::isDirectWriteEnabled() const
+{
+    return m_directWriteEnabled;
+}
+
+void EcuProxy::setDirectWriteEnabled(bool enabled)
+{
+    if (m_directWriteEnabled != enabled) {
+        m_directWriteEnabled = enabled;
+        emit directWriteEnabledChanged();
+    }
 }

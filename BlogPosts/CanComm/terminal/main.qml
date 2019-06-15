@@ -56,6 +56,19 @@ ApplicationWindow {
         }
 
         CheckBox {
+            id: directWrite
+            anchors {
+                right: skipWrite.left
+                rightMargin: 16
+                top: parent.top
+            }
+            checked: gTerminal.directWriteEnabled
+            text: "Direct Write"
+            font.pixelSize: 24
+            onReleased: gTerminal.directWriteEnabled = !gTerminal.directWriteEnabled
+        }
+
+        CheckBox {
             id: skipWrite
             anchors {
                 right: clear.left
