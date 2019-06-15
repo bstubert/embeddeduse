@@ -21,8 +21,6 @@ public:
     QSharedPointer<QCanBusDevice> canBus() const;
     bool isLogging() const;
     void setLogging(bool enabled);
-    bool isSkipWriteEnabled() const;
-    void setSkipWriteEnabled(bool enabled);
     bool isSkipResponseEnabled() const;
     void setSkipResponseEnabled(bool enabled);
     bool isMissingResponsesEnabled() const;
@@ -38,7 +36,6 @@ public:
 
 signals:
     void logMessage(const QString &msg);
-    void skipWriteEnabledChanged();
     void skipResponseEnabledChanged();
     void missingResponsesEnabledChanged();
 
@@ -52,14 +49,11 @@ protected:
     void emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value);
     void enqueueOutgoingFrame(const QCanBusFrame &frame);
     void dequeueOutgoingFrame();
-
-private:
-    bool skipWrite(const QCanBusFrame &frame) const;
+    virtual bool skipWrite(const QCanBusFrame &frame) const;
 
     int m_ecuId;
     QSharedPointer<QCanBusDevice> m_canBus;
     bool m_logging{true};
-    bool m_skipWriteEnabled{false};
     bool m_skipResponseEnabled{true};
     bool m_missingResponsesEnabled{false};
     QList<QCanBusFrame> m_outgoingQueue;

@@ -38,6 +38,19 @@ void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)
     emitReadParameterMessage(QStringLiteral("Trm/Recv"), pid, value);
 }
 
+bool EcuProxy::isSkipWriteEnabled() const
+{
+    return m_skipWriteEnabled;
+}
+
+void EcuProxy::setSkipWriteEnabled(bool enabled)
+{
+    if (m_skipWriteEnabled != enabled) {
+        m_skipWriteEnabled = enabled;
+        emit skipWriteEnabledChanged();
+    }
+}
+
 bool EcuProxy::isDirectWriteEnabled() const
 {
     return m_directWriteEnabled;
@@ -49,4 +62,15 @@ void EcuProxy::setDirectWriteEnabled(bool enabled)
         m_directWriteEnabled = enabled;
         emit directWriteEnabledChanged();
     }
+}
+
+bool EcuProxy::skipWrite(const QCanBusFrame &frame) const
+{
+    if (!isSkipWriteEnabled()) {
+        return false;
+    }
+    quint16 pid = 0U;
+    quint32 value = 0U;
+    std::tie(pid, value) = decodedReadParameter(frame);
+    return pid % 8U == 0U;
 }

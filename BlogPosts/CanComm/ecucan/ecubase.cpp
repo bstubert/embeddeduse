@@ -70,19 +70,6 @@ void EcuBase::setLogging(bool enabled)
     m_logging = enabled;
 }
 
-bool EcuBase::isSkipWriteEnabled() const
-{
-    return m_skipWriteEnabled;
-}
-
-void EcuBase::setSkipWriteEnabled(bool enabled)
-{
-    if (m_skipWriteEnabled != enabled) {
-        m_skipWriteEnabled = enabled;
-        emit skipWriteEnabledChanged();
-    }
-}
-
 bool EcuBase::isSkipResponseEnabled() const
 {
     return m_skipResponseEnabled;
@@ -231,11 +218,6 @@ void EcuBase::dequeueOutgoingFrame()
 
 bool EcuBase::skipWrite(const QCanBusFrame &frame) const
 {
-    if (!isSkipWriteEnabled()) {
-        return false;
-    }
-    quint16 pid = 0U;
-    quint32 value = 0U;
-    std::tie(pid, value) = decodedReadParameter(frame);
-    return pid % 8U == 0U;
+    Q_UNUSED(frame)
+    return false;
 }
