@@ -39,7 +39,8 @@ void TestMockCanBus::testAvailableDevices_data()
     QTest::addColumn<QString>("plugin");
     QTest::addColumn<QStringList>("interfaces");
 
-    QTest::newRow("mcan0, mcan1") << QString{"mockcan"} << QStringList{"mcan0", "mcan1"};
+    QTest::newRow("mockcan: mcan0, mcan1") << QString{"mockcan"} << QStringList{"mcan0", "mcan1"};
+    QTest::newRow("muppetcan: none") << QString{"muppetcan"} << QStringList{};
 }
 
 void TestMockCanBus::testAvailableDevices()
