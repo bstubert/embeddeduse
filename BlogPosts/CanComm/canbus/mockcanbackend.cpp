@@ -2,11 +2,6 @@
 
 #include "mockcanbackend.h"
 
-QList<QCanBusDeviceInfo> MockCanBackend::interfaces()
-{
-    return {};
-}
-
 MockCanBackend::MockCanBackend(const QString &name)
 {
     Q_UNUSED(name)
@@ -58,5 +53,13 @@ QString MockCanBackend::interpretErrorFrame(const QCanBusFrame &errorFrame)
 {
     Q_UNUSED(errorFrame)
     return {};
+}
+
+QList<QCanBusDeviceInfo> MockCanBackend::interfaces()
+{
+    QList<QCanBusDeviceInfo> result;
+    result.append(createDeviceInfo("mcan0"));
+    result.append(createDeviceInfo("mcan1"));
+    return result;
 }
 

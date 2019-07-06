@@ -16,9 +16,6 @@ public:
     explicit MockCanBackend(const QString &name);
     ~MockCanBackend();
 
-    bool open() override;
-    void close() override;
-
     void setConfigurationParameter(int key, const QVariant &value) override;
 
     bool writeFrame(const QCanBusFrame &newData) override;
@@ -26,6 +23,10 @@ public:
     QString interpretErrorFrame(const QCanBusFrame &errorFrame) override;
 
     static QList<QCanBusDeviceInfo> interfaces();
+
+protected:
+    bool open() override;
+    void close() override;
 
 private:
     void resetConfigurations();

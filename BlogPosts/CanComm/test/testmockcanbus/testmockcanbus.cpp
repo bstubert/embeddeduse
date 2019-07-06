@@ -1,7 +1,14 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
+#include <algorithm>
+#include <memory>
+
+#include <QCanBusDevice>
+#include <QCanBusDeviceInfo>
 #include <QCoreApplication>
 #include <QObject>
+#include <QString>
+#include <QStringList>
 #include <QtDebug>
 #include <QtTest>
 
@@ -13,6 +20,8 @@ class TestMockCanBus : public QObject
 
 private slots:
     void initTestCase();
+    void testAvailableDevices_data();
+    void testAvailableDevices();
     void testCreateDevice_data();
     void testCreateDevice();
 };
@@ -23,6 +32,28 @@ void TestMockCanBus::initTestCase()
     // plugins in /library/path/canbus. Hence, the directory containing the mockcan plugin
     // is called "canbus".
     QCoreApplication::addLibraryPath("../../");
+}
+
+void TestMockCanBus::testAvailableDevices_data()
+{
+    QTest::addColumn<QString>("plugin");
+    QTest::addColumn<QStringList>("interfaces");
+
+    QTest::newRow("mcan0, mcan1") << QString{"mockcan"} << QStringList{"mcan0", "mcan1"};
+}
+
+void TestMockCanBus::testAvailableDevices()
+{
+    QFETCH(QString, plugin);
+    QFETCH(QStringList, interfaces);
+
+    QString currentErrorStr;
+    auto currentDevices = QCanBus::instance()->availableDevices(plugin, &currentErrorStr);
+    QStringList currentInterfaces;
+    std::transform(currentDevices.cbegin(), currentDevices.cend(),
+                   std::back_inserter(currentInterfaces),
+                   [](const QCanBusDeviceInfo &info) { return info.name(); });
+    QCOMPARE(currentInterfaces, interfaces);
 }
 
 void TestMockCanBus::testCreateDevice_data()
@@ -44,8 +75,7 @@ void TestMockCanBus::testCreateDevice_data()
 
 // QCanBus::createDevice() returns nullptr and an error message, if the plugin does not exist.
 // It returns a non-null QCanBusDevice, if the plugin exists. Whether the CAN interface exists,
-// does not matter. This is counterintuitive, but it is exactly how QCanBus::createDevice is
-// implemented.
+// does not matter.
 void TestMockCanBus::testCreateDevice()
 {
     QFETCH(QString, plugin);
@@ -53,10 +83,11 @@ void TestMockCanBus::testCreateDevice()
     QFETCH(bool, isNull);
     QFETCH(QString, errorStr);
 
-    QString lastErrorStr;
-    auto device = QCanBus::instance()->createDevice(plugin, interface, &lastErrorStr);
+    QString currentErrorStr;
+    std::unique_ptr<QCanBusDevice> device{
+        QCanBus::instance()->createDevice(plugin, interface, &currentErrorStr)};
     QCOMPARE(device == nullptr, isNull);
-    QCOMPARE(lastErrorStr, errorStr);
+    QCOMPARE(currentErrorStr, errorStr);
 }
 
 
