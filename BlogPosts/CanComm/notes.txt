@@ -239,3 +239,9 @@ Error cases:
 
 (3) A second terminal requests same parameters. First terminals sees responses as well and
     sends next request.
+
+==================================================
+
+../qt5/configure -opensource -confirm-license -developer-build -c++std c++2a -gstreamer 1.0 \
+    -no-dbus -skip qtwebengine -skip qtwebchannel -skip qtwebsockets \
+    -nomake examples -nomake tests -v
