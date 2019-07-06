@@ -13,8 +13,8 @@ class TestMockCanBus : public QObject
 
 private slots:
     void initTestCase();
-    void testCreate_data();
-    void testCreate();
+    void testCreateDevice_data();
+    void testCreateDevice();
 };
 
 void TestMockCanBus::initTestCase()
@@ -25,7 +25,7 @@ void TestMockCanBus::initTestCase()
     QCoreApplication::addLibraryPath("../../");
 }
 
-void TestMockCanBus::testCreate_data()
+void TestMockCanBus::testCreateDevice_data()
 {
     QTest::addColumn<QString>("plugin");
     QTest::addColumn<QString>("interface");
@@ -46,7 +46,7 @@ void TestMockCanBus::testCreate_data()
 // It returns a non-null QCanBusDevice, if the plugin exists. Whether the CAN interface exists,
 // does not matter. This is counterintuitive, but it is exactly how QCanBus::createDevice is
 // implemented.
-void TestMockCanBus::testCreate()
+void TestMockCanBus::testCreateDevice()
 {
     QFETCH(QString, plugin);
     QFETCH(QString, interface);
