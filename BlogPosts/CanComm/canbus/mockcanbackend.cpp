@@ -1,10 +1,12 @@
 ﻿// Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
+#include <algorithm>
+
 #include "mockcanbackend.h"
 
 MockCanBackend::MockCanBackend(const QString &name)
+    : m_interface{name}
 {
-    Q_UNUSED(name)
     resetConfigurations();
 }
 
@@ -28,6 +30,15 @@ void MockCanBackend::resetConfigurations()
 
 bool MockCanBackend::open()
 {
+    const auto &interfaces = MockCanBackend::interfaces();
+    auto pos = std::find_if(interfaces.cbegin(), interfaces.cend(),
+                            [this](const QCanBusDeviceInfo &info) {
+                                return info.name() == m_interface;
+                            });
+    if (pos == interfaces.cend()) {
+        close();
+        return false;
+    }
     setState(QCanBusDevice::ConnectedState);
     return true;
 }

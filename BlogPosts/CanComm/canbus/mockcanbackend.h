@@ -30,5 +30,7 @@ protected:
 
 private:
     void resetConfigurations();
+
+    QString m_interface;
 };
 

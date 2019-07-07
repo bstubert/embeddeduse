@@ -24,6 +24,8 @@ private slots:
     void testAvailableDevices();
     void testCreateDevice_data();
     void testCreateDevice();
+    void testConnectDevice_data();
+    void testConnectDevice();
 };
 
 void TestMockCanBus::initTestCase()
@@ -64,9 +66,9 @@ void TestMockCanBus::testCreateDevice_data()
     QTest::addColumn<bool>("isNull");
     QTest::addColumn<QString>("errorStr");
 
-    QTest::newRow("mockcan/can0") << QString{"mockcan"} << QString{"can0"} << false
+    QTest::newRow("mockcan/mcan0") << QString{"mockcan"} << QString{"mcan0"} << false
                                   << QString{};
-    QTest::newRow("muppetcan/can0") << QString{"muppetcan"} << QString{"can0"} << true
+    QTest::newRow("muppetcan/mcan0") << QString{"muppetcan"} << QString{"mcan0"} << true
                                   << QString{"No such plugin: \'muppetcan\'"};
     QTest::newRow("mockcan/sky9") << QString{"mockcan"} << QString{"sky9"} << false
                                   << QString{};
@@ -89,6 +91,30 @@ void TestMockCanBus::testCreateDevice()
         QCanBus::instance()->createDevice(plugin, interface, &currentErrorStr)};
     QCOMPARE(device == nullptr, isNull);
     QCOMPARE(currentErrorStr, errorStr);
+}
+
+void TestMockCanBus::testConnectDevice_data()
+{
+    QTest::addColumn<QString>("interface");
+    QTest::addColumn<bool>("connected");
+
+    QTest::newRow("mcan0") << QString{"mcan0"} << true;
+    QTest::newRow("sky7") << QString{"sky7"} << false;
+}
+
+void TestMockCanBus::testConnectDevice()
+{
+    QFETCH(QString, interface);
+    QFETCH(bool, connected);
+
+    QString currentErrorStr;
+    std::unique_ptr<QCanBusDevice> device{
+        QCanBus::instance()->createDevice("mockcan", interface, &currentErrorStr)};
+
+    auto ok = device->connectDevice();
+    QCOMPARE(ok, connected);
+    QCOMPARE(device->state(), connected ? QCanBusDevice::ConnectedState
+                                        : QCanBusDevice::UnconnectedState);
 }
 
 
