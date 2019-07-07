@@ -26,6 +26,9 @@ private slots:
     void testCreateDevice();
     void testConnectDevice_data();
     void testConnectDevice();
+    void testConnectConnectedDevice();
+    void testDisconnectDevice();
+    void testDisconnectUnconnectedDevice();
 };
 
 void TestMockCanBus::initTestCase()
@@ -111,10 +114,54 @@ void TestMockCanBus::testConnectDevice()
     std::unique_ptr<QCanBusDevice> device{
         QCanBus::instance()->createDevice("mockcan", interface, &currentErrorStr)};
 
+    QCOMPARE(device->state(), QCanBusDevice::UnconnectedState);
     auto ok = device->connectDevice();
     QCOMPARE(ok, connected);
     QCOMPARE(device->state(), connected ? QCanBusDevice::ConnectedState
                                         : QCanBusDevice::UnconnectedState);
+}
+
+void TestMockCanBus::testConnectConnectedDevice()
+{
+    QString currentErrorStr;
+    std::unique_ptr<QCanBusDevice> device{
+        QCanBus::instance()->createDevice("mockcan", "mcan0", &currentErrorStr)};
+
+    QCOMPARE(device->state(), QCanBusDevice::UnconnectedState);
+    auto ok = device->connectDevice();
+    QVERIFY(ok);
+    QCOMPARE(device->state(), QCanBusDevice::ConnectedState);
+
+    ok = device->connectDevice();
+    QVERIFY(!ok);
+    QCOMPARE(device->state(), QCanBusDevice::ConnectedState);
+    QCOMPARE(device->error(), QCanBusDevice::ConnectionError);
+}
+
+void TestMockCanBus::testDisconnectDevice()
+{
+    QString currentErrorStr;
+    std::unique_ptr<QCanBusDevice> device{
+        QCanBus::instance()->createDevice("mockcan", "mcan1", &currentErrorStr)};
+
+    QCOMPARE(device->state(), QCanBusDevice::UnconnectedState);
+
+    auto ok = device->connectDevice();
+    QVERIFY(ok);
+    QCOMPARE(device->state(), QCanBusDevice::ConnectedState);
+    device->disconnectDevice();
+    QCOMPARE(device->state(), QCanBusDevice::UnconnectedState);
+}
+
+void TestMockCanBus::testDisconnectUnconnectedDevice()
+{
+    QString currentErrorStr;
+    std::unique_ptr<QCanBusDevice> device{
+        QCanBus::instance()->createDevice("mockcan", "mcan1", &currentErrorStr)};
+
+    QCOMPARE(device->state(), QCanBusDevice::UnconnectedState);
+    device->disconnectDevice();
+    QCOMPARE(device->state(), QCanBusDevice::UnconnectedState);
 }
 
 
