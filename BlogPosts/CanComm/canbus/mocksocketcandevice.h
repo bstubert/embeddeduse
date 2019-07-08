@@ -9,12 +9,12 @@
 #include <QVariant>
 
 
-class MockCanBackend : public QCanBusDevice
+class MockSocketCanDevice : public QCanBusDevice
 {
     Q_OBJECT
 public:
-    explicit MockCanBackend(const QString &name);
-    ~MockCanBackend();
+    explicit MockSocketCanDevice(const QString &name);
+    ~MockSocketCanDevice();
 
     void setConfigurationParameter(int key, const QVariant &value) override;
 

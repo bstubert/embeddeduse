@@ -13,8 +13,8 @@ find_package(Qt5SerialBus)
 add_library(
     ${PROJECT_NAME} MODULE
     main.cpp
-    mockcanbackend.cpp
-    mockcanbackend.h
+    mocksocketcandevice.cpp
+    mocksocketcandevice.h
 )
 
 #add_library(EmUse::mockcan ALIAS ${PROJECT_NAME})

@@ -2,20 +2,20 @@
 
 #include <algorithm>
 
-#include "mockcanbackend.h"
+#include "mocksocketcandevice.h"
 
-MockCanBackend::MockCanBackend(const QString &name)
+MockSocketCanDevice::MockSocketCanDevice(const QString &name)
     : m_interface{name}
 {
     resetConfigurations();
 }
 
-MockCanBackend::~MockCanBackend()
+MockSocketCanDevice::~MockSocketCanDevice()
 {
     close();
 }
 
-void MockCanBackend::resetConfigurations()
+void MockSocketCanDevice::resetConfigurations()
 {
     QCanBusDevice::setConfigurationParameter(
                 QCanBusDevice::LoopbackKey, true);
@@ -28,9 +28,9 @@ void MockCanBackend::resetConfigurations()
                 QCanBusDevice::CanFdKey, false);
 }
 
-bool MockCanBackend::open()
+bool MockSocketCanDevice::open()
 {
-    const auto &interfaces = MockCanBackend::interfaces();
+    const auto &interfaces = MockSocketCanDevice::interfaces();
     auto pos = std::find_if(interfaces.cbegin(), interfaces.cend(),
                             [this](const QCanBusDeviceInfo &info) {
                                 return info.name() == m_interface;
@@ -43,31 +43,31 @@ bool MockCanBackend::open()
     return true;
 }
 
-void MockCanBackend::close()
+void MockSocketCanDevice::close()
 {
     setState(QCanBusDevice::UnconnectedState);
 }
 
-void MockCanBackend::setConfigurationParameter(int key, const QVariant &value)
+void MockSocketCanDevice::setConfigurationParameter(int key, const QVariant &value)
 {
     Q_UNUSED(key)
     Q_UNUSED(value)
 }
 
-bool MockCanBackend::writeFrame(const QCanBusFrame &frame)
+bool MockSocketCanDevice::writeFrame(const QCanBusFrame &frame)
 {
     Q_UNUSED(frame)
     emit framesWritten(1);
     return true;
 }
 
-QString MockCanBackend::interpretErrorFrame(const QCanBusFrame &errorFrame)
+QString MockSocketCanDevice::interpretErrorFrame(const QCanBusFrame &errorFrame)
 {
     Q_UNUSED(errorFrame)
     return {};
 }
 
-QList<QCanBusDeviceInfo> MockCanBackend::interfaces()
+QList<QCanBusDeviceInfo> MockSocketCanDevice::interfaces()
 {
     QList<QCanBusDeviceInfo> result;
     result.append(createDeviceInfo("mcan0"));

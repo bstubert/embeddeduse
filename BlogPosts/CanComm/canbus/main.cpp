@@ -5,7 +5,7 @@
 #include <QCanBusFactoryV2>
 #include <QObject>
 
-#include "mockcanbackend.h"
+#include "mocksocketcandevice.h"
 
 class MockCanBusPlugin : public QObject, public QCanBusFactoryV2
 {
@@ -17,13 +17,13 @@ public:
     QList<QCanBusDeviceInfo> availableDevices(QString *errorMessage) const override
     {
         Q_UNUSED(errorMessage);
-        return MockCanBackend::interfaces();
+        return MockSocketCanDevice::interfaces();
     }
 
     QCanBusDevice *createDevice(const QString &interfaceName, QString *errorMessage) const override
     {
         Q_UNUSED(errorMessage);
-        auto device = new MockCanBackend(interfaceName);
+        auto device = new MockSocketCanDevice(interfaceName);
         return device;
     }
 };
