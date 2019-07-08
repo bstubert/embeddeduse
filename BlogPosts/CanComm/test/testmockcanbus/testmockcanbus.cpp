@@ -3,10 +3,13 @@
 #include <algorithm>
 #include <memory>
 
+#include <QByteArray>
 #include <QCanBusDevice>
 #include <QCanBusDeviceInfo>
+#include <QCanBusFrame>
 #include <QCoreApplication>
 #include <QObject>
+#include <QSignalSpy>
 #include <QString>
 #include <QStringList>
 #include <QtDebug>
@@ -29,6 +32,10 @@ private slots:
     void testConnectConnectedDevice();
     void testDisconnectDevice();
     void testDisconnectUnconnectedDevice();
+    void testWriteFrame();
+
+private:
+    QCanBusDevice *createAndConnectDevice(const QString &interface);
 };
 
 void TestMockCanBus::initTestCase()
@@ -164,6 +171,23 @@ void TestMockCanBus::testDisconnectUnconnectedDevice()
     QCOMPARE(device->state(), QCanBusDevice::UnconnectedState);
 }
 
+void TestMockCanBus::testWriteFrame()
+{
+    std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
+    QSignalSpy spy{device.get(), &QCanBusDevice::framesWritten};
+    auto ok = device->writeFrame(QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")});
+    QVERIFY(ok);
+    QCOMPARE(spy.count(), 1);
+}
+
+
+QCanBusDevice *TestMockCanBus::createAndConnectDevice(const QString &interface)
+{
+    QString errorStr;
+    auto device = QCanBus::instance()->createDevice("mockcan", interface, &errorStr);
+    device->connectDevice();
+    return device;
+}
 
 QTEST_GUILESS_MAIN(TestMockCanBus)
 

@@ -18,7 +18,7 @@ public:
 
     void setConfigurationParameter(int key, const QVariant &value) override;
 
-    bool writeFrame(const QCanBusFrame &newData) override;
+    bool writeFrame(const QCanBusFrame &frame) override;
 
     QString interpretErrorFrame(const QCanBusFrame &errorFrame) override;
 

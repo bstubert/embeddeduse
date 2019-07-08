@@ -54,10 +54,11 @@ void MockCanBackend::setConfigurationParameter(int key, const QVariant &value)
     Q_UNUSED(value)
 }
 
-bool MockCanBackend::writeFrame(const QCanBusFrame &newData)
+bool MockCanBackend::writeFrame(const QCanBusFrame &frame)
 {
-    Q_UNUSED(newData)
-    return false;
+    Q_UNUSED(frame)
+    emit framesWritten(1);
+    return true;
 }
 
 QString MockCanBackend::interpretErrorFrame(const QCanBusFrame &errorFrame)
