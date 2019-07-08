@@ -7,25 +7,11 @@
 MockSocketCanDevice::MockSocketCanDevice(const QString &name)
     : m_interface{name}
 {
-    resetConfigurations();
 }
 
 MockSocketCanDevice::~MockSocketCanDevice()
 {
     close();
-}
-
-void MockSocketCanDevice::resetConfigurations()
-{
-    QCanBusDevice::setConfigurationParameter(
-                QCanBusDevice::LoopbackKey, true);
-    QCanBusDevice::setConfigurationParameter(
-                QCanBusDevice::ReceiveOwnKey, false);
-    QCanBusDevice::setConfigurationParameter(
-                QCanBusDevice::ErrorFilterKey,
-                QVariant::fromValue(QCanBusFrame::FrameErrors(QCanBusFrame::AnyError)));
-    QCanBusDevice::setConfigurationParameter(
-                QCanBusDevice::CanFdKey, false);
 }
 
 bool MockSocketCanDevice::open()

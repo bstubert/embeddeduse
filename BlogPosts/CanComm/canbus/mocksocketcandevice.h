@@ -29,8 +29,6 @@ protected:
     void close() override;
 
 private:
-    void resetConfigurations();
-
     QString m_interface;
 };
 
