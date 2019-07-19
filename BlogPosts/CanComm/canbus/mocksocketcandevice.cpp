@@ -4,8 +4,9 @@
 
 #include "mocksocketcandevice.h"
 
-MockSocketCanDevice::MockSocketCanDevice(const QString &name)
-    : m_interface{name}
+MockSocketCanDevice::MockSocketCanDevice(const QString &name, QObject *parent)
+    : QCanBusDevice{parent}
+    , m_interface{name}
 {
 }
 

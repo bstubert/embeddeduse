@@ -198,6 +198,7 @@ void TestMockCanBus::testWriteFrame()
     auto ok = device->writeFrame(requestFrame);
     QVERIFY(ok);
     QCOMPARE(spy.count(), 1);
+//    QCOMPARE(actualCanIo(device.get()), requestFrame);
 }
 
 

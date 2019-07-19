@@ -13,7 +13,7 @@ class MockSocketCanDevice : public QCanBusDevice
 {
     Q_OBJECT
 public:
-    explicit MockSocketCanDevice(const QString &name);
+    explicit MockSocketCanDevice(const QString &name, QObject *parent = nullptr);
     ~MockSocketCanDevice();
 
     bool writeFrame(const QCanBusFrame &frame) override;
