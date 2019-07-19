@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include "canbusext.h"
 #include "mocksocketcandevice.h"
 
 MockSocketCanDevice::MockSocketCanDevice(const QString &name, QObject *parent)
@@ -37,7 +38,8 @@ void MockSocketCanDevice::close()
 
 bool MockSocketCanDevice::writeFrame(const QCanBusFrame &frame)
 {
-    Q_UNUSED(frame)
+    QCanBusDevice::setConfigurationParameter(CanConfigurationKey::ActualCanIo,
+                                             QVariant::fromValue(frame));
     emit framesWritten(1);
     return true;
 }
