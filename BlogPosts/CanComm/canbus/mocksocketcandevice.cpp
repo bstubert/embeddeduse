@@ -38,8 +38,7 @@ void MockSocketCanDevice::close()
 
 bool MockSocketCanDevice::writeFrame(const QCanBusFrame &frame)
 {
-    QCanBusDevice::setConfigurationParameter(CanConfigurationKey::ActualCanIo,
-                                             QVariant::fromValue(frame));
+    CanUtils::appendActualIoFrame(this, frame);
     emit framesWritten(1);
     return true;
 }

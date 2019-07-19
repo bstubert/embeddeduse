@@ -9,6 +9,7 @@
 #include <QCanBusDeviceInfo>
 #include <QCanBusFrame>
 #include <QCoreApplication>
+#include <QList>
 #include <QObject>
 #include <QSignalSpy>
 #include <QString>
@@ -38,8 +39,6 @@ private slots:
 
 private:
     QCanBusDevice *createAndConnectDevice(const QString &interface);
-    QCanBusFrame actualCanIo(const QCanBusDevice *device) const;
-    void setActualCanIo(QCanBusDevice *device, const QCanBusFrame &frame);
 };
 
 void TestMockCanBus::initTestCase()
@@ -181,24 +180,29 @@ void TestMockCanBus::testCanIoConfigurationKeys()
     std::unique_ptr<QCanBusDevice> device{
         QCanBus::instance()->createDevice("mockcan", "mcan1", &currentErrorStr)};
 
-    // If no CAN frame was set for ActualCanIo before, a default-constructed QCanBusFrame,
-    // which is always valid, is returned.
-    QVERIFY(actualCanIo(device.get()).isValid());
+    QVERIFY(CanUtils::actualCanIo(device.get()).isEmpty());
 
-    auto requestFrame = QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")};
-    setActualCanIo(device.get(), requestFrame);
-    QCOMPARE(actualCanIo(device.get()), requestFrame);
+    auto frames = QList<QCanBusFrame>{
+            QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")}
+    };
+    CanUtils::setActualCanIo(device.get(), frames);
+    QCOMPARE(CanUtils::actualCanIo(device.get()), frames);
 }
 
 void TestMockCanBus::testWriteFrame()
 {
     std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
     QSignalSpy spy{device.get(), &QCanBusDevice::framesWritten};
-    auto requestFrame = QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")};
-    auto ok = device->writeFrame(requestFrame);
-    QVERIFY(ok);
-    QCOMPARE(spy.count(), 1);
-    QCOMPARE(actualCanIo(device.get()), requestFrame);
+    auto frames = QList<QCanBusFrame>{
+            QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")},
+            QCanBusFrame{0x18ef0301U, QByteArray::fromHex("0195020000000000")},
+    };
+    for (const auto &frame : frames) {
+        auto ok = device->writeFrame(frame);
+        QVERIFY(ok);
+    }
+    QCOMPARE(spy.count(), frames.size());
+    QCOMPARE(CanUtils::actualCanIo(device.get()), frames);
 }
 
 
@@ -208,18 +212,6 @@ QCanBusDevice *TestMockCanBus::createAndConnectDevice(const QString &interface)
     auto device = QCanBus::instance()->createDevice("mockcan", interface, &errorStr);
     device->connectDevice();
     return device;
-}
-
-QCanBusFrame TestMockCanBus::actualCanIo(const QCanBusDevice *device) const
-{
-    return device->configurationParameter(CanConfigurationKey::ActualCanIo)
-            .value<QCanBusFrame>();
-}
-
-void TestMockCanBus::setActualCanIo(QCanBusDevice *device, const QCanBusFrame &frame)
-{
-    device->setConfigurationParameter(CanConfigurationKey::ActualCanIo,
-                                      QVariant::fromValue(frame));
 }
 
 QTEST_GUILESS_MAIN(TestMockCanBus)
