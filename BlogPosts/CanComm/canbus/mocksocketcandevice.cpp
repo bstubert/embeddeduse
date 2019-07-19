@@ -34,12 +34,6 @@ void MockSocketCanDevice::close()
     setState(QCanBusDevice::UnconnectedState);
 }
 
-void MockSocketCanDevice::setConfigurationParameter(int key, const QVariant &value)
-{
-    Q_UNUSED(key)
-    Q_UNUSED(value)
-}
-
 bool MockSocketCanDevice::writeFrame(const QCanBusFrame &frame)
 {
     Q_UNUSED(frame)

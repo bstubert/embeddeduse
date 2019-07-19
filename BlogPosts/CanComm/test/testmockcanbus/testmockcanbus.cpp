@@ -4,6 +4,7 @@
 #include <memory>
 
 #include <QByteArray>
+#include <QCanBus>
 #include <QCanBusDevice>
 #include <QCanBusDeviceInfo>
 #include <QCanBusFrame>
@@ -15,7 +16,7 @@
 #include <QtDebug>
 #include <QtTest>
 
-#include <QCanBus>
+#include "canbusext.h"
 
 class TestMockCanBus : public QObject
 {
@@ -32,10 +33,13 @@ private slots:
     void testConnectConnectedDevice();
     void testDisconnectDevice();
     void testDisconnectUnconnectedDevice();
+    void testCanIoConfigurationKeys();
     void testWriteFrame();
 
 private:
     QCanBusDevice *createAndConnectDevice(const QString &interface);
+    QCanBusFrame actualCanIo(const QCanBusDevice *device) const;
+    void setActualCanIo(QCanBusDevice *device, const QCanBusFrame &frame);
 };
 
 void TestMockCanBus::initTestCase()
@@ -171,11 +175,27 @@ void TestMockCanBus::testDisconnectUnconnectedDevice()
     QCOMPARE(device->state(), QCanBusDevice::UnconnectedState);
 }
 
+void TestMockCanBus::testCanIoConfigurationKeys()
+{
+    QString currentErrorStr;
+    std::unique_ptr<QCanBusDevice> device{
+        QCanBus::instance()->createDevice("mockcan", "mcan1", &currentErrorStr)};
+
+    // If no CAN frame was set for ActualCanIo before, a default-constructed QCanBusFrame,
+    // which is always valid, is returned.
+    QVERIFY(actualCanIo(device.get()).isValid());
+
+    auto requestFrame = QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")};
+    setActualCanIo(device.get(), requestFrame);
+    QCOMPARE(actualCanIo(device.get()), requestFrame);
+}
+
 void TestMockCanBus::testWriteFrame()
 {
     std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
     QSignalSpy spy{device.get(), &QCanBusDevice::framesWritten};
-    auto ok = device->writeFrame(QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")});
+    auto requestFrame = QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")};
+    auto ok = device->writeFrame(requestFrame);
     QVERIFY(ok);
     QCOMPARE(spy.count(), 1);
 }
@@ -187,6 +207,17 @@ QCanBusDevice *TestMockCanBus::createAndConnectDevice(const QString &interface)
     auto device = QCanBus::instance()->createDevice("mockcan", interface, &errorStr);
     device->connectDevice();
     return device;
+}
+
+QCanBusFrame TestMockCanBus::actualCanIo(const QCanBusDevice *device) const
+{
+    return device->configurationParameter(CanConfigurationKey::ActualCanIo)
+            .value<QCanBusFrame>();
+}
+
+void TestMockCanBus::setActualCanIo(QCanBusDevice *device, const QCanBusFrame &frame)
+{
+    device->setConfigurationParameter(CanConfigurationKey::ActualCanIo, QVariant::fromValue(frame));
 }
 
 QTEST_GUILESS_MAIN(TestMockCanBus)

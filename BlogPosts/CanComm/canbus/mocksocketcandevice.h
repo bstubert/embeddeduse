@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <QCanBusFrame>
 #include <QCanBusDevice>
 #include <QCanBusDeviceInfo>
+#include <QCanBusFrame>
 #include <QString>
 #include <QVariant>
 
@@ -15,8 +15,6 @@ class MockSocketCanDevice : public QCanBusDevice
 public:
     explicit MockSocketCanDevice(const QString &name);
     ~MockSocketCanDevice();
-
-    void setConfigurationParameter(int key, const QVariant &value) override;
 
     bool writeFrame(const QCanBusFrame &frame) override;
 

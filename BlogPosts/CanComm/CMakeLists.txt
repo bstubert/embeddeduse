@@ -6,6 +6,7 @@ project(CanComm)
 set(CMAKE_VERBOSE_MAKEFILE true)
 
 add_subdirectory(canbus)
+add_subdirectory(canbusext)
 add_subdirectory(ecucan)
 add_subdirectory(ecu)
 add_subdirectory(terminal)
