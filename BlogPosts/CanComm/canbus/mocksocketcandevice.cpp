@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include <QtDebug>
+
 #include "canbusext.h"
 #include "mocksocketcandevice.h"
 
@@ -38,6 +40,15 @@ void MockSocketCanDevice::close()
 
 bool MockSocketCanDevice::writeFrame(const QCanBusFrame &frame)
 {
+    if (CanUtils::expectedCanIo(this).isEmpty()) {
+        qWarning() << "Expected no frame, but got " << frame.toString();
+        return false;
+    }
+    auto xframe = CanUtils::takeFirstExpectedCanIoFrame(this);
+    if (xframe != frame) {
+        qWarning() << "Expected " << xframe.toString() << ", but got " << frame.toString();
+        return false;
+    }
     CanUtils::appendActualIoFrame(this, frame);
     emit framesWritten(1);
     return true;

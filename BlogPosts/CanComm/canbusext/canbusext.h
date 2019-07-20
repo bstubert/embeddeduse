@@ -20,6 +20,11 @@ inline bool operator==(const QCanBusFrame &frame1, const QCanBusFrame &frame2)
     return frame1.frameId() == frame2.frameId() && frame1.payload() == frame2.payload();
 }
 
+inline bool operator!=(const QCanBusFrame &frame1, const QCanBusFrame &frame2)
+{
+    return !(frame1 == frame2);
+}
+
 namespace CanUtils
 {
 inline QList<QCanBusFrame> actualCanIo(const QCanBusDevice *device)
@@ -51,5 +56,13 @@ inline void setExpectedCanIo(QCanBusDevice *device, const QList<QCanBusFrame> &f
 {
     device->setConfigurationParameter(CanConfigurationKey::ExpectedCanIo,
                                       QVariant::fromValue(frames));
+}
+
+inline QCanBusFrame takeFirstExpectedCanIoFrame(QCanBusDevice *device)
+{
+    auto frames = expectedCanIo(device);
+    auto firstFrame = frames.takeFirst();
+    setExpectedCanIo(device, frames);
+    return firstFrame;
 }
 }
