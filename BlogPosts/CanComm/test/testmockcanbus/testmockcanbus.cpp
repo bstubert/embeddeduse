@@ -34,7 +34,8 @@ private slots:
     void testConnectConnectedDevice();
     void testDisconnectDevice();
     void testDisconnectUnconnectedDevice();
-    void testCanIoConfigurationKeys();
+    void testActualCanIoConfiguration_data();
+    void testActualCanIoConfiguration();
     void testWriteFrame();
 
 private:
@@ -174,17 +175,30 @@ void TestMockCanBus::testDisconnectUnconnectedDevice()
     QCOMPARE(device->state(), QCanBusDevice::UnconnectedState);
 }
 
-void TestMockCanBus::testCanIoConfigurationKeys()
+void TestMockCanBus::testActualCanIoConfiguration_data()
 {
+    QTest::addColumn<QList<QCanBusFrame>>("frames");
+
+    QTest::newRow("0 frames") << QList<QCanBusFrame>{};
+    QTest::newRow("1 frame") << QList<QCanBusFrame>{
+        QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")}
+    };
+    QTest::newRow("2 frames") << QList<QCanBusFrame>{
+        QCanBusFrame{0x185f0901U, QByteArray::fromHex("018A010102300405")},
+        QCanBusFrame{0x18ed0301U, QByteArray::fromHex("018A0105a2f0b405")}
+    };
+}
+
+void TestMockCanBus::testActualCanIoConfiguration()
+{
+    QFETCH(QList<QCanBusFrame>, frames);
+
     QString currentErrorStr;
     std::unique_ptr<QCanBusDevice> device{
         QCanBus::instance()->createDevice("mockcan", "mcan1", &currentErrorStr)};
 
     QVERIFY(CanUtils::actualCanIo(device.get()).isEmpty());
 
-    auto frames = QList<QCanBusFrame>{
-            QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")}
-    };
     CanUtils::setActualCanIo(device.get(), frames);
     QCOMPARE(CanUtils::actualCanIo(device.get()), frames);
 }
