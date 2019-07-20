@@ -11,7 +11,8 @@
 Q_DECLARE_METATYPE(QCanBusFrame)
 
 enum CanConfigurationKey {
-    ActualCanIo = QCanBusDevice::UserKey
+    ActualCanIo = QCanBusDevice::UserKey,
+    ExpectedCanIo
 };
 
 inline bool operator==(const QCanBusFrame &frame1, const QCanBusFrame &frame2)
@@ -38,5 +39,17 @@ inline void appendActualIoFrame(QCanBusDevice *device, const QCanBusFrame frame)
     auto frames = actualCanIo(device);
     frames.append(frame);
     setActualCanIo(device, frames);
+}
+
+inline QList<QCanBusFrame> expectedCanIo(const QCanBusDevice *device)
+{
+    return device->configurationParameter(CanConfigurationKey::ExpectedCanIo)
+            .value<QList<QCanBusFrame>>();
+}
+
+inline void setExpectedCanIo(QCanBusDevice *device, const QList<QCanBusFrame> &frames)
+{
+    device->setConfigurationParameter(CanConfigurationKey::ExpectedCanIo,
+                                      QVariant::fromValue(frames));
 }
 }

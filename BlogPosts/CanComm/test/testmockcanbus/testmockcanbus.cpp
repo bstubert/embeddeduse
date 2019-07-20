@@ -36,6 +36,8 @@ private slots:
     void testDisconnectUnconnectedDevice();
     void testActualCanIoConfiguration_data();
     void testActualCanIoConfiguration();
+    void testExpectedCanIoConfiguration_data();
+    void testExpectedCanIoConfiguration();
     void testWriteFrame();
 
 private:
@@ -203,6 +205,33 @@ void TestMockCanBus::testActualCanIoConfiguration()
     QCOMPARE(CanUtils::actualCanIo(device.get()), frames);
 }
 
+void TestMockCanBus::testExpectedCanIoConfiguration_data()
+{
+    QTest::addColumn<QList<QCanBusFrame>>("frames");
+
+    QTest::newRow("0 frames") << QList<QCanBusFrame>{};
+    QTest::newRow("1 frame") << QList<QCanBusFrame>{
+        QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")}
+    };
+    QTest::newRow("2 frames") << QList<QCanBusFrame>{
+        QCanBusFrame{0x185f0901U, QByteArray::fromHex("018A010102300405")},
+        QCanBusFrame{0x18ed0301U, QByteArray::fromHex("018A0105a2f0b405")}
+    };
+}
+
+void TestMockCanBus::testExpectedCanIoConfiguration()
+{
+    QFETCH(QList<QCanBusFrame>, frames);
+
+    QString currentErrorStr;
+    std::unique_ptr<QCanBusDevice> device{
+        QCanBus::instance()->createDevice("mockcan", "mcan1", &currentErrorStr)};
+
+    QVERIFY(CanUtils::expectedCanIo(device.get()).isEmpty());
+
+    CanUtils::setExpectedCanIo(device.get(), frames);
+    QCOMPARE(CanUtils::expectedCanIo(device.get()), frames);
+}
 void TestMockCanBus::testWriteFrame()
 {
     std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
