@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include <QMetaType>
 #include <QtDebug>
 
 #include "canbusext.h"
@@ -11,6 +12,9 @@ MockSocketCanDevice::MockSocketCanDevice(const QString &name, QObject *parent)
     : QCanBusDevice{parent}
     , m_interface{name}
 {
+    // Required to use QCanBusDevice::CanBusError in asynchronous signal-slot connections and
+    // in QSignalSpys.
+    qRegisterMetaType<QCanBusDevice::CanBusError>();
 }
 
 MockSocketCanDevice::~MockSocketCanDevice()
@@ -51,6 +55,7 @@ bool MockSocketCanDevice::writeFrame(const QCanBusFrame &frame)
     }
     CanUtils::appendActualIoFrame(this, CanUtils::makeOutgoingFrame(frame));
     emit framesWritten(1);
+    checkForDeviceErrors();
     receiveIncomingFrames();
     return true;
 }
@@ -79,6 +84,18 @@ bool MockSocketCanDevice::open()
 void MockSocketCanDevice::close()
 {
     setState(QCanBusDevice::UnconnectedState);
+}
+
+void MockSocketCanDevice::checkForDeviceErrors()
+{
+    auto expectedFrames = CanUtils::expectedCanIo(this);
+    while (m_frameIndex < m_frameCount &&
+           expectedFrames[m_frameIndex].first == CanFrameType::DeviceError) {
+        CanUtils::appendActualIoFrame(this, expectedFrames[m_frameIndex]);
+        auto deviceError = CanUtils::deviceError(expectedFrames[m_frameIndex]);
+        setError(deviceError.first, deviceError.second);
+        ++m_frameIndex;
+    }
 }
 
 void MockSocketCanDevice::receiveIncomingFrames()

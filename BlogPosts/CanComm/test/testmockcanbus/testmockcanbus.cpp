@@ -42,6 +42,9 @@ private slots:
     void testWriteFrame();
     void testReadParameter_data();
     void testReadParameter();
+    void testDeviceErrors_data();
+    void testDeviceErrors();
+    void testWriteFrameErrors();
 
 private:
     QCanBusDevice *createAndConnectDevice(const QString &interface);
@@ -359,6 +362,53 @@ void TestMockCanBus::testReadParameter()
     QCOMPARE(receivedSpy.size(), receivedCount);
     QCOMPARE(CanUtils::actualCanIo(device.get()), expectedCanIo);
     QCOMPARE(device->readAllFrames(), incomingFrames);
+}
+
+void TestMockCanBus::testDeviceErrors_data()
+{
+    QTest::addColumn<QCanBusDevice::CanBusError>("canError");
+    QTest::addColumn<CanErrorNo>("errorNo");
+    QTest::addColumn<QString>("errorString");
+
+    QTest::newRow("WriteError - NoBufferSpaceAvailable")
+            << QCanBusDevice::CanBusError::WriteError
+            << CanErrorNo::NoBufferSpaceAvailable
+            << QStringLiteral("No buffer space available");
+    QTest::newRow("ConfigurationError - CannotFilterUnknownFrames")
+            << QCanBusDevice::CanBusError::ConfigurationError
+            << CanErrorNo::CannotFilterUnknownFrames
+            << QStringLiteral("Cannot set filter for frame type: unknown");
+}
+
+void TestMockCanBus::testDeviceErrors()
+{
+    QFETCH(QCanBusDevice::CanBusError, canError);
+    QFETCH(CanErrorNo, errorNo);
+    QFETCH(QString, errorString);
+
+    auto expectedError = CanUtils::makeDeviceError(canError, errorNo);
+    QCOMPARE(expectedError.first, CanFrameType::DeviceError);
+    QVERIFY(!expectedError.second.isValid());
+
+    auto deviceError = CanUtils::deviceError(expectedError);
+    QCOMPARE(deviceError.first, errorString);
+    QCOMPARE(deviceError.second, canError);
+}
+
+void TestMockCanBus::testWriteFrameErrors()
+{
+    std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
+    QSignalSpy errorSpy{device.get(), &QCanBusDevice::errorOccurred};
+    auto req1 = CanUtils::makeOutgoingFrame(0x18ef0201U, "018A010000000000");
+    auto err1 = CanUtils::makeDeviceError(QCanBusDevice::CanBusError::WriteError,
+                                          CanErrorNo::NoBufferSpaceAvailable);
+    CanUtils::setExpectedCanIo(device.get(), ExpectedCanFrameCollection{req1, err1});
+    device->writeFrame(req1.second);
+    QCOMPARE(errorSpy.size(), 1);
+    QCOMPARE(errorSpy[0][0].value<QCanBusDevice::CanBusError>(),
+            CanUtils::deviceError(err1).second);
+    QCOMPARE(device->error(), CanUtils::deviceError(err1).second);
+    QCOMPARE(device->errorString(), CanUtils::deviceError(err1).first);
 }
 
 
