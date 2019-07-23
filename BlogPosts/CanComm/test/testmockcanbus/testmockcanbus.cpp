@@ -40,6 +40,8 @@ private slots:
     void testExpectedCanIoConfiguration();
     void testWriteFrame_data();
     void testWriteFrame();
+    void testReadParameter_data();
+    void testReadParameter();
 
 private:
     QCanBusDevice *createAndConnectDevice(const QString &interface);
@@ -180,21 +182,21 @@ void TestMockCanBus::testDisconnectUnconnectedDevice()
 
 void TestMockCanBus::testActualCanIoConfiguration_data()
 {
-    QTest::addColumn<QList<QCanBusFrame>>("frames");
+    QTest::addColumn<ExpectedCanFrameCollection>("frames");
 
-    QTest::newRow("0 frames") << QList<QCanBusFrame>{};
-    QTest::newRow("1 frame") << QList<QCanBusFrame>{
-        QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")}
+    QTest::newRow("0 frames") << ExpectedCanFrameCollection{};
+    QTest::newRow("1 frame") << ExpectedCanFrameCollection{
+        CanUtils::makeOutgoingFrame(0x18ef0201U, "018A010000000000")
     };
-    QTest::newRow("2 frames") << QList<QCanBusFrame>{
-        QCanBusFrame{0x185f0901U, QByteArray::fromHex("018A010102300405")},
-        QCanBusFrame{0x18ed0301U, QByteArray::fromHex("018A0105a2f0b405")}
+    QTest::newRow("2 frames") << ExpectedCanFrameCollection{
+        CanUtils::makeOutgoingFrame(0x185f0901U, "018A010102300405"),
+        CanUtils::makeOutgoingFrame(0x18ed0301U, "018A0105a2f0b405")
     };
 }
 
 void TestMockCanBus::testActualCanIoConfiguration()
 {
-    QFETCH(QList<QCanBusFrame>, frames);
+    QFETCH(ExpectedCanFrameCollection, frames);
 
     QString currentErrorStr;
     std::unique_ptr<QCanBusDevice> device{
@@ -208,21 +210,21 @@ void TestMockCanBus::testActualCanIoConfiguration()
 
 void TestMockCanBus::testExpectedCanIoConfiguration_data()
 {
-    QTest::addColumn<QList<QCanBusFrame>>("frames");
+    QTest::addColumn<ExpectedCanFrameCollection>("frames");
 
-    QTest::newRow("0 frames") << QList<QCanBusFrame>{};
-    QTest::newRow("1 frame") << QList<QCanBusFrame>{
-        QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")}
+    QTest::newRow("0 frames") << ExpectedCanFrameCollection{};
+    QTest::newRow("1 frame") << ExpectedCanFrameCollection{
+        CanUtils::makeOutgoingFrame(0x18ef0201U, "018A010000000000")
     };
-    QTest::newRow("2 frames") << QList<QCanBusFrame>{
-        QCanBusFrame{0x185f0901U, QByteArray::fromHex("018A010102300405")},
-        QCanBusFrame{0x18ed0301U, QByteArray::fromHex("018A0105a2f0b405")}
+    QTest::newRow("2 frames") << ExpectedCanFrameCollection{
+        CanUtils::makeOutgoingFrame(0x185f0901U, "018A010102300405"),
+        CanUtils::makeOutgoingFrame(0x18ed0301U, "018A0105a2f0b405")
     };
 }
 
 void TestMockCanBus::testExpectedCanIoConfiguration()
 {
-    QFETCH(QList<QCanBusFrame>, frames);
+    QFETCH(ExpectedCanFrameCollection, frames);
 
     QString currentErrorStr;
     std::unique_ptr<QCanBusDevice> device{
@@ -236,54 +238,54 @@ void TestMockCanBus::testExpectedCanIoConfiguration()
 
 void TestMockCanBus::testWriteFrame_data()
 {
-    QTest::addColumn<QList<QCanBusFrame>>("outgoingFrames");
-    QTest::addColumn<QList<QCanBusFrame>>("expectedCanIo");
+    QTest::addColumn<ExpectedCanFrameCollection>("outgoingFrames");
+    QTest::addColumn<ExpectedCanFrameCollection>("expectedCanIo");
     QTest::addColumn<bool>("isCanIoOk");
-    auto frame1 = QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")};
-    auto frame2 = QCanBusFrame{0x18ef0301U, QByteArray::fromHex("01B5010000000000")};
+    auto frame1 = CanUtils::makeOutgoingFrame(0x18ef0201U, "018A010000000000");
+    auto frame2 = CanUtils::makeOutgoingFrame(0x18ef0301U, "01B5010000000000");
 
     QTest::newRow("1 written, same expected")
-            << QList<QCanBusFrame>{frame1}
-            << QList<QCanBusFrame>{frame1}
+            << ExpectedCanFrameCollection{frame1}
+            << ExpectedCanFrameCollection{frame1}
             << true;
     QTest::newRow("1 written, other expected")
-            << QList<QCanBusFrame>{frame2}
-            << QList<QCanBusFrame>{frame1}
+            << ExpectedCanFrameCollection{frame2}
+            << ExpectedCanFrameCollection{frame1}
             << false;
     QTest::newRow("2 written, 1 expected")
-            << QList<QCanBusFrame>{frame1, frame2}
-            << QList<QCanBusFrame>{frame1}
+            << ExpectedCanFrameCollection{frame1, frame2}
+            << ExpectedCanFrameCollection{frame1}
             << false;
     QTest::newRow("1 written, 2 expected")
-            << QList<QCanBusFrame>{frame1}
-            << QList<QCanBusFrame>{frame1, frame2}
+            << ExpectedCanFrameCollection{frame1}
+            << ExpectedCanFrameCollection{frame1, frame2}
             << false;
     QTest::newRow("2 written, 2 expected")
-            << QList<QCanBusFrame>{frame1, frame2}
-            << QList<QCanBusFrame>{frame1, frame2}
+            << ExpectedCanFrameCollection{frame1, frame2}
+            << ExpectedCanFrameCollection{frame1, frame2}
             << true;
     QTest::newRow("2 written, 2 expected but in different order")
-            << QList<QCanBusFrame>{frame1, frame2}
-            << QList<QCanBusFrame>{frame2, frame1}
+            << ExpectedCanFrameCollection{frame1, frame2}
+            << ExpectedCanFrameCollection{frame2, frame1}
             << false;
     QTest::newRow("0 written, 0 expected")
-            << QList<QCanBusFrame>{}
-            << QList<QCanBusFrame>{}
+            << ExpectedCanFrameCollection{}
+            << ExpectedCanFrameCollection{}
             << true;
     QTest::newRow("1 written, 0 expected")
-            << QList<QCanBusFrame>{frame1}
-            << QList<QCanBusFrame>{}
+            << ExpectedCanFrameCollection{frame1}
+            << ExpectedCanFrameCollection{}
             << false;
     QTest::newRow("0 written, 1 expected")
-            << QList<QCanBusFrame>{}
-            << QList<QCanBusFrame>{frame1}
+            << ExpectedCanFrameCollection{}
+            << ExpectedCanFrameCollection{frame1}
             << false;
 }
 
 void TestMockCanBus::testWriteFrame()
 {
-    QFETCH(QList<QCanBusFrame>, outgoingFrames);
-    QFETCH(QList<QCanBusFrame>, expectedCanIo);
+    QFETCH(ExpectedCanFrameCollection, outgoingFrames);
+    QFETCH(ExpectedCanFrameCollection, expectedCanIo);
     QFETCH(bool, isCanIoOk);
 
     std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
@@ -291,11 +293,72 @@ void TestMockCanBus::testWriteFrame()
     QSignalSpy writtenSpy{device.get(), &QCanBusDevice::framesWritten};
 
     for (const auto &frame : outgoingFrames) {
-        auto ok = device->writeFrame(frame);
+        auto ok = device->writeFrame(frame.second);
         QVERIFY(ok);
     }
     QCOMPARE(CanUtils::actualCanIo(device.get()) == expectedCanIo, isCanIoOk);
     QCOMPARE(writtenSpy.size(), outgoingFrames.size());
+}
+
+void TestMockCanBus::testReadParameter_data()
+{
+    QTest::addColumn<ExpectedCanFrameCollection>("expectedCanIo");
+    QTest::addColumn<CanBusFrameCollection>("outgoingFrames");
+    QTest::addColumn<CanBusFrameCollection>("incomingFrames");
+    QTest::addColumn<int>("receivedCount");
+    auto req1 = CanUtils::makeOutgoingFrame(0x18ef0201U, "018A010000000000");
+    auto rsp1 = CanUtils::makeIncomingFrame(0x18ef0102U, "018A014433221100");
+    auto req2 = CanUtils::makeOutgoingFrame(0x18ef0201U, "0157000000000000");
+    auto rsp2 = CanUtils::makeIncomingFrame(0x18ef0102U, "015700AABBCCDD00");
+
+    QTest::newRow("req1-rsp1")
+            << ExpectedCanFrameCollection{req1, rsp1}
+            << CanBusFrameCollection{req1.second}
+            << CanBusFrameCollection{rsp1.second}
+            << 1;
+    QTest::newRow("req1-rsp1-req2-rsp2")
+            << ExpectedCanFrameCollection{req1, rsp1, req2, rsp2}
+            << CanBusFrameCollection{req1.second, req2.second}
+            << CanBusFrameCollection{rsp1.second, rsp2.second}
+            << 2;
+    QTest::newRow("req1-req2-rsp1-rsp2")
+            << ExpectedCanFrameCollection{req1, req2, rsp1, rsp2}
+            << CanBusFrameCollection{req1.second, req2.second}
+            << CanBusFrameCollection{rsp1.second, rsp2.second}
+            << 1;
+    QTest::newRow("req1")
+            << ExpectedCanFrameCollection{req1}
+            << CanBusFrameCollection{req1.second}
+            << CanBusFrameCollection{}
+            << 0;
+    QTest::newRow("req1-req2-rsp2")
+            << ExpectedCanFrameCollection{req1, req2, rsp2}
+            << CanBusFrameCollection{req1.second, req2.second}
+            << CanBusFrameCollection{rsp2.second}
+            << 1;
+    QTest::newRow("rsp1-rsp2-req1-rsp1")
+            << ExpectedCanFrameCollection{rsp1, rsp2, req1, rsp1}
+            << CanBusFrameCollection{req1.second}
+            << CanBusFrameCollection{rsp1.second, rsp2.second, rsp1.second}
+            << 2;
+}
+
+void TestMockCanBus::testReadParameter()
+{
+    QFETCH(ExpectedCanFrameCollection, expectedCanIo);
+    QFETCH(CanBusFrameCollection, outgoingFrames);
+    QFETCH(CanBusFrameCollection, incomingFrames);
+    QFETCH(int, receivedCount);
+
+    std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
+    QSignalSpy receivedSpy{device.get(), &QCanBusDevice::framesReceived};
+    CanUtils::setExpectedCanIo(device.get(), expectedCanIo);
+    for (const auto &frame : outgoingFrames) {
+        device->writeFrame(frame);
+    }
+    QCOMPARE(receivedSpy.size(), receivedCount);
+    QCOMPARE(CanUtils::actualCanIo(device.get()), expectedCanIo);
+    QCOMPARE(device->readAllFrames(), incomingFrames);
 }
 
 

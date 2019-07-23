@@ -18,6 +18,49 @@ MockSocketCanDevice::~MockSocketCanDevice()
     close();
 }
 
+QList<QCanBusDeviceInfo> MockSocketCanDevice::interfaces()
+{
+    QList<QCanBusDeviceInfo> result;
+    result.append(createDeviceInfo("mcan0"));
+    result.append(createDeviceInfo("mcan1"));
+    return result;
+}
+
+void MockSocketCanDevice::setConfigurationParameter(int key, const QVariant &value)
+{
+    QCanBusDevice::setConfigurationParameter(key, value);
+    if (key == int(CanConfigurationKey::ExpectedCanIo)) {
+        m_frameIndex = 0;
+        m_frameCount = CanUtils::expectedCanIo(this).size();
+        receiveIncomingFrames();
+    }
+}
+
+bool MockSocketCanDevice::writeFrame(const QCanBusFrame &frame)
+{
+    if (m_frameIndex >= m_frameCount) {
+        qWarning() << "Expected no frame, but got " << frame.toString();
+    }
+    else {
+        auto expectedFrame = CanUtils::expectedCanIo(this)[m_frameIndex];
+        ++m_frameIndex;
+        if (expectedFrame.second != frame) {
+            qWarning() << "Expected " << expectedFrame.second.toString()
+                       << ", but got " << frame.toString();
+        }
+    }
+    CanUtils::appendActualIoFrame(this, CanUtils::makeOutgoingFrame(frame));
+    emit framesWritten(1);
+    receiveIncomingFrames();
+    return true;
+}
+
+QString MockSocketCanDevice::interpretErrorFrame(const QCanBusFrame &errorFrame)
+{
+    Q_UNUSED(errorFrame)
+    return {};
+}
+
 bool MockSocketCanDevice::open()
 {
     const auto &interfaces = MockSocketCanDevice::interfaces();
@@ -38,33 +81,15 @@ void MockSocketCanDevice::close()
     setState(QCanBusDevice::UnconnectedState);
 }
 
-bool MockSocketCanDevice::writeFrame(const QCanBusFrame &frame)
+void MockSocketCanDevice::receiveIncomingFrames()
 {
-    if (CanUtils::expectedCanIo(this).isEmpty()) {
-        qWarning() << "Expected no frame, but got " << frame.toString();
+    auto expectedFrames = CanUtils::expectedCanIo(this);
+    auto incomingFrames = CanBusFrameCollection{};
+    while (m_frameIndex < m_frameCount &&
+           expectedFrames[m_frameIndex].first == CanFrameType::IncomingCanFrame) {
+        incomingFrames.append(expectedFrames[m_frameIndex].second);
+        CanUtils::appendActualIoFrame(this, expectedFrames[m_frameIndex]);
+        ++m_frameIndex;
     }
-    else {
-        auto xframe = CanUtils::takeFirstExpectedCanIoFrame(this);
-        if (xframe != frame) {
-            qWarning() << "Expected " << xframe.toString() << ", but got " << frame.toString();
-        }
-    }
-    CanUtils::appendActualIoFrame(this, frame);
-    emit framesWritten(1);
-    return true;
+    enqueueReceivedFrames(incomingFrames);
 }
-
-QString MockSocketCanDevice::interpretErrorFrame(const QCanBusFrame &errorFrame)
-{
-    Q_UNUSED(errorFrame)
-    return {};
-}
-
-QList<QCanBusDeviceInfo> MockSocketCanDevice::interfaces()
-{
-    QList<QCanBusDeviceInfo> result;
-    result.append(createDeviceInfo("mcan0"));
-    result.append(createDeviceInfo("mcan1"));
-    return result;
-}
-

@@ -15,18 +15,20 @@ class MockSocketCanDevice : public QCanBusDevice
 public:
     explicit MockSocketCanDevice(const QString &name, QObject *parent = nullptr);
     ~MockSocketCanDevice();
-
-    bool writeFrame(const QCanBusFrame &frame) override;
-
-    QString interpretErrorFrame(const QCanBusFrame &errorFrame) override;
-
     static QList<QCanBusDeviceInfo> interfaces();
+    void setConfigurationParameter(int key, const QVariant &value) override;
+    bool writeFrame(const QCanBusFrame &frame) override;
+    QString interpretErrorFrame(const QCanBusFrame &errorFrame) override;
 
 protected:
     bool open() override;
     void close() override;
 
 private:
+    void receiveIncomingFrames();
+
     QString m_interface;
+    int m_frameIndex{0};
+    int m_frameCount{0};
 };
 
