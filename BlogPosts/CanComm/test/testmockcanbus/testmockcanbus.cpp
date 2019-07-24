@@ -298,7 +298,7 @@ void TestMockCanBus::testWriteFrame()
     QSignalSpy writtenSpy{device.get(), &QCanBusDevice::framesWritten};
 
     for (const auto &frame : outgoingFrames) {
-        auto ok = device->writeFrame(frame.second);
+        auto ok = device->writeFrame(frame);
         QVERIFY(ok);
     }
     QCOMPARE(CanUtils::actualCanIo(device.get()) == expectedCanIo, isCanIoOk);
@@ -318,33 +318,33 @@ void TestMockCanBus::testReadParameter_data()
 
     QTest::newRow("req1-rsp1")
             << ExpectedCanFrameCollection{req1, rsp1}
-            << CanBusFrameCollection{req1.second}
-            << CanBusFrameCollection{rsp1.second}
+            << CanBusFrameCollection{req1}
+            << CanBusFrameCollection{rsp1}
             << 1;
     QTest::newRow("req1-rsp1-req2-rsp2")
             << ExpectedCanFrameCollection{req1, rsp1, req2, rsp2}
-            << CanBusFrameCollection{req1.second, req2.second}
-            << CanBusFrameCollection{rsp1.second, rsp2.second}
+            << CanBusFrameCollection{req1, req2}
+            << CanBusFrameCollection{rsp1, rsp2}
             << 2;
     QTest::newRow("req1-req2-rsp1-rsp2")
             << ExpectedCanFrameCollection{req1, req2, rsp1, rsp2}
-            << CanBusFrameCollection{req1.second, req2.second}
-            << CanBusFrameCollection{rsp1.second, rsp2.second}
+            << CanBusFrameCollection{req1, req2}
+            << CanBusFrameCollection{rsp1, rsp2}
             << 1;
     QTest::newRow("req1")
             << ExpectedCanFrameCollection{req1}
-            << CanBusFrameCollection{req1.second}
+            << CanBusFrameCollection{req1}
             << CanBusFrameCollection{}
             << 0;
     QTest::newRow("req1-req2-rsp2")
             << ExpectedCanFrameCollection{req1, req2, rsp2}
-            << CanBusFrameCollection{req1.second, req2.second}
-            << CanBusFrameCollection{rsp2.second}
+            << CanBusFrameCollection{req1, req2}
+            << CanBusFrameCollection{rsp2}
             << 1;
     QTest::newRow("rsp1-rsp2-req1-rsp1")
             << ExpectedCanFrameCollection{rsp1, rsp2, req1, rsp1}
-            << CanBusFrameCollection{req1.second}
-            << CanBusFrameCollection{rsp1.second, rsp2.second, rsp1.second}
+            << CanBusFrameCollection{req1}
+            << CanBusFrameCollection{rsp1, rsp2, rsp1}
             << 2;
 }
 
@@ -389,8 +389,8 @@ void TestMockCanBus::testDeviceErrors()
     QFETCH(QString, errorString);
 
     auto expectedError = CanUtils::makeDeviceError(canError, errorNo);
-    QCOMPARE(expectedError.first, CanFrameType::DeviceError);
-    QVERIFY(!expectedError.second.isValid());
+    QCOMPARE(expectedError.type, ExpectedCanFrameType::DeviceError);
+    QVERIFY(!QCanBusFrame{expectedError}.isValid());
 
     auto deviceError = CanUtils::deviceError(expectedError);
     QCOMPARE(deviceError.first, errorString);
@@ -413,32 +413,32 @@ void TestMockCanBus::testWriteFrameErrors_data()
 
     QTest::newRow("req1-WriteError")
             << ExpectedCanFrameCollection{req1, err1}
-            << CanBusFrameCollection{req1.second}
+            << CanBusFrameCollection{req1}
             << CanBusErrorCollection{QCanBusDevice::CanBusError::WriteError};
     QTest::newRow("req1-WriteError-req2-rsp2")
             << ExpectedCanFrameCollection{req1, err1, req2, rsp2}
-            << CanBusFrameCollection{req1.second, req2.second}
+            << CanBusFrameCollection{req1, req2}
             << CanBusErrorCollection{QCanBusDevice::CanBusError::WriteError};
     QTest::newRow("req1-req2-WriteError-WriteError")
             << ExpectedCanFrameCollection{req1, req2, err1, err1}
-            << CanBusFrameCollection{req1.second, req2.second}
+            << CanBusFrameCollection{req1, req2}
             << CanBusErrorCollection{QCanBusDevice::CanBusError::WriteError,
                                      QCanBusDevice::CanBusError::WriteError};
     QTest::newRow("ConfError-req2-rsp2")
             << ExpectedCanFrameCollection{err2, req2, rsp2}
-            << CanBusFrameCollection{req2.second}
+            << CanBusFrameCollection{req2}
             << CanBusErrorCollection{QCanBusDevice::CanBusError::ConfigurationError};
     QTest::newRow("req1-req2-WriteError-rsp2")
             << ExpectedCanFrameCollection{req1, req2, err1, rsp2}
-            << CanBusFrameCollection{req1.second, req2.second}
+            << CanBusFrameCollection{req1, req2}
             << CanBusErrorCollection{QCanBusDevice::CanBusError::WriteError};
     QTest::newRow("req2-req1-rsp2-WriteError")
             << ExpectedCanFrameCollection{req2, req1, rsp2, err1}
-            << CanBusFrameCollection{req2.second, req1.second}
+            << CanBusFrameCollection{req2, req1}
             << CanBusErrorCollection{QCanBusDevice::CanBusError::WriteError};
     QTest::newRow("rsp2-ConfError-req1")
             << ExpectedCanFrameCollection{rsp2, err2, req1}
-            << CanBusFrameCollection{req1.second}
+            << CanBusFrameCollection{req1}
             << CanBusErrorCollection{QCanBusDevice::CanBusError::ConfigurationError};
 }
 

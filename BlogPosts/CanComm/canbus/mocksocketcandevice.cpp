@@ -34,7 +34,7 @@ QList<QCanBusDeviceInfo> MockSocketCanDevice::interfaces()
 void MockSocketCanDevice::setConfigurationParameter(int key, const QVariant &value)
 {
     QCanBusDevice::setConfigurationParameter(key, value);
-    if (key == int(CanConfigurationKey::ExpectedCanIo)) {
+    if (key == int(CanUtils::ConfigurationKey::ExpectedCanIo)) {
         m_frameIndex = 0;
         m_frameCount = CanUtils::expectedCanIo(this).size();
         checkForResponses();
@@ -47,10 +47,10 @@ bool MockSocketCanDevice::writeFrame(const QCanBusFrame &frame)
         qWarning() << "Expected no frame, but got " << frame.toString();
     }
     else {
-        auto expectedFrame = CanUtils::expectedCanIo(this)[m_frameIndex];
+        auto expectedFrame = QCanBusFrame{CanUtils::expectedCanIo(this)[m_frameIndex]};
         ++m_frameIndex;
-        if (expectedFrame.second != frame) {
-            qWarning() << "Expected " << expectedFrame.second.toString()
+        if (expectedFrame != frame) {
+            qWarning() << "Expected " << expectedFrame.toString()
                        << ", but got " << frame.toString();
         }
     }
@@ -91,14 +91,14 @@ void MockSocketCanDevice::checkForResponses()
     auto expectedFrameColl = CanUtils::expectedCanIo(this);
     auto incomingFrameColl = CanBusFrameCollection{};
     while (m_frameIndex < m_frameCount &&
-           expectedFrameColl[m_frameIndex].first != CanFrameType::OutgoingCanFrame) {
+           expectedFrameColl[m_frameIndex].type != ExpectedCanFrameType::OutgoingCanFrame) {
         CanUtils::appendActualIoFrame(this, expectedFrameColl[m_frameIndex]);
-        if (expectedFrameColl[m_frameIndex].first == CanFrameType::DeviceError) {
+        if (expectedFrameColl[m_frameIndex].type == ExpectedCanFrameType::DeviceError) {
             auto deviceError = CanUtils::deviceError(expectedFrameColl[m_frameIndex]);
             setError(deviceError.first, deviceError.second);
         }
-        else if (expectedFrameColl[m_frameIndex].first == CanFrameType::IncomingCanFrame) {
-            incomingFrameColl.append(expectedFrameColl[m_frameIndex].second);
+        else if (expectedFrameColl[m_frameIndex].type == ExpectedCanFrameType::IncomingCanFrame) {
+            incomingFrameColl.append(expectedFrameColl[m_frameIndex]);
         }
         ++m_frameIndex;
     }
