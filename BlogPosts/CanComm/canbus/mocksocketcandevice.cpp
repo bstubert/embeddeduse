@@ -34,9 +34,9 @@ QList<QCanBusDeviceInfo> MockSocketCanDevice::interfaces()
 void MockSocketCanDevice::setConfigurationParameter(int key, const QVariant &value)
 {
     QCanBusDevice::setConfigurationParameter(key, value);
-    if (key == int(CanUtils::ConfigurationKey::ExpectedCanIo)) {
+    if (key == int(MockConfigurationKey::ExpectedCanIo)) {
         m_frameIndex = 0;
-        m_frameCount = CanUtils::expectedCanIo(this).size();
+        m_frameCount = expectedCanIo(this).size();
         checkForResponses();
     }
 }
@@ -47,14 +47,14 @@ bool MockSocketCanDevice::writeFrame(const QCanBusFrame &frame)
         qWarning() << "Expected no frame, but got " << frame.toString();
     }
     else {
-        auto expectedFrame = QCanBusFrame{CanUtils::expectedCanIo(this)[m_frameIndex]};
+        auto expectedFrame = QCanBusFrame{expectedCanIo(this)[m_frameIndex]};
         ++m_frameIndex;
         if (expectedFrame != frame) {
             qWarning() << "Expected " << expectedFrame.toString()
                        << ", but got " << frame.toString();
         }
     }
-    CanUtils::appendActualIoFrame(this, MockCanFrame{MockCanFrame::Type::Outgoing, frame});
+    appendActualIoFrame(this, MockCanFrame{MockCanFrame::Type::Outgoing, frame});
     emit framesWritten(1);
     checkForResponses();
     return true;
@@ -88,11 +88,11 @@ void MockSocketCanDevice::close()
 
 void MockSocketCanDevice::checkForResponses()
 {
-    auto expectedFrameColl = CanUtils::expectedCanIo(this);
+    auto expectedFrameColl = expectedCanIo(this);
     auto incomingFrameColl = CanBusFrameCollection{};
     while (m_frameIndex < m_frameCount &&
            expectedFrameColl[m_frameIndex].type != MockCanFrame::Type::Outgoing) {
-        CanUtils::appendActualIoFrame(this, expectedFrameColl[m_frameIndex]);
+        appendActualIoFrame(this, expectedFrameColl[m_frameIndex]);
         if (expectedFrameColl[m_frameIndex].type == MockCanFrame::Type::DeviceError) {
             setError(expectedFrameColl[m_frameIndex].deviceErrorString(),
                      expectedFrameColl[m_frameIndex].deviceError());

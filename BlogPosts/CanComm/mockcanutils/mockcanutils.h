@@ -71,30 +71,21 @@ struct MockCanFrame
 };
 
 using MockCanFrameCollection = QVector<MockCanFrame>;
-Q_DECLARE_METATYPE(MockCanFrame)
 
-using CanBusFrameCollection = QVector<QCanBusFrame>;
-Q_DECLARE_METATYPE(QCanBusFrame)
-
-Q_DECLARE_METATYPE(MockCanFrame::ErrorNo)
-using CanBusErrorCollection = QVector<QCanBusDevice::CanBusError>;
-
-namespace CanUtils
-{
-enum class ConfigurationKey : int {
+enum class MockConfigurationKey : int {
     ActualCanIo = QCanBusDevice::UserKey,
     ExpectedCanIo
 };
 
 inline MockCanFrameCollection actualCanIo(const QCanBusDevice *device)
 {
-    return device->configurationParameter(int(CanUtils::ConfigurationKey::ActualCanIo))
+    return device->configurationParameter(int(MockConfigurationKey::ActualCanIo))
             .value<MockCanFrameCollection>();
 }
 
 inline void setActualCanIo(QCanBusDevice *device, const MockCanFrameCollection &frames)
 {
-    device->setConfigurationParameter(int(CanUtils::ConfigurationKey::ActualCanIo),
+    device->setConfigurationParameter(int(MockConfigurationKey::ActualCanIo),
                                       QVariant::fromValue(frames));
 }
 
@@ -107,13 +98,20 @@ inline void appendActualIoFrame(QCanBusDevice *device, const MockCanFrame &frame
 
 inline MockCanFrameCollection expectedCanIo(const QCanBusDevice *device)
 {
-    return device->configurationParameter(int(CanUtils::ConfigurationKey::ExpectedCanIo))
+    return device->configurationParameter(int(MockConfigurationKey::ExpectedCanIo))
             .value<MockCanFrameCollection>();
 }
 
 inline void setExpectedCanIo(QCanBusDevice *device, const MockCanFrameCollection &frames)
 {
-    device->setConfigurationParameter(int(CanUtils::ConfigurationKey::ExpectedCanIo),
+    device->setConfigurationParameter(int(MockConfigurationKey::ExpectedCanIo),
                                       QVariant::fromValue(frames));
 }
-}
+
+Q_DECLARE_METATYPE(MockCanFrame)
+Q_DECLARE_METATYPE(MockCanFrame::ErrorNo)
+
+using CanBusFrameCollection = QVector<QCanBusFrame>;
+Q_DECLARE_METATYPE(QCanBusFrame)
+
+using CanBusErrorCollection = QVector<QCanBusDevice::CanBusError>;

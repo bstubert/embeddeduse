@@ -207,10 +207,10 @@ void TestMockCanBus::testActualCanIoConfiguration()
     std::unique_ptr<QCanBusDevice> device{
         QCanBus::instance()->createDevice("mockcan", "mcan1", &currentErrorStr)};
 
-    QVERIFY(CanUtils::actualCanIo(device.get()).isEmpty());
+    QVERIFY(actualCanIo(device.get()).isEmpty());
 
-    CanUtils::setActualCanIo(device.get(), frames);
-    QCOMPARE(CanUtils::actualCanIo(device.get()), frames);
+    setActualCanIo(device.get(), frames);
+    QCOMPARE(actualCanIo(device.get()), frames);
 }
 
 void TestMockCanBus::testExpectedCanIoConfiguration_data()
@@ -235,10 +235,10 @@ void TestMockCanBus::testExpectedCanIoConfiguration()
     std::unique_ptr<QCanBusDevice> device{
         QCanBus::instance()->createDevice("mockcan", "mcan1", &currentErrorStr)};
 
-    QVERIFY(CanUtils::expectedCanIo(device.get()).isEmpty());
+    QVERIFY(expectedCanIo(device.get()).isEmpty());
 
-    CanUtils::setExpectedCanIo(device.get(), frames);
-    QCOMPARE(CanUtils::expectedCanIo(device.get()), frames);
+    setExpectedCanIo(device.get(), frames);
+    QCOMPARE(expectedCanIo(device.get()), frames);
 }
 
 void TestMockCanBus::testWriteFrame_data()
@@ -296,14 +296,14 @@ void TestMockCanBus::testWriteFrame()
     QFETCH(bool, isCanIoOk);
 
     std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
-    CanUtils::setExpectedCanIo(device.get(), expectedCanIo);
+    setExpectedCanIo(device.get(), expectedCanIo);
     QSignalSpy writtenSpy{device.get(), &QCanBusDevice::framesWritten};
 
     for (const auto &frame : outgoingFrames) {
         auto ok = device->writeFrame(frame);
         QVERIFY(ok);
     }
-    QCOMPARE(CanUtils::actualCanIo(device.get()) == expectedCanIo, isCanIoOk);
+    QCOMPARE(actualCanIo(device.get()) == expectedCanIo, isCanIoOk);
     QCOMPARE(writtenSpy.size(), outgoingFrames.size());
 }
 
@@ -359,12 +359,12 @@ void TestMockCanBus::testReadParameter()
 
     std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
     QSignalSpy receivedSpy{device.get(), &QCanBusDevice::framesReceived};
-    CanUtils::setExpectedCanIo(device.get(), expectedCanIo);
+    setExpectedCanIo(device.get(), expectedCanIo);
     for (const auto &frame : outgoingFrames) {
         device->writeFrame(frame);
     }
     QCOMPARE(receivedSpy.size(), receivedCount);
-    QCOMPARE(CanUtils::actualCanIo(device.get()), expectedCanIo);
+    QCOMPARE(actualCanIo(device.get()), expectedCanIo);
     QCOMPARE(device->readAllFrames(), incomingFrames);
 }
 
@@ -450,7 +450,7 @@ void TestMockCanBus::testWriteFrameErrors()
 
     std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
     QSignalSpy errorSpy{device.get(), &QCanBusDevice::errorOccurred};
-    CanUtils::setExpectedCanIo(device.get(), expectedCanIo);
+    setExpectedCanIo(device.get(), expectedCanIo);
 
     for (const auto &frame : outgoingFrames) {
         device->writeFrame(frame);
@@ -459,7 +459,7 @@ void TestMockCanBus::testWriteFrameErrors()
     for (int i = 0; i < canErrors.size(); ++i) {
         QCOMPARE(errorSpy[i][0].value<QCanBusDevice::CanBusError>(), canErrors[i]);
     }
-    QCOMPARE(CanUtils::actualCanIo(device.get()), expectedCanIo);
+    QCOMPARE(actualCanIo(device.get()), expectedCanIo);
 }
 
 
