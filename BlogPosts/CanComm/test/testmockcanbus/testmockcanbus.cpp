@@ -191,11 +191,11 @@ void TestMockCanBus::testActualCanIoConfiguration_data()
 
     QTest::newRow("0 frames") << ExpectedCanFrameCollection{};
     QTest::newRow("1 frame") << ExpectedCanFrameCollection{
-        CanUtils::makeOutgoingFrame(0x18ef0201U, "018A010000000000")
+        ExpectedCanFrame{ExpectedCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000000000"}
     };
     QTest::newRow("2 frames") << ExpectedCanFrameCollection{
-        CanUtils::makeOutgoingFrame(0x185f0901U, "018A010102300405"),
-        CanUtils::makeOutgoingFrame(0x18ed0301U, "018A0105a2f0b405")
+        ExpectedCanFrame{ExpectedCanFrame::Type::Outgoing, 0x185f0901U, "018A010102300405"},
+        ExpectedCanFrame{ExpectedCanFrame::Type::Outgoing, 0x18ed0301U, "018A0105a2f0b405"}
     };
 }
 
@@ -219,11 +219,11 @@ void TestMockCanBus::testExpectedCanIoConfiguration_data()
 
     QTest::newRow("0 frames") << ExpectedCanFrameCollection{};
     QTest::newRow("1 frame") << ExpectedCanFrameCollection{
-        CanUtils::makeOutgoingFrame(0x18ef0201U, "018A010000000000")
+        ExpectedCanFrame{ExpectedCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000000000"}
     };
     QTest::newRow("2 frames") << ExpectedCanFrameCollection{
-        CanUtils::makeOutgoingFrame(0x185f0901U, "018A010102300405"),
-        CanUtils::makeOutgoingFrame(0x18ed0301U, "018A0105a2f0b405")
+        ExpectedCanFrame{ExpectedCanFrame::Type::Outgoing, 0x185f0901U, "018A010102300405"},
+        ExpectedCanFrame{ExpectedCanFrame::Type::Outgoing, 0x18ed0301U, "018A0105a2f0b405"}
     };
 }
 
@@ -246,8 +246,10 @@ void TestMockCanBus::testWriteFrame_data()
     QTest::addColumn<ExpectedCanFrameCollection>("outgoingFrames");
     QTest::addColumn<ExpectedCanFrameCollection>("expectedCanIo");
     QTest::addColumn<bool>("isCanIoOk");
-    auto frame1 = CanUtils::makeOutgoingFrame(0x18ef0201U, "018A010000000000");
-    auto frame2 = CanUtils::makeOutgoingFrame(0x18ef0301U, "01B5010000000000");
+    auto frame1 = ExpectedCanFrame{ExpectedCanFrame::Type::Outgoing, 0x18ef0201U,
+            "018A010000000000"};
+    auto frame2 = ExpectedCanFrame{ExpectedCanFrame::Type::Outgoing, 0x18ef0301U,
+            "01B5010000000000"};
 
     QTest::newRow("1 written, same expected")
             << ExpectedCanFrameCollection{frame1}
@@ -311,10 +313,10 @@ void TestMockCanBus::testReadParameter_data()
     QTest::addColumn<CanBusFrameCollection>("outgoingFrames");
     QTest::addColumn<CanBusFrameCollection>("incomingFrames");
     QTest::addColumn<int>("receivedCount");
-    auto req1 = CanUtils::makeOutgoingFrame(0x18ef0201U, "018A010000000000");
-    auto rsp1 = CanUtils::makeIncomingFrame(0x18ef0102U, "018A014433221100");
-    auto req2 = CanUtils::makeOutgoingFrame(0x18ef0201U, "0157000000000000");
-    auto rsp2 = CanUtils::makeIncomingFrame(0x18ef0102U, "015700AABBCCDD00");
+    auto req1 = ExpectedCanFrame{ExpectedCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000000000"};
+    auto rsp1 = ExpectedCanFrame{ExpectedCanFrame::Type::Incoming, 0x18ef0102U, "018A014433221100"};
+    auto req2 = ExpectedCanFrame{ExpectedCanFrame::Type::Outgoing, 0x18ef0201U, "0157000000000000"};
+    auto rsp2 = ExpectedCanFrame{ExpectedCanFrame::Type::Incoming, 0x18ef0102U, "015700AABBCCDD00"};
 
     QTest::newRow("req1-rsp1")
             << ExpectedCanFrameCollection{req1, rsp1}
@@ -388,8 +390,8 @@ void TestMockCanBus::testDeviceErrors()
     QFETCH(CanErrorNo, errorNo);
     QFETCH(QString, errorString);
 
-    auto expectedError = CanUtils::makeDeviceError(canError, errorNo);
-    QCOMPARE(expectedError.type, ExpectedCanFrameType::DeviceError);
+    auto expectedError = ExpectedCanFrame{canError, errorNo};
+    QCOMPARE(expectedError.type, ExpectedCanFrame::Type::DeviceError);
     QVERIFY(!QCanBusFrame{expectedError}.isValid());
 
     auto deviceError = CanUtils::deviceError(expectedError);
@@ -403,13 +405,13 @@ void TestMockCanBus::testWriteFrameErrors_data()
     QTest::addColumn<CanBusFrameCollection>("outgoingFrames");
     QTest::addColumn<CanBusErrorCollection>("canErrors");
 
-    auto req1 = CanUtils::makeOutgoingFrame(0x18ef0201U, "018A010000000000");
-    auto req2 = CanUtils::makeOutgoingFrame(0x18ef0201U, "0157000000000000");
-    auto rsp2 = CanUtils::makeIncomingFrame(0x18ef0102U, "015700AABBCCDD00");
-    auto err1 = CanUtils::makeDeviceError(QCanBusDevice::CanBusError::WriteError,
-                                          CanErrorNo::NoBufferSpaceAvailable);
-    auto err2 = CanUtils::makeDeviceError(QCanBusDevice::CanBusError::ConfigurationError,
-                                          CanErrorNo::CannotFilterUnknownFrames);
+    auto req1 = ExpectedCanFrame{ExpectedCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000000000"};
+    auto req2 = ExpectedCanFrame{ExpectedCanFrame::Type::Outgoing, 0x18ef0201U, "0157000000000000"};
+    auto rsp2 = ExpectedCanFrame{ExpectedCanFrame::Type::Incoming, 0x18ef0102U, "015700AABBCCDD00"};
+    auto err1 = ExpectedCanFrame{QCanBusDevice::CanBusError::WriteError,
+            CanErrorNo::NoBufferSpaceAvailable};
+    auto err2 = ExpectedCanFrame{QCanBusDevice::CanBusError::ConfigurationError,
+            CanErrorNo::CannotFilterUnknownFrames};
 
     QTest::newRow("req1-WriteError")
             << ExpectedCanFrameCollection{req1, err1}

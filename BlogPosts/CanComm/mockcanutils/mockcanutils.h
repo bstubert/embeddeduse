@@ -10,13 +10,6 @@
 #include <QVariant>
 #include <QVector>
 
-enum class ExpectedCanFrameType : int {
-    InvalidCanFrame = 0,
-    OutgoingCanFrame = 1,
-    IncomingCanFrame = 2,
-    DeviceError = 3
-};
-
 enum class CanErrorNo : quint8 {
     NoBufferSpaceAvailable = 1,
     CannotFilterUnknownFrames = 2,
@@ -26,18 +19,40 @@ Q_DECLARE_METATYPE(CanErrorNo)
 
 struct ExpectedCanFrame
 {
+    enum class Type : int {
+        Invalid = 0,
+        Outgoing = 1,
+        Incoming = 2,
+        DeviceError = 3
+    };
+
     ExpectedCanFrame()
-        : type{ExpectedCanFrameType::InvalidCanFrame}
+        : type{Type::Invalid}
     {}
 
-    ExpectedCanFrame(ExpectedCanFrameType type, const QCanBusFrame &frame)
+    ExpectedCanFrame(Type type, const QCanBusFrame &frame)
         : type{type}
         , frame{frame}
     {}
 
+    ExpectedCanFrame(Type type, quint32 frameId, const char *payload)
+        : type{type}
+        , frame{frameId, QByteArray::fromHex(payload)}
+    {}
+
+    ExpectedCanFrame(QCanBusDevice::CanBusError deviceError, CanErrorNo errorNo)
+        : type{Type::DeviceError}
+        , frame{QCanBusFrame::FrameType::InvalidFrame}
+    {
+        QByteArray payload(8, 0x00);
+        payload[0] = quint8(deviceError);
+        payload[1] = quint8(errorNo);
+        frame.setPayload(payload);
+    }
+
     operator QCanBusFrame() const { return frame; }
 
-    ExpectedCanFrameType type;
+    Type type;
     QCanBusFrame frame;
 };
 
@@ -58,34 +73,6 @@ enum class ConfigurationKey : int {
     ActualCanIo = QCanBusDevice::UserKey,
     ExpectedCanIo
 };
-
-inline ExpectedCanFrame makeOutgoingFrame(const QCanBusFrame &frame)
-{
-    return ExpectedCanFrame{ExpectedCanFrameType::OutgoingCanFrame, frame};
-}
-
-inline ExpectedCanFrame makeOutgoingFrame(quint32 frameId, const char *payload)
-{
-    return ExpectedCanFrame{ExpectedCanFrameType::OutgoingCanFrame,
-                QCanBusFrame{frameId, QByteArray::fromHex(payload)}};
-}
-
-inline ExpectedCanFrame makeIncomingFrame(quint32 frameId, const char *payload)
-{
-    return ExpectedCanFrame{ExpectedCanFrameType::IncomingCanFrame,
-                QCanBusFrame{frameId, QByteArray::fromHex(payload)}};
-}
-
-inline ExpectedCanFrame makeDeviceError(QCanBusDevice::CanBusError deviceError,
-                                        CanErrorNo errorNo)
-{
-    auto frame = QCanBusFrame{QCanBusFrame::FrameType::InvalidFrame};
-    QByteArray payload(8, 0x00);
-    payload[0] = quint8(deviceError);
-    payload[1] = quint8(errorNo);
-    frame.setPayload(payload);
-    return ExpectedCanFrame{ExpectedCanFrameType::DeviceError, frame};
-}
 
 inline QPair<QString, QCanBusDevice::CanBusError> deviceError(const ExpectedCanFrame &frame)
 {
