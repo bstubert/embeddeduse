@@ -435,6 +435,10 @@ void TestMockCanBus::testWriteFrameErrors_data()
             << ExpectedCanFrameCollection{req2, req1, rsp2, err1}
             << CanBusFrameCollection{req2.second, req1.second}
             << CanBusErrorCollection{QCanBusDevice::CanBusError::WriteError};
+    QTest::newRow("rsp2-ConfError-req1")
+            << ExpectedCanFrameCollection{rsp2, err2, req1}
+            << CanBusFrameCollection{req1.second}
+            << CanBusErrorCollection{QCanBusDevice::CanBusError::ConfigurationError};
 }
 
 void TestMockCanBus::testWriteFrameErrors()
@@ -454,6 +458,7 @@ void TestMockCanBus::testWriteFrameErrors()
     for (int i = 0; i < canErrors.size(); ++i) {
         QCOMPARE(errorSpy[i][0].value<QCanBusDevice::CanBusError>(), canErrors[i]);
     }
+    QCOMPARE(CanUtils::actualCanIo(device.get()), expectedCanIo);
 }
 
 
