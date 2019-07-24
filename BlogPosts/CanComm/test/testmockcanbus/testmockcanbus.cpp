@@ -371,32 +371,30 @@ void TestMockCanBus::testReadParameter()
 void TestMockCanBus::testDeviceErrors_data()
 {
     QTest::addColumn<QCanBusDevice::CanBusError>("canError");
-    QTest::addColumn<CanErrorNo>("errorNo");
+    QTest::addColumn<ExpectedCanFrame::ErrorNo>("errorNo");
     QTest::addColumn<QString>("errorString");
 
     QTest::newRow("WriteError - NoBufferSpaceAvailable")
             << QCanBusDevice::CanBusError::WriteError
-            << CanErrorNo::NoBufferSpaceAvailable
+            << ExpectedCanFrame::ErrorNo::NoBufferSpaceAvailable
             << QStringLiteral("No buffer space available");
     QTest::newRow("ConfigurationError - CannotFilterUnknownFrames")
             << QCanBusDevice::CanBusError::ConfigurationError
-            << CanErrorNo::CannotFilterUnknownFrames
+            << ExpectedCanFrame::ErrorNo::CannotFilterUnknownFrames
             << QStringLiteral("Cannot set filter for frame type: unknown");
 }
 
 void TestMockCanBus::testDeviceErrors()
 {
     QFETCH(QCanBusDevice::CanBusError, canError);
-    QFETCH(CanErrorNo, errorNo);
+    QFETCH(ExpectedCanFrame::ErrorNo, errorNo);
     QFETCH(QString, errorString);
 
     auto expectedError = ExpectedCanFrame{canError, errorNo};
     QCOMPARE(expectedError.type, ExpectedCanFrame::Type::DeviceError);
     QVERIFY(!QCanBusFrame{expectedError}.isValid());
-
-    auto deviceError = CanUtils::deviceError(expectedError);
-    QCOMPARE(deviceError.first, errorString);
-    QCOMPARE(deviceError.second, canError);
+    QCOMPARE(expectedError.deviceErrorString(), errorString);
+    QCOMPARE(expectedError.deviceError(), canError);
 }
 
 void TestMockCanBus::testWriteFrameErrors_data()
@@ -409,9 +407,9 @@ void TestMockCanBus::testWriteFrameErrors_data()
     auto req2 = ExpectedCanFrame{ExpectedCanFrame::Type::Outgoing, 0x18ef0201U, "0157000000000000"};
     auto rsp2 = ExpectedCanFrame{ExpectedCanFrame::Type::Incoming, 0x18ef0102U, "015700AABBCCDD00"};
     auto err1 = ExpectedCanFrame{QCanBusDevice::CanBusError::WriteError,
-            CanErrorNo::NoBufferSpaceAvailable};
+            ExpectedCanFrame::ErrorNo::NoBufferSpaceAvailable};
     auto err2 = ExpectedCanFrame{QCanBusDevice::CanBusError::ConfigurationError,
-            CanErrorNo::CannotFilterUnknownFrames};
+            ExpectedCanFrame::ErrorNo::CannotFilterUnknownFrames};
 
     QTest::newRow("req1-WriteError")
             << ExpectedCanFrameCollection{req1, err1}

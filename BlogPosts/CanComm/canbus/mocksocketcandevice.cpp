@@ -94,8 +94,8 @@ void MockSocketCanDevice::checkForResponses()
            expectedFrameColl[m_frameIndex].type != ExpectedCanFrame::Type::Outgoing) {
         CanUtils::appendActualIoFrame(this, expectedFrameColl[m_frameIndex]);
         if (expectedFrameColl[m_frameIndex].type == ExpectedCanFrame::Type::DeviceError) {
-            auto deviceError = CanUtils::deviceError(expectedFrameColl[m_frameIndex]);
-            setError(deviceError.first, deviceError.second);
+            setError(expectedFrameColl[m_frameIndex].deviceErrorString(),
+                     expectedFrameColl[m_frameIndex].deviceError());
         }
         else if (expectedFrameColl[m_frameIndex].type == ExpectedCanFrame::Type::Incoming) {
             incomingFrameColl.append(expectedFrameColl[m_frameIndex]);

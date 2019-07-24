@@ -10,13 +10,6 @@
 #include <QVariant>
 #include <QVector>
 
-enum class CanErrorNo : quint8 {
-    NoBufferSpaceAvailable = 1,
-    CannotFilterUnknownFrames = 2,
-};
-Q_DECLARE_METATYPE(CanErrorNo)
-
-
 struct ExpectedCanFrame
 {
     enum class Type : int {
@@ -24,6 +17,11 @@ struct ExpectedCanFrame
         Outgoing = 1,
         Incoming = 2,
         DeviceError = 3
+    };
+
+    enum class ErrorNo : quint8 {
+        NoBufferSpaceAvailable = 1,
+        CannotFilterUnknownFrames = 2,
     };
 
     ExpectedCanFrame()
@@ -40,7 +38,7 @@ struct ExpectedCanFrame
         , frame{frameId, QByteArray::fromHex(payload)}
     {}
 
-    ExpectedCanFrame(QCanBusDevice::CanBusError deviceError, CanErrorNo errorNo)
+    ExpectedCanFrame(QCanBusDevice::CanBusError deviceError, ErrorNo errorNo)
         : type{Type::DeviceError}
         , frame{QCanBusFrame::FrameType::InvalidFrame}
     {
@@ -52,19 +50,33 @@ struct ExpectedCanFrame
 
     operator QCanBusFrame() const { return frame; }
 
+    QCanBusDevice::CanBusError deviceError() const
+    {
+        return QCanBusDevice::CanBusError(quint8(frame.payload()[0]));
+    }
+
+    QString deviceErrorString() const
+    {
+        static const QMap<quint8, QString> errorStr{
+            {quint8(ErrorNo::NoBufferSpaceAvailable),
+                        QStringLiteral("No buffer space available")},
+            {quint8(ErrorNo::CannotFilterUnknownFrames),
+                        QStringLiteral("Cannot set filter for frame type: unknown")},
+        };
+        return errorStr[quint8(frame.payload()[1])];
+    }
+
     Type type;
     QCanBusFrame frame;
 };
 
-//using ExpectedCanFrame = QPair<ExpectedCanFrameType, QCanBusFrame>;
 using ExpectedCanFrameCollection = QVector<ExpectedCanFrame>;
 Q_DECLARE_METATYPE(ExpectedCanFrame)
-Q_DECLARE_METATYPE(ExpectedCanFrameCollection)
 
 using CanBusFrameCollection = QVector<QCanBusFrame>;
 Q_DECLARE_METATYPE(QCanBusFrame)
-Q_DECLARE_METATYPE(CanBusFrameCollection)
 
+Q_DECLARE_METATYPE(ExpectedCanFrame::ErrorNo)
 using CanBusErrorCollection = QVector<QCanBusDevice::CanBusError>;
 
 namespace CanUtils
@@ -73,17 +85,6 @@ enum class ConfigurationKey : int {
     ActualCanIo = QCanBusDevice::UserKey,
     ExpectedCanIo
 };
-
-inline QPair<QString, QCanBusDevice::CanBusError> deviceError(const ExpectedCanFrame &frame)
-{
-    static const QMap<quint8, QString> errorStr{
-        {quint8(CanErrorNo::NoBufferSpaceAvailable), QStringLiteral("No buffer space available")},
-        {quint8(CanErrorNo::CannotFilterUnknownFrames), QStringLiteral("Cannot set filter for frame type: unknown")},
-    };
-    auto canFrame = QCanBusFrame{frame};
-    return qMakePair(errorStr[quint8(canFrame.payload()[1])],
-                     QCanBusDevice::CanBusError(quint8(canFrame.payload()[0])));
-}
 
 inline ExpectedCanFrameCollection actualCanIo(const QCanBusDevice *device)
 {
