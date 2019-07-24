@@ -36,8 +36,7 @@ void MockSocketCanDevice::setConfigurationParameter(int key, const QVariant &val
     if (key == int(CanConfigurationKey::ExpectedCanIo)) {
         m_frameIndex = 0;
         m_frameCount = CanUtils::expectedCanIo(this).size();
-        checkForDeviceErrors();
-        receiveIncomingFrames();
+        checkForResponses();
     }
 }
 
@@ -56,8 +55,7 @@ bool MockSocketCanDevice::writeFrame(const QCanBusFrame &frame)
     }
     CanUtils::appendActualIoFrame(this, CanUtils::makeOutgoingFrame(frame));
     emit framesWritten(1);
-    checkForDeviceErrors();
-    receiveIncomingFrames();
+    checkForResponses();
     return true;
 }
 
@@ -87,27 +85,21 @@ void MockSocketCanDevice::close()
     setState(QCanBusDevice::UnconnectedState);
 }
 
-void MockSocketCanDevice::checkForDeviceErrors()
+void MockSocketCanDevice::checkForResponses()
 {
-    auto expectedFrames = CanUtils::expectedCanIo(this);
+    auto expectedFrameColl = CanUtils::expectedCanIo(this);
+    auto incomingFrameColl = CanBusFrameCollection{};
     while (m_frameIndex < m_frameCount &&
-           expectedFrames[m_frameIndex].first == CanFrameType::DeviceError) {
-        CanUtils::appendActualIoFrame(this, expectedFrames[m_frameIndex]);
-        auto deviceError = CanUtils::deviceError(expectedFrames[m_frameIndex]);
-        setError(deviceError.first, deviceError.second);
+           expectedFrameColl[m_frameIndex].first != CanFrameType::OutgoingCanFrame) {
+        CanUtils::appendActualIoFrame(this, expectedFrameColl[m_frameIndex]);
+        if (expectedFrameColl[m_frameIndex].first == CanFrameType::DeviceError) {
+            auto deviceError = CanUtils::deviceError(expectedFrameColl[m_frameIndex]);
+            setError(deviceError.first, deviceError.second);
+        }
+        else if (expectedFrameColl[m_frameIndex].first == CanFrameType::IncomingCanFrame) {
+            incomingFrameColl.append(expectedFrameColl[m_frameIndex].second);
+        }
         ++m_frameIndex;
     }
-}
-
-void MockSocketCanDevice::receiveIncomingFrames()
-{
-    auto expectedFrames = CanUtils::expectedCanIo(this);
-    auto incomingFrames = CanBusFrameCollection{};
-    while (m_frameIndex < m_frameCount &&
-           expectedFrames[m_frameIndex].first == CanFrameType::IncomingCanFrame) {
-        incomingFrames.append(expectedFrames[m_frameIndex].second);
-        CanUtils::appendActualIoFrame(this, expectedFrames[m_frameIndex]);
-        ++m_frameIndex;
-    }
-    enqueueReceivedFrames(incomingFrames);
+    enqueueReceivedFrames(incomingFrameColl);
 }

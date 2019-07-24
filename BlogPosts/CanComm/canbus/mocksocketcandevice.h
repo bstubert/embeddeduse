@@ -25,8 +25,7 @@ protected:
     void close() override;
 
 private:
-    void checkForDeviceErrors();
-    void receiveIncomingFrames();
+    void checkForResponses();
 
     QString m_interface;
     int m_frameIndex{0};

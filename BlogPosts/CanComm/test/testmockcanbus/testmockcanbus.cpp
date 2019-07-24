@@ -403,12 +403,12 @@ void TestMockCanBus::testWriteFrameErrors_data()
     QTest::addColumn<CanBusErrorCollection>("canErrors");
 
     auto req1 = CanUtils::makeOutgoingFrame(0x18ef0201U, "018A010000000000");
+    auto req2 = CanUtils::makeOutgoingFrame(0x18ef0201U, "0157000000000000");
+    auto rsp2 = CanUtils::makeIncomingFrame(0x18ef0102U, "015700AABBCCDD00");
     auto err1 = CanUtils::makeDeviceError(QCanBusDevice::CanBusError::WriteError,
                                           CanErrorNo::NoBufferSpaceAvailable);
     auto err2 = CanUtils::makeDeviceError(QCanBusDevice::CanBusError::ConfigurationError,
                                           CanErrorNo::CannotFilterUnknownFrames);
-    auto req2 = CanUtils::makeOutgoingFrame(0x18ef0201U, "0157000000000000");
-    auto rsp2 = CanUtils::makeIncomingFrame(0x18ef0102U, "015700AABBCCDD00");
 
     QTest::newRow("req1-WriteError")
             << ExpectedCanFrameCollection{req1, err1}
@@ -427,6 +427,14 @@ void TestMockCanBus::testWriteFrameErrors_data()
             << ExpectedCanFrameCollection{err2, req2, rsp2}
             << CanBusFrameCollection{req2.second}
             << CanBusErrorCollection{QCanBusDevice::CanBusError::ConfigurationError};
+    QTest::newRow("req1-req2-WriteError-rsp2")
+            << ExpectedCanFrameCollection{req1, req2, err1, rsp2}
+            << CanBusFrameCollection{req1.second, req2.second}
+            << CanBusErrorCollection{QCanBusDevice::CanBusError::WriteError};
+    QTest::newRow("req2-req1-rsp2-WriteError")
+            << ExpectedCanFrameCollection{req2, req1, rsp2, err1}
+            << CanBusFrameCollection{req2.second, req1.second}
+            << CanBusErrorCollection{QCanBusDevice::CanBusError::WriteError};
 }
 
 void TestMockCanBus::testWriteFrameErrors()
