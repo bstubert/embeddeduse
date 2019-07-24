@@ -4,11 +4,11 @@
 
 #include <QCanBusDevice>
 #include <QCanBusFrame>
-#include <QList>
 #include <QMetaType>
 #include <QPair>
 #include <QtGlobal>
 #include <QVariant>
+#include <QVector>
 
 enum class CanConfigurationKey : int {
     ActualCanIo = QCanBusDevice::UserKey,
@@ -37,6 +37,7 @@ enum class CanErrorNo : quint8 {
 };
 Q_DECLARE_METATYPE(CanErrorNo)
 
+
 using ExpectedCanFrame = QPair<CanFrameType, QCanBusFrame>;
 using ExpectedCanFrameCollection = QVector<ExpectedCanFrame>;
 Q_DECLARE_METATYPE(ExpectedCanFrame)
@@ -45,6 +46,8 @@ Q_DECLARE_METATYPE(ExpectedCanFrameCollection)
 using CanBusFrameCollection = QVector<QCanBusFrame>;
 Q_DECLARE_METATYPE(QCanBusFrame)
 Q_DECLARE_METATYPE(CanBusFrameCollection)
+
+using CanBusErrorCollection = QVector<QCanBusDevice::CanBusError>;
 
 namespace CanUtils
 {

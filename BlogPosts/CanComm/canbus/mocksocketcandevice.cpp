@@ -36,6 +36,7 @@ void MockSocketCanDevice::setConfigurationParameter(int key, const QVariant &val
     if (key == int(CanConfigurationKey::ExpectedCanIo)) {
         m_frameIndex = 0;
         m_frameCount = CanUtils::expectedCanIo(this).size();
+        checkForDeviceErrors();
         receiveIncomingFrames();
     }
 }
