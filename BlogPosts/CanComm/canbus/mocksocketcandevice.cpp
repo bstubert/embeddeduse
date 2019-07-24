@@ -54,7 +54,7 @@ bool MockSocketCanDevice::writeFrame(const QCanBusFrame &frame)
                        << ", but got " << frame.toString();
         }
     }
-    CanUtils::appendActualIoFrame(this, ExpectedCanFrame{ExpectedCanFrame::Type::Outgoing, frame});
+    CanUtils::appendActualIoFrame(this, MockCanFrame{MockCanFrame::Type::Outgoing, frame});
     emit framesWritten(1);
     checkForResponses();
     return true;
@@ -91,13 +91,13 @@ void MockSocketCanDevice::checkForResponses()
     auto expectedFrameColl = CanUtils::expectedCanIo(this);
     auto incomingFrameColl = CanBusFrameCollection{};
     while (m_frameIndex < m_frameCount &&
-           expectedFrameColl[m_frameIndex].type != ExpectedCanFrame::Type::Outgoing) {
+           expectedFrameColl[m_frameIndex].type != MockCanFrame::Type::Outgoing) {
         CanUtils::appendActualIoFrame(this, expectedFrameColl[m_frameIndex]);
-        if (expectedFrameColl[m_frameIndex].type == ExpectedCanFrame::Type::DeviceError) {
+        if (expectedFrameColl[m_frameIndex].type == MockCanFrame::Type::DeviceError) {
             setError(expectedFrameColl[m_frameIndex].deviceErrorString(),
                      expectedFrameColl[m_frameIndex].deviceError());
         }
-        else if (expectedFrameColl[m_frameIndex].type == ExpectedCanFrame::Type::Incoming) {
+        else if (expectedFrameColl[m_frameIndex].type == MockCanFrame::Type::Incoming) {
             incomingFrameColl.append(expectedFrameColl[m_frameIndex]);
         }
         ++m_frameIndex;

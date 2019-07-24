@@ -10,7 +10,7 @@
 #include <QVariant>
 #include <QVector>
 
-struct ExpectedCanFrame
+struct MockCanFrame
 {
     enum class Type : int {
         Invalid = 0,
@@ -24,21 +24,21 @@ struct ExpectedCanFrame
         CannotFilterUnknownFrames = 2,
     };
 
-    ExpectedCanFrame()
+    MockCanFrame()
         : type{Type::Invalid}
     {}
 
-    ExpectedCanFrame(Type type, const QCanBusFrame &frame)
+    MockCanFrame(Type type, const QCanBusFrame &frame)
         : type{type}
         , frame{frame}
     {}
 
-    ExpectedCanFrame(Type type, quint32 frameId, const char *payload)
+    MockCanFrame(Type type, quint32 frameId, const char *payload)
         : type{type}
         , frame{frameId, QByteArray::fromHex(payload)}
     {}
 
-    ExpectedCanFrame(QCanBusDevice::CanBusError deviceError, ErrorNo errorNo)
+    MockCanFrame(QCanBusDevice::CanBusError deviceError, ErrorNo errorNo)
         : type{Type::DeviceError}
         , frame{QCanBusFrame::FrameType::InvalidFrame}
     {
@@ -70,13 +70,13 @@ struct ExpectedCanFrame
     QCanBusFrame frame;
 };
 
-using ExpectedCanFrameCollection = QVector<ExpectedCanFrame>;
-Q_DECLARE_METATYPE(ExpectedCanFrame)
+using MockCanFrameCollection = QVector<MockCanFrame>;
+Q_DECLARE_METATYPE(MockCanFrame)
 
 using CanBusFrameCollection = QVector<QCanBusFrame>;
 Q_DECLARE_METATYPE(QCanBusFrame)
 
-Q_DECLARE_METATYPE(ExpectedCanFrame::ErrorNo)
+Q_DECLARE_METATYPE(MockCanFrame::ErrorNo)
 using CanBusErrorCollection = QVector<QCanBusDevice::CanBusError>;
 
 namespace CanUtils
@@ -86,32 +86,32 @@ enum class ConfigurationKey : int {
     ExpectedCanIo
 };
 
-inline ExpectedCanFrameCollection actualCanIo(const QCanBusDevice *device)
+inline MockCanFrameCollection actualCanIo(const QCanBusDevice *device)
 {
     return device->configurationParameter(int(CanUtils::ConfigurationKey::ActualCanIo))
-            .value<ExpectedCanFrameCollection>();
+            .value<MockCanFrameCollection>();
 }
 
-inline void setActualCanIo(QCanBusDevice *device, const ExpectedCanFrameCollection &frames)
+inline void setActualCanIo(QCanBusDevice *device, const MockCanFrameCollection &frames)
 {
     device->setConfigurationParameter(int(CanUtils::ConfigurationKey::ActualCanIo),
                                       QVariant::fromValue(frames));
 }
 
-inline void appendActualIoFrame(QCanBusDevice *device, const ExpectedCanFrame &frame)
+inline void appendActualIoFrame(QCanBusDevice *device, const MockCanFrame &frame)
 {
     auto frames = actualCanIo(device);
     frames.append(frame);
     setActualCanIo(device, frames);
 }
 
-inline ExpectedCanFrameCollection expectedCanIo(const QCanBusDevice *device)
+inline MockCanFrameCollection expectedCanIo(const QCanBusDevice *device)
 {
     return device->configurationParameter(int(CanUtils::ConfigurationKey::ExpectedCanIo))
-            .value<ExpectedCanFrameCollection>();
+            .value<MockCanFrameCollection>();
 }
 
-inline void setExpectedCanIo(QCanBusDevice *device, const ExpectedCanFrameCollection &frames)
+inline void setExpectedCanIo(QCanBusDevice *device, const MockCanFrameCollection &frames)
 {
     device->setConfigurationParameter(int(CanUtils::ConfigurationKey::ExpectedCanIo),
                                       QVariant::fromValue(frames));
