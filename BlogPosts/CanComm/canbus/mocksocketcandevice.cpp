@@ -6,6 +6,7 @@
 #include <QtDebug>
 
 #include "canbusext.h"
+#include "mockcanutils.h"
 #include "mocksocketcandevice.h"
 
 MockSocketCanDevice::MockSocketCanDevice(const QString &name, QObject *parent)

@@ -22,5 +22,5 @@ add_test(
 
 target_link_libraries(
     ${PROJECT_NAME}
-    EmUse::CanBusExt Qt5::SerialBus Qt5::Test
+    EmUse::CanBusExt EmUse::MockCanUtils Qt5::SerialBus Qt5::Test
 )

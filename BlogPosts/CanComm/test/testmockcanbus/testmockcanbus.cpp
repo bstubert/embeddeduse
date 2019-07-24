@@ -18,6 +18,7 @@
 #include <QtTest>
 
 #include "canbusext.h"
+#include "mockcanutils.h"
 
 class TestMockCanBus : public QObject
 {

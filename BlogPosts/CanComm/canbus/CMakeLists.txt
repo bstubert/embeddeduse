@@ -17,10 +17,9 @@ add_library(
     mocksocketcandevice.h
 )
 
-#add_library(EmUse::mockcan ALIAS ${PROJECT_NAME})
-
 target_include_directories(${PROJECT_NAME} INTERFACE .)
 
-target_link_libraries(${PROJECT_NAME} EmUse::CanBusExt Qt5::Core Qt5::SerialBus)
+target_link_libraries(${PROJECT_NAME}
+    EmUse::CanBusExt EmUse::MockCanUtils Qt5::Core Qt5::SerialBus)
 
 
