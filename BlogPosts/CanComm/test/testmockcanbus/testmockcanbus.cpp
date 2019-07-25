@@ -544,36 +544,54 @@ void TestMockCanBus::testReceiveOwnConfigurationKey()
 
 void TestMockCanBus::testReceiveOwnWrittenFrames_data()
 {
+    QTest::addColumn<bool>("receiveOwnFrameEnabled");
     QTest::addColumn<CanBusFrameCollection>("outgoingFrames");
     QTest::addColumn<MockCanFrameCollection>("expectedCanIo");
-    QTest::addColumn<MockCanFrameCollection>("goldenActualCanIo");
+    QTest::addColumn<bool>("result");
 
     auto out1 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000000000"};
-    auto ownOut1 = MockCanFrame{MockCanFrame::Type::Incoming, out1};
+    auto ownOut1 = MockCanFrame{MockCanFrame::Type::OwnIncoming, out1};
+    auto in1 = MockCanFrame{MockCanFrame::Type::Incoming, 0x18ef0102U, "018A0103A4000000"};
 
-    QTest::newRow("out1")
+    QTest::newRow("own on: out1-ownOut1")
+            << true
             << CanBusFrameCollection{out1}
-            << MockCanFrameCollection{out1}
-            << MockCanFrameCollection{out1, ownOut1};
+            << MockCanFrameCollection{out1, ownOut1}
+            << true;
+    QTest::newRow("own on: out1-ownOut1-in1")
+            << true
+            << CanBusFrameCollection{out1}
+            << MockCanFrameCollection{out1, ownOut1, in1}
+            << true;
+    QTest::newRow("own on: out1-in1-ownOut1")
+            << true
+            << CanBusFrameCollection{out1}
+            << MockCanFrameCollection{out1, in1, ownOut1}
+            << true;
+    QTest::newRow("own off, but own expected")
+            << false
+            << CanBusFrameCollection{out1}
+            << MockCanFrameCollection{out1, ownOut1}
+            << false;
 }
 
 void TestMockCanBus::testReceiveOwnWrittenFrames()
 {
+    QFETCH(bool, receiveOwnFrameEnabled);
     QFETCH(CanBusFrameCollection, outgoingFrames);
     QFETCH(MockCanFrameCollection, expectedCanIo);
-    QFETCH(MockCanFrameCollection, goldenActualCanIo);
+    QFETCH(bool, result);
 
-    const auto receiveOwnConfKey = QCanBusDevice::ConfigurationKey::ReceiveOwnKey;
     std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
-    device->setConfigurationParameter(receiveOwnConfKey, true);
+    device->setConfigurationParameter(QCanBusDevice::ConfigurationKey::ReceiveOwnKey,
+                                      receiveOwnFrameEnabled);
+    setExpectedCanIo(device.get(), expectedCanIo);
 
     for (const auto &frame : outgoingFrames) {
         device->writeFrame(frame);
     }
-//    QCOMPARE(actualCanIo(device.get()), goldenActualCanIo);
+    QCOMPARE(actualCanIo(device.get()) == expectedCanIo, result);
 }
-
-
 
 QCanBusDevice *TestMockCanBus::createAndConnectDevice(const QString &interface)
 {

@@ -16,7 +16,8 @@ struct MockCanFrame
         Invalid = 0,
         Outgoing = 1,
         Incoming = 2,
-        DeviceError = 3
+        OwnIncoming = 3,
+        DeviceError = 4
     };
 
     enum class ErrorNo : quint8 {
@@ -54,6 +55,8 @@ struct MockCanFrame
 
     bool isIncoming() const { return type == Type::Incoming; }
 
+    bool isOwnIncoming() const { return type == Type::OwnIncoming; }
+
     bool isDeviceError() const { return type == Type::DeviceError; }
 
     QCanBusDevice::CanBusError deviceError() const
@@ -81,6 +84,11 @@ using MockCanFrameCollection = QVector<MockCanFrame>;
 bool operator==(const MockCanFrame &lhs, const MockCanFrame &rhs)
 {
     return lhs.type == rhs.type && lhs.frame == rhs.frame;
+}
+
+bool operator!=(const MockCanFrame &lhs, const MockCanFrame &rhs)
+{
+    return !(lhs == rhs);
 }
 
 enum class MockConfigurationKey : int {
