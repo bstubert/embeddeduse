@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <functional>
+
 #include <QCanBusDevice>
 #include <QCanBusFrame>
 #include <QMetaType>
