@@ -39,6 +39,10 @@ private slots:
     void testActualCanIoConfiguration();
     void testExpectedCanIoConfiguration_data();
     void testExpectedCanIoConfiguration();
+    void testMockCanFrameEquality_data();
+    void testMockCanFrameEquality();
+    void testMockCanFrameCollectionEquality_data();
+    void testMockCanFrameCollectionEquality();
     void testWriteFrame_data();
     void testWriteFrame();
     void testReadParameter_data();
@@ -47,6 +51,9 @@ private slots:
     void testDeviceErrors();
     void testWriteFrameErrors_data();
     void testWriteFrameErrors();
+    void testReceiveOwnConfigurationKey();
+    void testReceiveOwnWrittenFrames_data();
+    void testReceiveOwnWrittenFrames();
 
 private:
     QCanBusDevice *createAndConnectDevice(const QString &interface);
@@ -239,6 +246,68 @@ void TestMockCanBus::testExpectedCanIoConfiguration()
 
     setExpectedCanIo(device.get(), frames);
     QCOMPARE(expectedCanIo(device.get()), frames);
+}
+
+void TestMockCanBus::testMockCanFrameEquality_data()
+{
+    QTest::addColumn<MockCanFrame>("lhs");
+    QTest::addColumn<MockCanFrame>("rhs");
+    QTest::addColumn<bool>("same");
+
+    auto out1 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000000000"};
+    auto out2 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0301U, "018A010000000000"};
+    auto out3 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000050000"};
+    auto in1 = MockCanFrame{MockCanFrame::Type::Incoming, out1};
+
+    QTest::newRow("same type, same frame") << in1 << in1 << true;
+    QTest::newRow("same type, different frame ID") << out1 << out2 << false;
+    QTest::newRow("same type, different payload") << out1 << out3 << false;
+    QTest::newRow("different type, same frame") << out1 << in1 << false;
+}
+
+void TestMockCanBus::testMockCanFrameEquality()
+{
+    QFETCH(MockCanFrame, lhs);
+    QFETCH(MockCanFrame, rhs);
+    QFETCH(bool, same);
+
+    QCOMPARE((lhs == rhs), same);
+}
+
+void TestMockCanBus::testMockCanFrameCollectionEquality_data()
+{
+    QTest::addColumn<MockCanFrameCollection>("lhs");
+    QTest::addColumn<MockCanFrameCollection>("rhs");
+    QTest::addColumn<bool>("same");
+
+    auto out1 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000000000"};
+    auto ownOut1 = MockCanFrame{MockCanFrame::Type::Incoming, 0x18ef0201U, "018A010000000000"};
+
+    QTest::newRow("same types, same frames")
+            << MockCanFrameCollection{out1, out1}
+            << MockCanFrameCollection{out1, out1}
+            << true;
+    QTest::newRow("different types, same frames")
+            << MockCanFrameCollection{out1, ownOut1}
+            << MockCanFrameCollection{out1, out1}
+            << false;
+    QTest::newRow("different size")
+            << MockCanFrameCollection{out1}
+            << MockCanFrameCollection{out1, ownOut1}
+            << false;
+    QTest::newRow("both empty")
+            << MockCanFrameCollection{}
+            << MockCanFrameCollection{}
+            << true;
+}
+
+void TestMockCanBus::testMockCanFrameCollectionEquality()
+{
+    QFETCH(MockCanFrameCollection, lhs);
+    QFETCH(MockCanFrameCollection, rhs);
+    QFETCH(bool, same);
+
+    QCOMPARE((lhs == rhs), same);
 }
 
 void TestMockCanBus::testWriteFrame_data()
@@ -461,6 +530,49 @@ void TestMockCanBus::testWriteFrameErrors()
     }
     QCOMPARE(actualCanIo(device.get()), expectedCanIo);
 }
+
+void TestMockCanBus::testReceiveOwnConfigurationKey()
+{
+    const auto receiveOwnConfKey = QCanBusDevice::ConfigurationKey::ReceiveOwnKey;
+    std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
+    QVERIFY(!device->configurationParameter(receiveOwnConfKey).toBool());
+    device->setConfigurationParameter(receiveOwnConfKey, true);
+    QVERIFY(device->configurationParameter(receiveOwnConfKey).toBool());
+    device->setConfigurationParameter(receiveOwnConfKey, false);
+    QVERIFY(!device->configurationParameter(receiveOwnConfKey).toBool());
+}
+
+void TestMockCanBus::testReceiveOwnWrittenFrames_data()
+{
+    QTest::addColumn<CanBusFrameCollection>("outgoingFrames");
+    QTest::addColumn<MockCanFrameCollection>("expectedCanIo");
+    QTest::addColumn<MockCanFrameCollection>("goldenActualCanIo");
+
+    auto out1 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000000000"};
+    auto ownOut1 = MockCanFrame{MockCanFrame::Type::Incoming, out1};
+
+    QTest::newRow("out1")
+            << CanBusFrameCollection{out1}
+            << MockCanFrameCollection{out1}
+            << MockCanFrameCollection{out1, ownOut1};
+}
+
+void TestMockCanBus::testReceiveOwnWrittenFrames()
+{
+    QFETCH(CanBusFrameCollection, outgoingFrames);
+    QFETCH(MockCanFrameCollection, expectedCanIo);
+    QFETCH(MockCanFrameCollection, goldenActualCanIo);
+
+    const auto receiveOwnConfKey = QCanBusDevice::ConfigurationKey::ReceiveOwnKey;
+    std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
+    device->setConfigurationParameter(receiveOwnConfKey, true);
+
+    for (const auto &frame : outgoingFrames) {
+        device->writeFrame(frame);
+    }
+//    QCOMPARE(actualCanIo(device.get()), goldenActualCanIo);
+}
+
 
 
 QCanBusDevice *TestMockCanBus::createAndConnectDevice(const QString &interface)

@@ -25,6 +25,7 @@ protected:
     void close() override;
 
 private:
+    bool isReceiveOwnFrameEnabled() const;
     void checkForResponses();
 
     QString m_interface;

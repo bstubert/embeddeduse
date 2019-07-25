@@ -78,6 +78,11 @@ struct MockCanFrame
 
 using MockCanFrameCollection = QVector<MockCanFrame>;
 
+bool operator==(const MockCanFrame &lhs, const MockCanFrame &rhs)
+{
+    return lhs.type == rhs.type && lhs.frame == rhs.frame;
+}
+
 enum class MockConfigurationKey : int {
     ActualCanIo = QCanBusDevice::UserKey,
     ExpectedCanIo

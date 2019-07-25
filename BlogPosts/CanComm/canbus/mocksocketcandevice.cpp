@@ -16,6 +16,8 @@ MockSocketCanDevice::MockSocketCanDevice(const QString &name, QObject *parent)
     // Required to use QCanBusDevice::CanBusError in asynchronous signal-slot connections and
     // in QSignalSpys.
     qRegisterMetaType<QCanBusDevice::CanBusError>();
+
+    setConfigurationParameter(QCanBusDevice::ConfigurationKey::ReceiveOwnKey, false);
 }
 
 MockSocketCanDevice::~MockSocketCanDevice()
@@ -55,6 +57,9 @@ bool MockSocketCanDevice::writeFrame(const QCanBusFrame &frame)
         }
     }
     appendActualIoFrame(this, MockCanFrame{MockCanFrame::Type::Outgoing, frame});
+    if (isReceiveOwnFrameEnabled()) {
+        appendActualIoFrame(this, MockCanFrame{MockCanFrame::Type::Outgoing, frame});
+    }
     emit framesWritten(1);
     checkForResponses();
     return true;
@@ -84,6 +89,11 @@ bool MockSocketCanDevice::open()
 void MockSocketCanDevice::close()
 {
     setState(QCanBusDevice::UnconnectedState);
+}
+
+bool MockSocketCanDevice::isReceiveOwnFrameEnabled() const
+{
+    return configurationParameter(QCanBusDevice::ConfigurationKey::ReceiveOwnKey).toBool();
 }
 
 void MockSocketCanDevice::checkForResponses()
