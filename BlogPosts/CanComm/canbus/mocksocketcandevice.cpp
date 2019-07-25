@@ -90,15 +90,17 @@ void MockSocketCanDevice::checkForResponses()
 {
     auto expectedFrameColl = expectedCanIo(this);
     auto incomingFrameColl = CanBusFrameCollection{};
-    while (m_frameIndex < m_frameCount &&
-           expectedFrameColl[m_frameIndex].type != MockCanFrame::Type::Outgoing) {
-        appendActualIoFrame(this, expectedFrameColl[m_frameIndex]);
-        if (expectedFrameColl[m_frameIndex].type == MockCanFrame::Type::DeviceError) {
-            setError(expectedFrameColl[m_frameIndex].deviceErrorString(),
-                     expectedFrameColl[m_frameIndex].deviceError());
+    while (m_frameIndex < m_frameCount) {
+        auto expectedFrame = expectedFrameColl[m_frameIndex];
+        if (expectedFrame.isOutgoing()) {
+            break;
         }
-        else if (expectedFrameColl[m_frameIndex].type == MockCanFrame::Type::Incoming) {
-            incomingFrameColl.append(expectedFrameColl[m_frameIndex]);
+        appendActualIoFrame(this, expectedFrame);
+        if (expectedFrame.isDeviceError()) {
+            setError(expectedFrame.deviceErrorString(), expectedFrame.deviceError());
+        }
+        else if (expectedFrameColl[m_frameIndex].isIncoming()) {
+            incomingFrameColl.append(expectedFrame);
         }
         ++m_frameIndex;
     }

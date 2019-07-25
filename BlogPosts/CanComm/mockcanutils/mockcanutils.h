@@ -50,6 +50,12 @@ struct MockCanFrame
 
     operator QCanBusFrame() const { return frame; }
 
+    bool isOutgoing() const { return type == Type::Outgoing; }
+
+    bool isIncoming() const { return type == Type::Incoming; }
+
+    bool isDeviceError() const { return type == Type::DeviceError; }
+
     QCanBusDevice::CanBusError deviceError() const
     {
         return QCanBusDevice::CanBusError(quint8(frame.payload()[0]));
