@@ -112,6 +112,5 @@ Q_DECLARE_METATYPE(MockCanFrame)
 Q_DECLARE_METATYPE(MockCanFrame::ErrorNo)
 
 using CanBusFrameCollection = QVector<QCanBusFrame>;
-Q_DECLARE_METATYPE(QCanBusFrame)
 
 using CanBusErrorCollection = QVector<QCanBusDevice::CanBusError>;

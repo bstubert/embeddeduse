@@ -4,6 +4,8 @@
 
 #include <QCanBusFrame>
 
+Q_DECLARE_METATYPE(QCanBusFrame)
+
 inline bool operator==(const QCanBusFrame &frame1, const QCanBusFrame &frame2)
 {
     return frame1.frameId() == frame2.frameId() && frame1.payload() == frame2.payload();
