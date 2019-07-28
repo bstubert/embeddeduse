@@ -2,9 +2,18 @@
 
 #pragma once
 
+#include <QByteArray>
 #include <QCanBusFrame>
 
 Q_DECLARE_METATYPE(QCanBusFrame)
+
+namespace
+{
+QByteArray toByteArray(const QCanBusFrame &frame)
+{
+    return QByteArray::number(frame.frameId(), 16) + "#" + frame.payload().toHex();
+}
+}
 
 inline bool operator==(const QCanBusFrame &frame1, const QCanBusFrame &frame2)
 {
@@ -19,7 +28,13 @@ inline bool operator!=(const QCanBusFrame &frame1, const QCanBusFrame &frame2)
 inline QDebug operator<<(QDebug debug, const QCanBusFrame &frame)
 {
     QDebugStateSaver saver(debug);
-    debug.nospace().noquote() << QByteArray::number(frame.frameId(), 16) << "#"
-                              << frame.payload().toHex();
+    debug.nospace().noquote() << toByteArray(frame);
     return debug;
+}
+
+inline char *toString(const QCanBusFrame &frame)
+{
+    auto src = toByteArray(frame);
+    char *dst = new char[src.size() + 1];
+    return qstrcpy(dst, src.data());
 }

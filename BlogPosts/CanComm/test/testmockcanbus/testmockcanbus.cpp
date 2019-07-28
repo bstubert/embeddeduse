@@ -26,6 +26,7 @@ class TestMockCanBus : public QObject
 
 private slots:
     void initTestCase();
+private:
     void testAvailableDevices_data();
     void testAvailableDevices();
     void testCreateDevice_data();
@@ -56,6 +57,7 @@ private slots:
     void testReceiveOwnWrittenFrames();
     void testWriteBufferOverflow_data();
     void testWriteBufferOverflow();
+private slots:
     void testQDebug();
 
 private:
@@ -607,6 +609,14 @@ void TestMockCanBus::testWriteBufferOverflow_data()
 void TestMockCanBus::testWriteBufferOverflow()
 {
 
+}
+
+void TestMockCanBus::testQDebug()
+{
+    auto frame1 = QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")};
+    auto frame2 = QCanBusFrame{0x18ef0301U, QByteArray::fromHex("0153020000000000")};
+    qDebug() << "frames:" << frame1 << frame2;
+    QCOMPARE(frame1, frame2);
 }
 
 QCanBusDevice *TestMockCanBus::createAndConnectDevice(const QString &interface)
