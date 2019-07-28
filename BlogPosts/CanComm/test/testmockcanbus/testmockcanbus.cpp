@@ -54,6 +54,9 @@ private slots:
     void testReceiveOwnConfigurationKey();
     void testReceiveOwnWrittenFrames_data();
     void testReceiveOwnWrittenFrames();
+    void testWriteBufferOverflow_data();
+    void testWriteBufferOverflow();
+    void testQDebug();
 
 private:
     QCanBusDevice *createAndConnectDevice(const QString &interface);
@@ -590,6 +593,20 @@ void TestMockCanBus::testReceiveOwnWrittenFrames()
                      return receiveOwn || !f.isOwnIncoming();
                  });
     QCOMPARE(actualCanIo(device.get()), goldenCanIo);
+}
+
+void TestMockCanBus::testWriteBufferOverflow_data()
+{
+    auto req1 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "0101000000000000"};
+    auto rsp1 = MockCanFrame{MockCanFrame::Type::Incoming, 0x18ef0102U, "0101001200000000"};
+    auto req2 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "0102000000000000"};
+    auto rsp2 = MockCanFrame{MockCanFrame::Type::Incoming, 0x18ef0102U, "0102002300000000"};
+
+}
+
+void TestMockCanBus::testWriteBufferOverflow()
+{
+
 }
 
 QCanBusDevice *TestMockCanBus::createAndConnectDevice(const QString &interface)

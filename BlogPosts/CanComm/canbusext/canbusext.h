@@ -15,3 +15,11 @@ inline bool operator!=(const QCanBusFrame &frame1, const QCanBusFrame &frame2)
 {
     return !(frame1 == frame2);
 }
+
+inline QDebug operator<<(QDebug debug, const QCanBusFrame &frame)
+{
+    QDebugStateSaver saver(debug);
+    debug.nospace().noquote() << QByteArray::number(frame.frameId(), 16) << "#"
+                              << frame.payload().toHex();
+    return debug;
+}
