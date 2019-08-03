@@ -4,6 +4,7 @@
 
 #include <QByteArray>
 #include <QCanBusFrame>
+#include <QDebug>
 
 Q_DECLARE_METATYPE(QCanBusFrame)
 
