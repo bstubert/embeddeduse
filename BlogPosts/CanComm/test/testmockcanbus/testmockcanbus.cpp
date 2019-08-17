@@ -26,10 +26,6 @@ class TestMockCanBus : public QObject
 
 private slots:
     void initTestCase();
-    void testMockCanFrameEquality_data();
-    void testMockCanFrameEquality();
-    void testMockCanFrameCollectionEquality_data();
-    void testMockCanFrameCollectionEquality();
     void testWriteFrame_data();
     void testWriteFrame();
     void testReadParameter_data();
@@ -54,68 +50,6 @@ void TestMockCanBus::initTestCase()
     // plugins in /library/path/canbus. Hence, the directory containing the mockcan plugin
     // is called "canbus".
     QCoreApplication::addLibraryPath("../../");
-}
-
-void TestMockCanBus::testMockCanFrameEquality_data()
-{
-    QTest::addColumn<MockCanFrame>("lhs");
-    QTest::addColumn<MockCanFrame>("rhs");
-    QTest::addColumn<bool>("same");
-
-    auto out1 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000000000"};
-    auto out2 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0301U, "018A010000000000"};
-    auto out3 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000050000"};
-    auto in1 = MockCanFrame{MockCanFrame::Type::Incoming, out1};
-
-    QTest::newRow("same type, same frame") << in1 << in1 << true;
-    QTest::newRow("same type, different frame ID") << out1 << out2 << false;
-    QTest::newRow("same type, different payload") << out1 << out3 << false;
-    QTest::newRow("different type, same frame") << out1 << in1 << false;
-}
-
-void TestMockCanBus::testMockCanFrameEquality()
-{
-    QFETCH(MockCanFrame, lhs);
-    QFETCH(MockCanFrame, rhs);
-    QFETCH(bool, same);
-
-    QCOMPARE((lhs == rhs), same);
-}
-
-void TestMockCanBus::testMockCanFrameCollectionEquality_data()
-{
-    QTest::addColumn<MockCanFrameCollection>("lhs");
-    QTest::addColumn<MockCanFrameCollection>("rhs");
-    QTest::addColumn<bool>("same");
-
-    auto out1 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000000000"};
-    auto ownOut1 = MockCanFrame{MockCanFrame::Type::Incoming, 0x18ef0201U, "018A010000000000"};
-
-    QTest::newRow("same types, same frames")
-            << MockCanFrameCollection{out1, out1}
-            << MockCanFrameCollection{out1, out1}
-            << true;
-    QTest::newRow("different types, same frames")
-            << MockCanFrameCollection{out1, ownOut1}
-            << MockCanFrameCollection{out1, out1}
-            << false;
-    QTest::newRow("different size")
-            << MockCanFrameCollection{out1}
-            << MockCanFrameCollection{out1, ownOut1}
-            << false;
-    QTest::newRow("both empty")
-            << MockCanFrameCollection{}
-            << MockCanFrameCollection{}
-            << true;
-}
-
-void TestMockCanBus::testMockCanFrameCollectionEquality()
-{
-    QFETCH(MockCanFrameCollection, lhs);
-    QFETCH(MockCanFrameCollection, rhs);
-    QFETCH(bool, same);
-
-    QCOMPARE((lhs == rhs), same);
 }
 
 void TestMockCanBus::testWriteFrame_data()
