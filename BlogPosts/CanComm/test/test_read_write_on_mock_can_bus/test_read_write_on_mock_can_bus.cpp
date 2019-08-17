@@ -30,12 +30,25 @@ private slots:
     void cleanup();
     void testWriteFrame_data();
     void testWriteFrame();
+
+    void testWriteOneExpectedFrame();
+    void testWriteOneUnexpectedFrame();
+    void testWriteMoreFramesThanExpected();
+    void testWriteLessFramesThanExpected();
+    void testWriteTwoFramesInExpectedOrder();
+    void testWriteTwoFramesInUnexpectedOrder();
+
     void testReadParameter_data();
     void testReadParameter();
     void testWriteFrameErrors_data();
     void testWriteFrameErrors();
 
-private:
+private:    
+    void expectWriteFrame(const QCanBusFrame &frame);
+
+    const QCanBusFrame c_frame1{0x18ef0201U, QByteArray::fromHex("018A010000000000")};
+    const QCanBusFrame c_frame2{0x18ef0301U, QByteArray::fromHex("01B5010000000000")};
+
     QCanBusDevice *m_device;
     QSignalSpy *m_writtenSpy;
     QSignalSpy *m_receivedSpy;
@@ -55,15 +68,21 @@ void TestReadWriteOnMockCanBus::init()
     QString errorStr;
     m_device = QCanBus::instance()->createDevice("mockcan", "mcan0", &errorStr);
     m_device->connectDevice();
+
     m_writtenSpy = new QSignalSpy{m_device, &QCanBusDevice::framesWritten};
     m_receivedSpy = new QSignalSpy{m_device, &QCanBusDevice::framesReceived};
     m_errorSpy = new QSignalSpy{m_device, &QCanBusDevice::errorOccurred};
+
+    QVERIFY(actualCanIo(m_device).isEmpty());
+    QVERIFY(expectedCanIo(m_device).isEmpty());
 }
 
 void TestReadWriteOnMockCanBus::cleanup()
 {
     delete m_device;
     delete m_writtenSpy;
+    delete m_receivedSpy;
+    delete m_errorSpy;
 }
 
 void TestReadWriteOnMockCanBus::testWriteFrame_data()
@@ -100,15 +119,15 @@ void TestReadWriteOnMockCanBus::testWriteFrame_data()
             << MockCanFrameCollection{frame1, frame2}
             << MockCanFrameCollection{frame2, frame1}
             << false;
-    QTest::newRow("0 written, 0 expected")
+    QTest::newRow("0 written, 0 expected")      // Checked in init()
             << MockCanFrameCollection{}
             << MockCanFrameCollection{}
             << true;
-    QTest::newRow("1 written, 0 expected")
+    QTest::newRow("1 written, 0 expected")      // Duplicate of "2 written, 1 expected"
             << MockCanFrameCollection{frame1}
             << MockCanFrameCollection{}
             << false;
-    QTest::newRow("0 written, 1 expected")
+    QTest::newRow("0 written, 1 expected")      // Duplicate of "1 written, 2 expected"
             << MockCanFrameCollection{}
             << MockCanFrameCollection{frame1}
             << false;
@@ -128,6 +147,74 @@ void TestReadWriteOnMockCanBus::testWriteFrame()
     QCOMPARE(actualCanIo(m_device) == expectedCanIo, isCanIoOk);
     QCOMPARE(m_writtenSpy->size(), outgoingFrames.size());
 }
+
+void TestReadWriteOnMockCanBus::testWriteOneExpectedFrame()
+{
+    expectWriteFrame(c_frame1);
+
+    m_device->writeFrame(c_frame1);
+
+    QCOMPARE(actualCanIo(m_device), expectedCanIo(m_device));
+    QCOMPARE(m_writtenSpy->size(), 1);
+}
+
+void TestReadWriteOnMockCanBus::testWriteOneUnexpectedFrame()
+{
+    expectWriteFrame(c_frame1);
+
+    m_device->writeFrame(c_frame2);
+
+    QVERIFY(actualCanIo(m_device) != expectedCanIo(m_device));
+    QCOMPARE(m_writtenSpy->size(), 1);
+}
+
+void TestReadWriteOnMockCanBus::testWriteMoreFramesThanExpected()
+{
+    expectWriteFrame(c_frame1);
+
+    m_device->writeFrame(c_frame1);
+    m_device->writeFrame(c_frame2);
+
+    QVERIFY(actualCanIo(m_device) != expectedCanIo(m_device));
+    QCOMPARE(m_writtenSpy->size(), 2);
+}
+
+void TestReadWriteOnMockCanBus::testWriteLessFramesThanExpected()
+{
+    expectWriteFrame(c_frame1);
+    expectWriteFrame(c_frame2);
+
+    m_device->writeFrame(c_frame1);
+
+    QVERIFY(actualCanIo(m_device) != expectedCanIo(m_device));
+    QCOMPARE(m_writtenSpy->size(), 1);
+}
+
+void TestReadWriteOnMockCanBus::testWriteTwoFramesInExpectedOrder()
+{
+    expectWriteFrame(c_frame1);
+    expectWriteFrame(c_frame2);
+
+    m_device->writeFrame(c_frame1);
+    m_device->writeFrame(c_frame2);
+
+    QCOMPARE(actualCanIo(m_device), expectedCanIo(m_device));
+    QCOMPARE(m_writtenSpy->size(), 2);
+}
+
+void TestReadWriteOnMockCanBus::testWriteTwoFramesInUnexpectedOrder()
+{
+    expectWriteFrame(c_frame1);
+    expectWriteFrame(c_frame2);
+
+    m_device->writeFrame(c_frame2);
+    m_device->writeFrame(c_frame1);
+
+    QVERIFY(actualCanIo(m_device) != expectedCanIo(m_device));
+    QCOMPARE(m_writtenSpy->size(), 2);
+}
+
+
 
 void TestReadWriteOnMockCanBus::testReadParameter_data()
 {
@@ -250,6 +337,13 @@ void TestReadWriteOnMockCanBus::testWriteFrameErrors()
         QCOMPARE((*m_errorSpy)[i][0].value<QCanBusDevice::CanBusError>(), canErrors[i]);
     }
     QCOMPARE(actualCanIo(m_device), expectedCanIo);
+}
+
+void TestReadWriteOnMockCanBus::expectWriteFrame(const QCanBusFrame &frame)
+{
+    auto frames = expectedCanIo(m_device);
+    frames.append(MockCanFrame{MockCanFrame::Type::Outgoing, frame});
+    setExpectedCanIo(m_device, frames);
 }
 
 QTEST_GUILESS_MAIN(TestReadWriteOnMockCanBus)

@@ -98,6 +98,7 @@ enum class MockConfigurationKey : int {
     ExpectedCanIo
 };
 
+
 inline MockCanFrameCollection actualCanIo(const QCanBusDevice *device)
 {
     return device->configurationParameter(int(MockConfigurationKey::ActualCanIo))
