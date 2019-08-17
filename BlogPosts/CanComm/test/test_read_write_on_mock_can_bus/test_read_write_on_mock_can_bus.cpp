@@ -61,11 +61,7 @@ private:
 
 #define CHECK_FRAMES_EXPECTED_NOT_EQUAL \
     QEXPECT_FAIL("", "Frames expected to differ!", Continue); \
-    QCOMPARE(::actualCanFrames(m_device), ::expectedCanFrames(m_device)); \
-    if (::actualCanFrames(m_device) == ::expectedCanFrames(m_device)) { \
-        QCOMPARE(m_writtenSpy->size(), \
-                 ::expectedCanFrameCount(m_device, MockCanFrame::Type::Outgoing)); \
-    }
+    QCOMPARE(::actualCanFrames(m_device), ::expectedCanFrames(m_device));
 
 
 void TestReadWriteOnMockCanBus::initTestCase()
