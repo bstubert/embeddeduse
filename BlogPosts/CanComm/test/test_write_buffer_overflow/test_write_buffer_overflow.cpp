@@ -58,7 +58,7 @@ void TestWriteBufferOverflow::testReceiveOwnWrittenFrames_data()
 {
     QTest::addColumn<bool>("receiveOwn");
     QTest::addColumn<CanBusFrameCollection>("outgoingFrames");
-    QTest::addColumn<MockCanFrameCollection>("expectedCanIo");
+    QTest::addColumn<MockCanFrameCollection>("expectedCanFrames");
 
     auto out1 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000000000"};
     auto ownOut1 = MockCanFrame{MockCanFrame::Type::OwnIncoming, out1};
@@ -86,22 +86,22 @@ void TestWriteBufferOverflow::testReceiveOwnWrittenFrames()
 {
     QFETCH(bool, receiveOwn);
     QFETCH(CanBusFrameCollection, outgoingFrames);
-    QFETCH(MockCanFrameCollection, expectedCanIo);
+    QFETCH(MockCanFrameCollection, expectedCanFrames);
 
     std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
     device->setConfigurationParameter(QCanBusDevice::ConfigurationKey::ReceiveOwnKey,
                                       receiveOwn);
-    setExpectedCanIo(device.get(), expectedCanIo);
+    setExpectedCanFrames(device.get(), expectedCanFrames);
 
     for (const auto &frame : outgoingFrames) {
         device->writeFrame(frame);
     }
     auto goldenCanIo = MockCanFrameCollection{};
-    std::copy_if(expectedCanIo.cbegin(), expectedCanIo.cend(), std::back_inserter(goldenCanIo),
+    std::copy_if(expectedCanFrames.cbegin(), expectedCanFrames.cend(), std::back_inserter(goldenCanIo),
                  [receiveOwn](const MockCanFrame &f) {
                      return receiveOwn || !f.isOwnIncoming();
                  });
-    QCOMPARE(actualCanIo(device.get()), goldenCanIo);
+    QCOMPARE(actualCanFrames(device.get()), goldenCanIo);
 }
 
 void TestWriteBufferOverflow::testWriteBufferOverflow_data()

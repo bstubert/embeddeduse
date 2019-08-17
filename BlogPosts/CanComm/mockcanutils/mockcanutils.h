@@ -100,26 +100,26 @@ enum class MockConfigurationKey : int {
 };
 
 
-inline MockCanFrameCollection actualCanIo(const QCanBusDevice *device)
+inline MockCanFrameCollection actualCanFrames(const QCanBusDevice *device)
 {
     return device->configurationParameter(int(MockConfigurationKey::ActualCanIo))
             .value<MockCanFrameCollection>();
 }
 
-inline void setActualCanIo(QCanBusDevice *device, const MockCanFrameCollection &frames)
+inline void setActualCanFrames(QCanBusDevice *device, const MockCanFrameCollection &frames)
 {
     device->setConfigurationParameter(int(MockConfigurationKey::ActualCanIo),
                                       QVariant::fromValue(frames));
 }
 
-inline void appendActualIoFrame(QCanBusDevice *device, const MockCanFrame &frame)
+inline void appendActualCanFrame(QCanBusDevice *device, const MockCanFrame &frame)
 {
-    auto frames = actualCanIo(device);
+    auto frames = actualCanFrames(device);
     frames.append(frame);
-    setActualCanIo(device, frames);
+    setActualCanFrames(device, frames);
 }
 
-inline MockCanFrameCollection expectedCanIo(const QCanBusDevice *device)
+inline MockCanFrameCollection expectedCanFrames(const QCanBusDevice *device)
 {
     return device->configurationParameter(int(MockConfigurationKey::ExpectedCanIo))
             .value<MockCanFrameCollection>();
@@ -127,13 +127,13 @@ inline MockCanFrameCollection expectedCanIo(const QCanBusDevice *device)
 
 inline int expectedCanFrameCount(const QCanBusDevice *device, MockCanFrame::Type frameType)
 {
-    const auto &coll = expectedCanIo(device);
+    const auto &coll = expectedCanFrames(device);
     return std::count_if(coll.cbegin(), coll.cend(), [frameType](const MockCanFrame &frame) {
         return frame.type == frameType;
     });
 }
 
-inline void setExpectedCanIo(QCanBusDevice *device, const MockCanFrameCollection &frames)
+inline void setExpectedCanFrames(QCanBusDevice *device, const MockCanFrameCollection &frames)
 {
     device->setConfigurationParameter(int(MockConfigurationKey::ExpectedCanIo),
                                       QVariant::fromValue(frames));

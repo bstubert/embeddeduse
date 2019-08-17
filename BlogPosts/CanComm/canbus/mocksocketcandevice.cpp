@@ -38,7 +38,7 @@ void MockSocketCanDevice::setConfigurationParameter(int key, const QVariant &val
     QCanBusDevice::setConfigurationParameter(key, value);
     if (key == int(MockConfigurationKey::ExpectedCanIo)) {
         m_frameIndex = 0;
-        m_frameCount = expectedCanIo(this).size();
+        m_frameCount = expectedCanFrames(this).size();
         checkForResponses();
     }
 }
@@ -49,14 +49,14 @@ bool MockSocketCanDevice::writeFrame(const QCanBusFrame &frame)
         qWarning() << "Expected no frame, but got " << frame.toString();
     }
     else {
-        auto expectedFrame = QCanBusFrame{expectedCanIo(this)[m_frameIndex]};
+        auto expectedFrame = QCanBusFrame{expectedCanFrames(this)[m_frameIndex]};
         ++m_frameIndex;
         if (expectedFrame != frame) {
             qWarning() << "Expected " << expectedFrame.toString()
                        << ", but got " << frame.toString();
         }
     }
-    appendActualIoFrame(this, MockCanFrame{MockCanFrame::Type::Outgoing, frame});
+    appendActualCanFrame(this, MockCanFrame{MockCanFrame::Type::Outgoing, frame});
     emit framesWritten(1);
     checkForResponses();
     return true;
@@ -95,7 +95,7 @@ bool MockSocketCanDevice::isReceiveOwnFrameEnabled() const
 
 void MockSocketCanDevice::checkForResponses()
 {
-    auto expectedFrameColl = expectedCanIo(this);
+    auto expectedFrameColl = expectedCanFrames(this);
     auto incomingFrameColl = CanBusFrameCollection{};
     while (m_frameIndex < m_frameCount) {
         auto expectedFrame = expectedFrameColl[m_frameIndex];
@@ -103,7 +103,7 @@ void MockSocketCanDevice::checkForResponses()
             break;
         }
         if (!expectedFrame.isOwnIncoming() || isReceiveOwnFrameEnabled()) {
-            appendActualIoFrame(this, expectedFrame);
+            appendActualCanFrame(this, expectedFrame);
         }
         else {
             qWarning() << "Received own frame " << QCanBusFrame{expectedFrame}.toString()

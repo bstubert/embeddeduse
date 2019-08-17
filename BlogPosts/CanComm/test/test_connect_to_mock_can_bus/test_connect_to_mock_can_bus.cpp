@@ -199,10 +199,10 @@ void TestConnectToMockCanBus::testActualCanIoConfiguration()
     std::unique_ptr<QCanBusDevice> device{
         QCanBus::instance()->createDevice("mockcan", "mcan1", &currentErrorStr)};
 
-    QVERIFY(actualCanIo(device.get()).isEmpty());
+    QVERIFY(actualCanFrames(device.get()).isEmpty());
 
-    setActualCanIo(device.get(), frames);
-    QCOMPARE(actualCanIo(device.get()), frames);
+    setActualCanFrames(device.get(), frames);
+    QCOMPARE(actualCanFrames(device.get()), frames);
 }
 
 void TestConnectToMockCanBus::testExpectedCanIoConfiguration_data()
@@ -227,10 +227,10 @@ void TestConnectToMockCanBus::testExpectedCanIoConfiguration()
     std::unique_ptr<QCanBusDevice> device{
         QCanBus::instance()->createDevice("mockcan", "mcan1", &currentErrorStr)};
 
-    QVERIFY(expectedCanIo(device.get()).isEmpty());
+    QVERIFY(expectedCanFrames(device.get()).isEmpty());
 
-    setExpectedCanIo(device.get(), frames);
-    QCOMPARE(expectedCanIo(device.get()), frames);
+    setExpectedCanFrames(device.get(), frames);
+    QCOMPARE(expectedCanFrames(device.get()), frames);
 }
 
 QCanBusDevice *TestConnectToMockCanBus::createAndConnectDevice(const QString &interface)
