@@ -55,6 +55,19 @@ private:
     QSignalSpy *m_errorSpy;
 };
 
+#define CHECK_FRAMES_EXPECTED_EQUAL \
+    QCOMPARE(::actualCanIo(m_device), ::expectedCanIo(m_device)); \
+    QCOMPARE(m_writtenSpy->size(), ::expectedCanFrameCount(m_device, MockCanFrame::Type::Outgoing))
+
+#define CHECK_FRAMES_EXPECTED_NOT_EQUAL \
+    QEXPECT_FAIL("", "Frames expected to differ!", Continue); \
+    QCOMPARE(::actualCanIo(m_device), ::expectedCanIo(m_device)); \
+    if (::actualCanIo(m_device) == ::expectedCanIo(m_device)) { \
+        QCOMPARE(m_writtenSpy->size(), \
+                 ::expectedCanFrameCount(m_device, MockCanFrame::Type::Outgoing)); \
+    }
+
+
 void TestReadWriteOnMockCanBus::initTestCase()
 {
     // The loader for the CAN bus plugins adds /canbus to each library path and looks for
@@ -154,8 +167,7 @@ void TestReadWriteOnMockCanBus::testWriteOneExpectedFrame()
 
     m_device->writeFrame(c_frame1);
 
-    QCOMPARE(actualCanIo(m_device), expectedCanIo(m_device));
-    QCOMPARE(m_writtenSpy->size(), 1);
+    CHECK_FRAMES_EXPECTED_EQUAL;
 }
 
 void TestReadWriteOnMockCanBus::testWriteOneUnexpectedFrame()
@@ -164,8 +176,7 @@ void TestReadWriteOnMockCanBus::testWriteOneUnexpectedFrame()
 
     m_device->writeFrame(c_frame2);
 
-    QVERIFY(actualCanIo(m_device) != expectedCanIo(m_device));
-    QCOMPARE(m_writtenSpy->size(), 1);
+    CHECK_FRAMES_EXPECTED_NOT_EQUAL;
 }
 
 void TestReadWriteOnMockCanBus::testWriteMoreFramesThanExpected()
@@ -175,8 +186,7 @@ void TestReadWriteOnMockCanBus::testWriteMoreFramesThanExpected()
     m_device->writeFrame(c_frame1);
     m_device->writeFrame(c_frame2);
 
-    QVERIFY(actualCanIo(m_device) != expectedCanIo(m_device));
-    QCOMPARE(m_writtenSpy->size(), 2);
+    CHECK_FRAMES_EXPECTED_NOT_EQUAL;
 }
 
 void TestReadWriteOnMockCanBus::testWriteLessFramesThanExpected()
@@ -186,8 +196,7 @@ void TestReadWriteOnMockCanBus::testWriteLessFramesThanExpected()
 
     m_device->writeFrame(c_frame1);
 
-    QVERIFY(actualCanIo(m_device) != expectedCanIo(m_device));
-    QCOMPARE(m_writtenSpy->size(), 1);
+    CHECK_FRAMES_EXPECTED_NOT_EQUAL;
 }
 
 void TestReadWriteOnMockCanBus::testWriteTwoFramesInExpectedOrder()
@@ -198,8 +207,7 @@ void TestReadWriteOnMockCanBus::testWriteTwoFramesInExpectedOrder()
     m_device->writeFrame(c_frame1);
     m_device->writeFrame(c_frame2);
 
-    QCOMPARE(actualCanIo(m_device), expectedCanIo(m_device));
-    QCOMPARE(m_writtenSpy->size(), 2);
+    CHECK_FRAMES_EXPECTED_EQUAL;
 }
 
 void TestReadWriteOnMockCanBus::testWriteTwoFramesInUnexpectedOrder()
@@ -210,8 +218,7 @@ void TestReadWriteOnMockCanBus::testWriteTwoFramesInUnexpectedOrder()
     m_device->writeFrame(c_frame2);
     m_device->writeFrame(c_frame1);
 
-    QVERIFY(actualCanIo(m_device) != expectedCanIo(m_device));
-    QCOMPARE(m_writtenSpy->size(), 2);
+    CHECK_FRAMES_EXPECTED_NOT_EQUAL;
 }
 
 

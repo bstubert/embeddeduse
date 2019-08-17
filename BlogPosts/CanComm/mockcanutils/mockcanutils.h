@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <functional>
 
 #include <QCanBusDevice>
@@ -122,6 +123,14 @@ inline MockCanFrameCollection expectedCanIo(const QCanBusDevice *device)
 {
     return device->configurationParameter(int(MockConfigurationKey::ExpectedCanIo))
             .value<MockCanFrameCollection>();
+}
+
+inline int expectedCanFrameCount(const QCanBusDevice *device, MockCanFrame::Type frameType)
+{
+    const auto &coll = expectedCanIo(device);
+    return std::count_if(coll.cbegin(), coll.cend(), [frameType](const MockCanFrame &frame) {
+        return frame.type == frameType;
+    });
 }
 
 inline void setExpectedCanIo(QCanBusDevice *device, const MockCanFrameCollection &frames)
