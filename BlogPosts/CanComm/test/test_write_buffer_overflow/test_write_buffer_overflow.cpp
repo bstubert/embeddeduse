@@ -20,7 +20,7 @@
 #include "canbusext.h"
 #include "mockcanutils.h"
 
-class TestMockCanBus : public QObject
+class TestWriteBufferOverflow : public QObject
 {
     Q_OBJECT
 
@@ -36,14 +36,14 @@ private:
     QCanBusDevice *createAndConnectDevice(const QString &interface);
 };
 
-void TestMockCanBus::initTestCase()
+void TestWriteBufferOverflow::initTestCase()
 {
     // The loader for the CAN bus plugins adds /canbus to each library path and looks for
     // plugins in /library/path/canbus. Hence, the directory containing the mockcan plugin
     // is called "canbus".
     QCoreApplication::addLibraryPath("../../");
 }
-void TestMockCanBus::testReceiveOwnConfigurationKey()
+void TestWriteBufferOverflow::testReceiveOwnConfigurationKey()
 {
     const auto receiveOwnConfKey = QCanBusDevice::ConfigurationKey::ReceiveOwnKey;
     std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
@@ -54,7 +54,7 @@ void TestMockCanBus::testReceiveOwnConfigurationKey()
     QVERIFY(!device->configurationParameter(receiveOwnConfKey).toBool());
 }
 
-void TestMockCanBus::testReceiveOwnWrittenFrames_data()
+void TestWriteBufferOverflow::testReceiveOwnWrittenFrames_data()
 {
     QTest::addColumn<bool>("receiveOwn");
     QTest::addColumn<CanBusFrameCollection>("outgoingFrames");
@@ -82,7 +82,7 @@ void TestMockCanBus::testReceiveOwnWrittenFrames_data()
             << MockCanFrameCollection{out1, ownOut1};
 }
 
-void TestMockCanBus::testReceiveOwnWrittenFrames()
+void TestWriteBufferOverflow::testReceiveOwnWrittenFrames()
 {
     QFETCH(bool, receiveOwn);
     QFETCH(CanBusFrameCollection, outgoingFrames);
@@ -104,7 +104,7 @@ void TestMockCanBus::testReceiveOwnWrittenFrames()
     QCOMPARE(actualCanIo(device.get()), goldenCanIo);
 }
 
-void TestMockCanBus::testWriteBufferOverflow_data()
+void TestWriteBufferOverflow::testWriteBufferOverflow_data()
 {
     auto req1 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "0101000000000000"};
     auto rsp1 = MockCanFrame{MockCanFrame::Type::Incoming, 0x18ef0102U, "0101001200000000"};
@@ -113,12 +113,12 @@ void TestMockCanBus::testWriteBufferOverflow_data()
 
 }
 
-void TestMockCanBus::testWriteBufferOverflow()
+void TestWriteBufferOverflow::testWriteBufferOverflow()
 {
 
 }
 
-QCanBusDevice *TestMockCanBus::createAndConnectDevice(const QString &interface)
+QCanBusDevice *TestWriteBufferOverflow::createAndConnectDevice(const QString &interface)
 {
     QString errorStr;
     auto device = QCanBus::instance()->createDevice("mockcan", interface, &errorStr);
@@ -126,6 +126,6 @@ QCanBusDevice *TestMockCanBus::createAndConnectDevice(const QString &interface)
     return device;
 }
 
-QTEST_GUILESS_MAIN(TestMockCanBus)
+QTEST_GUILESS_MAIN(TestWriteBufferOverflow)
 
-#include "testmockcanbus.moc"
+#include "test_write_buffer_overflow.moc"

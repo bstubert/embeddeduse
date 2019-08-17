@@ -1,6 +1,6 @@
 # Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
-project(testmockcanbus)
+project(test_write_buffer_overflow)
 
 cmake_minimum_required(VERSION 3.5)
 
@@ -12,7 +12,7 @@ find_package(Qt5SerialBus)
 
 add_executable(
     ${PROJECT_NAME}
-    testmockcanbus.cpp
+    test_write_buffer_overflow.cpp
 )
 
 add_test(
