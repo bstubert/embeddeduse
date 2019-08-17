@@ -30,8 +30,6 @@ private slots:
     void testWriteFrame();
     void testReadParameter_data();
     void testReadParameter();
-    void testDeviceErrors_data();
-    void testDeviceErrors();
     void testWriteFrameErrors_data();
     void testWriteFrameErrors();
     void testReceiveOwnConfigurationKey();
@@ -177,35 +175,6 @@ void TestMockCanBus::testReadParameter()
     QCOMPARE(receivedSpy.size(), receivedCount);
     QCOMPARE(actualCanIo(device.get()), expectedCanIo);
     QCOMPARE(device->readAllFrames(), incomingFrames);
-}
-
-void TestMockCanBus::testDeviceErrors_data()
-{
-    QTest::addColumn<QCanBusDevice::CanBusError>("canError");
-    QTest::addColumn<MockCanFrame::ErrorNo>("errorNo");
-    QTest::addColumn<QString>("errorString");
-
-    QTest::newRow("WriteError - NoBufferSpaceAvailable")
-            << QCanBusDevice::CanBusError::WriteError
-            << MockCanFrame::ErrorNo::NoBufferSpaceAvailable
-            << QStringLiteral("No buffer space available");
-    QTest::newRow("ConfigurationError - CannotFilterUnknownFrames")
-            << QCanBusDevice::CanBusError::ConfigurationError
-            << MockCanFrame::ErrorNo::CannotFilterUnknownFrames
-            << QStringLiteral("Cannot set filter for frame type: unknown");
-}
-
-void TestMockCanBus::testDeviceErrors()
-{
-    QFETCH(QCanBusDevice::CanBusError, canError);
-    QFETCH(MockCanFrame::ErrorNo, errorNo);
-    QFETCH(QString, errorString);
-
-    auto expectedError = MockCanFrame{canError, errorNo};
-    QCOMPARE(expectedError.type, MockCanFrame::Type::DeviceError);
-    QVERIFY(!QCanBusFrame{expectedError}.isValid());
-    QCOMPARE(expectedError.deviceErrorString(), errorString);
-    QCOMPARE(expectedError.deviceError(), canError);
 }
 
 void TestMockCanBus::testWriteFrameErrors_data()
