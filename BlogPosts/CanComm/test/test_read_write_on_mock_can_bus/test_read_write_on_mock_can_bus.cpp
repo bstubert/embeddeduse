@@ -43,9 +43,11 @@ private slots:
     void testReq1Req2Rsp2();
     void testRsp1Rsp2Req1Rsp1();
 
-private:
-    void testWriteFrameErrors_data();
-    void testWriteFrameErrors();
+    void testReq1WriteError();
+    void testReq1WriteErrorReq2Rsp2();
+    void testTwoRequestsTwoWriteErrors();
+    void testConfErrorReq2Rsp2();
+    void testRsp2ConfErrorReq1();
 
 private:    
     const QCanBusFrame c_frame1{0x18ef0201U, QByteArray::fromHex("018A010000000000")};
@@ -57,7 +59,6 @@ private:
     const QCanBusFrame c_response2{0x18ef0102U, QByteArray::fromHex("015700AABBCCDD00")};
 
     MockCanBusRouter *m_router;
-    QCanBusDevice *m_device;
     QSignalSpy *m_writtenSpy;
     QSignalSpy *m_receivedSpy;
     QSignalSpy *m_errorSpy;
@@ -77,6 +78,14 @@ private:
     QCOMPARE(m_receivedSpy->size(), readCount)
 
 
+#define CHECK_ERRORS(canErrors) \
+    QCOMPARE(m_errorSpy->size(), canErrors.size()); \
+    for (int i = 0; i < canErrors.size(); ++i) { \
+        QCOMPARE((*m_errorSpy)[i][0].value<QCanBusDevice::CanBusError>(), canErrors[i]); \
+    } \
+    QCOMPARE(m_router->actualCanFrames(), m_router->expectedCanFrames());
+
+
 void TestReadWriteOnMockCanBus::initTestCase()
 {
     // The loader for the CAN bus plugins adds /canbus to each library path and looks for
@@ -87,26 +96,20 @@ void TestReadWriteOnMockCanBus::initTestCase()
 
 void TestReadWriteOnMockCanBus::init()
 {
-    QString errorStr;
     m_router = new MockCanBusRouter{};
     m_writtenSpy = new QSignalSpy{m_router, &MockCanBusRouter::framesWritten};
     m_receivedSpy = new QSignalSpy{m_router, &MockCanBusRouter::framesReceived};
+    m_errorSpy = new QSignalSpy{m_router, &MockCanBusRouter::errorOccurred};
 
-    m_device = QCanBus::instance()->createDevice("mockcan", "mcan1", &errorStr);
-    m_device->connectDevice();
-    m_errorSpy = new QSignalSpy{m_device, &QCanBusDevice::errorOccurred};
-
-    QVERIFY(actualCanFrames(m_device).isEmpty());
-    QVERIFY(expectedCanFrames(m_device).isEmpty());
+    QVERIFY(m_router->actualCanFrames().isEmpty());
+    QVERIFY(m_router->expectedCanFrames().isEmpty());
 }
 
 void TestReadWriteOnMockCanBus::cleanup()
 {
     delete m_router;
-    delete m_device;
     delete m_writtenSpy;
     delete m_receivedSpy;
-    delete m_errorSpy;
 }
 
 void TestReadWriteOnMockCanBus::testWriteOneExpectedFrame()
@@ -229,67 +232,64 @@ void TestReadWriteOnMockCanBus::testRsp1Rsp2Req1Rsp1()
     CHECK_REQUESTS_AND_RESPONSES(1, 3);
 }
 
-void TestReadWriteOnMockCanBus::testWriteFrameErrors_data()
+void TestReadWriteOnMockCanBus::testReq1WriteError()
 {
-    QTest::addColumn<MockCanFrameCollection>("expectedCanFrames");
-    QTest::addColumn<CanBusFrameCollection>("outgoingFrames");
-    QTest::addColumn<CanBusErrorCollection>("canErrors");
+    m_router->expectWriteFrame(c_request1);
+    m_router->expectError(QCanBusDevice::WriteError, MockCanFrame::ErrorNo::NoBufferSpaceAvailable);
 
-    auto req1 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000000000"};
-    auto req2 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "0157000000000000"};
-    auto rsp2 = MockCanFrame{MockCanFrame::Type::Incoming, 0x18ef0102U, "015700AABBCCDD00"};
-    auto err1 = MockCanFrame{QCanBusDevice::CanBusError::WriteError,
-            MockCanFrame::ErrorNo::NoBufferSpaceAvailable};
-    auto err2 = MockCanFrame{QCanBusDevice::CanBusError::ConfigurationError,
-            MockCanFrame::ErrorNo::CannotFilterUnknownFrames};
+    m_router->writeFrame(c_request1);
 
-    QTest::newRow("req1-WriteError")
-            << MockCanFrameCollection{req1, err1}
-            << CanBusFrameCollection{req1}
-            << CanBusErrorCollection{QCanBusDevice::CanBusError::WriteError};
-    QTest::newRow("req1-WriteError-req2-rsp2")
-            << MockCanFrameCollection{req1, err1, req2, rsp2}
-            << CanBusFrameCollection{req1, req2}
-            << CanBusErrorCollection{QCanBusDevice::CanBusError::WriteError};
-    QTest::newRow("req1-req2-WriteError-WriteError")
-            << MockCanFrameCollection{req1, req2, err1, err1}
-            << CanBusFrameCollection{req1, req2}
-            << CanBusErrorCollection{QCanBusDevice::CanBusError::WriteError,
-                                     QCanBusDevice::CanBusError::WriteError};
-    QTest::newRow("ConfError-req2-rsp2")
-            << MockCanFrameCollection{err2, req2, rsp2}
-            << CanBusFrameCollection{req2}
-            << CanBusErrorCollection{QCanBusDevice::CanBusError::ConfigurationError};
-    QTest::newRow("req1-req2-WriteError-rsp2")
-            << MockCanFrameCollection{req1, req2, err1, rsp2}
-            << CanBusFrameCollection{req1, req2}
-            << CanBusErrorCollection{QCanBusDevice::CanBusError::WriteError};
-    QTest::newRow("req2-req1-rsp2-WriteError")
-            << MockCanFrameCollection{req2, req1, rsp2, err1}
-            << CanBusFrameCollection{req2, req1}
-            << CanBusErrorCollection{QCanBusDevice::CanBusError::WriteError};
-    QTest::newRow("rsp2-ConfError-req1")
-            << MockCanFrameCollection{rsp2, err2, req1}
-            << CanBusFrameCollection{req1}
-            << CanBusErrorCollection{QCanBusDevice::CanBusError::ConfigurationError};
+    CHECK_ERRORS(CanBusErrorCollection{QCanBusDevice::WriteError});
 }
 
-void TestReadWriteOnMockCanBus::testWriteFrameErrors()
+void TestReadWriteOnMockCanBus::testReq1WriteErrorReq2Rsp2()
 {
-    QFETCH(MockCanFrameCollection, expectedCanFrames);
-    QFETCH(CanBusFrameCollection, outgoingFrames);
-    QFETCH(CanBusErrorCollection, canErrors);
+    m_router->expectWriteFrame(c_request1);
+    m_router->expectError(QCanBusDevice::WriteError, MockCanFrame::ErrorNo::NoBufferSpaceAvailable);
+    m_router->expectWriteFrame(c_request2);
+    m_router->expectReadFrame(c_response2);
 
-    setExpectedCanFrames(m_device, expectedCanFrames);
+    m_router->writeFrame(c_request1);
+    m_router->writeFrame(c_request2);
 
-    for (const auto &frame : outgoingFrames) {
-        m_device->writeFrame(frame);
-    }
-    QCOMPARE(m_errorSpy->size(), canErrors.size());
-    for (int i = 0; i < canErrors.size(); ++i) {
-        QCOMPARE((*m_errorSpy)[i][0].value<QCanBusDevice::CanBusError>(), canErrors[i]);
-    }
-    QCOMPARE(actualCanFrames(m_device), expectedCanFrames);
+    CHECK_ERRORS(CanBusErrorCollection{QCanBusDevice::WriteError});
+}
+
+void TestReadWriteOnMockCanBus::testTwoRequestsTwoWriteErrors()
+{
+    m_router->expectWriteFrame(c_request1);
+    m_router->expectWriteFrame(c_request2);
+    m_router->expectError(QCanBusDevice::WriteError, MockCanFrame::ErrorNo::NoBufferSpaceAvailable);
+    m_router->expectError(QCanBusDevice::WriteError, MockCanFrame::ErrorNo::NoBufferSpaceAvailable);
+
+    m_router->writeFrame(c_request1);
+    m_router->writeFrame(c_request2);
+
+    CHECK_ERRORS((CanBusErrorCollection{QCanBusDevice::WriteError, QCanBusDevice::WriteError}));
+}
+
+void TestReadWriteOnMockCanBus::testConfErrorReq2Rsp2()
+{
+    m_router->expectError(QCanBusDevice::ConfigurationError,
+                          MockCanFrame::ErrorNo::CannotFilterUnknownFrames);
+    m_router->expectWriteFrame(c_request2);
+    m_router->expectReadFrame(c_response2);
+
+    m_router->writeFrame(c_request2);
+
+    CHECK_ERRORS(CanBusErrorCollection{QCanBusDevice::ConfigurationError});
+}
+
+void TestReadWriteOnMockCanBus::testRsp2ConfErrorReq1()
+{
+    m_router->expectReadFrame(c_response2);
+    m_router->expectError(QCanBusDevice::ConfigurationError,
+                          MockCanFrame::ErrorNo::CannotFilterUnknownFrames);
+    m_router->expectWriteFrame(c_request1);
+
+    m_router->writeFrame(c_request1);
+
+    CHECK_ERRORS(CanBusErrorCollection{QCanBusDevice::ConfigurationError});
 }
 
 QTEST_GUILESS_MAIN(TestReadWriteOnMockCanBus)
