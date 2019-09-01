@@ -16,14 +16,8 @@ TerminalModel::TerminalModel(QObject *parent)
     }
     m_can0->setConfigurationParameter(QCanBusDevice::ReceiveOwnKey, true);
 
-    m_a2Proxy.reset(new EcuProxy{2, m_can0});
-    m_a2Proxy->setLogging(true);
-    connect(m_a2Proxy.get(), &EcuProxy::logMessage,
-            this, &TerminalModel::logMessage);
-    connect(m_a2Proxy.get(), &EcuProxy::skipWriteEnabledChanged,
-            this, &TerminalModel::skipWriteEnabledChanged);
-    connect(m_a2Proxy.get(), &EcuProxy::directWriteEnabledChanged,
-            this, &TerminalModel::directWriteEnabledChanged);
+    m_a2Proxy.reset(createEcuProxy(2));
+    m_a3Proxy.reset(createEcuProxy(3));
 }
 
 TerminalModel::~TerminalModel()
@@ -56,4 +50,17 @@ void TerminalModel::simulateTxBufferOverflow(int count)
     for (quint16 i = 1; i <= count; ++i) {
         m_a2Proxy->sendReadParameter(i);
     }
+}
+
+EcuProxy *TerminalModel::createEcuProxy(int ecuId)
+{
+    auto ecuProxy = new EcuProxy{ecuId, m_can0};
+    ecuProxy->setLogging(true);
+    connect(ecuProxy, &EcuProxy::logMessage,
+            this, &TerminalModel::logMessage);
+    connect(ecuProxy, &EcuProxy::skipWriteEnabledChanged,
+            this, &TerminalModel::skipWriteEnabledChanged);
+    connect(ecuProxy, &EcuProxy::directWriteEnabledChanged,
+            this, &TerminalModel::directWriteEnabledChanged);
+    return ecuProxy;
 }

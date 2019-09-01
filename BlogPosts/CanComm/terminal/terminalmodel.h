@@ -35,6 +35,9 @@ public slots:
     void simulateTxBufferOverflow(int count);
 
 private:
+    EcuProxy *createEcuProxy(int ecuId);
+
     QSharedPointer<QCanBusDevice> m_can0;
     QSharedPointer<EcuProxy> m_a2Proxy;
+    QSharedPointer<EcuProxy> m_a3Proxy;
 };

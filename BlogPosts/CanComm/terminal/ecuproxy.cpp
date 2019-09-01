@@ -43,7 +43,8 @@ void EcuProxy::receiveUnsolicitedFrame(const QCanBusFrame &frame)
 {
     auto sourceId = sourceEcuId(frame.frameId());
     auto value = qFromLittleEndian<qint32>(frame.payload().data());
-    emitSendUnsolicitedMessage(sourceId, "Recv", value);
+    auto info = QString{"Recv in Proxy %1"}.arg(ecuId());
+    emitSendUnsolicitedMessage(sourceId, info, value);
 }
 
 bool EcuProxy::isSkipWriteEnabled() const
