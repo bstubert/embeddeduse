@@ -14,6 +14,8 @@ add_library(
     ${PROJECT_NAME} STATIC
     canbus.cpp
     canbus.h
+    canbusrouter.cpp
+    canbusrouter.h
     ecubase.cpp
     ecubase.h
 )

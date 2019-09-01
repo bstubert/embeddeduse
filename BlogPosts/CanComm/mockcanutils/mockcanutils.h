@@ -13,6 +13,8 @@
 #include <QVariant>
 #include <QVector>
 
+#include "canbusext.h"
+
 struct MockCanFrame
 {
     enum class Type : int {
@@ -84,12 +86,12 @@ struct MockCanFrame
 
 using MockCanFrameCollection = QVector<MockCanFrame>;
 
-bool operator==(const MockCanFrame &lhs, const MockCanFrame &rhs)
+inline bool operator==(const MockCanFrame &lhs, const MockCanFrame &rhs)
 {
     return lhs.type == rhs.type && lhs.frame == rhs.frame;
 }
 
-bool operator!=(const MockCanFrame &lhs, const MockCanFrame &rhs)
+inline bool operator!=(const MockCanFrame &lhs, const MockCanFrame &rhs)
 {
     return !(lhs == rhs);
 }

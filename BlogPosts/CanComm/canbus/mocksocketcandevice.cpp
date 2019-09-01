@@ -77,6 +77,8 @@ bool MockSocketCanDevice::open()
                             });
     if (pos == interfaces.cend()) {
         close();
+        setError(QString{"CAN interface %1 not available"}.arg(m_interface),
+                 QCanBusDevice::CanBusError::ConnectionError);
         return false;
     }
     setState(QCanBusDevice::ConnectedState);

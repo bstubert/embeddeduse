@@ -6,6 +6,8 @@
 EcuModel::EcuModel(QObject *parent)
     : QObject{parent}
 {
+    m_can0.reset(createCanBusDevice("can0"));
+
     m_a2.reset(createEcu(2));
     m_a3.reset(createEcu(3));
 }
@@ -36,13 +38,20 @@ void EcuModel::setMissingResponsesEnabled(bool enabled)
 
 void EcuModel::sendFramesFromTwoEcus()
 {
-    m_a2->sendFramesFromTwoEcus();
+    m_a2->sendUnsolicitedFrames();
+    m_a3->sendUnsolicitedFrames();
 }
 
 Ecu *EcuModel::createEcu(int ecuId)
 {
-    auto ecu = new Ecu{ecuId, createCanBusDevice("can0")};
+    auto ecu = new Ecu{ecuId, m_can0.get()};
     ecu->setLogging(true);
+    connect(m_can0.get(), &QCanBusDevice::errorOccurred,
+            ecu, &Ecu::onErrorOccurred);
+    connect(m_can0.get(), &QCanBusDevice::framesReceived,
+            ecu, &Ecu::onFramesReceived);
+//    connect(ecuProxy, &EcuProxy::frameToWrite,
+//            m_can0.get(), &QCanBusDevice::writeFrame);
     connect(ecu, &Ecu::logMessage,
             this, &EcuModel::logMessage);
     connect(ecu, &Ecu::skipResponseEnabledChanged,

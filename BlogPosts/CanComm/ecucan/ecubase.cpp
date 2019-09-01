@@ -2,13 +2,13 @@
 
 #include <tuple>
 #include <QByteArray>
+#include <QCanBusDevice>
 #include <QCanBusFrame>
 #include <QDateTime>
 #include <QLatin1Char>
 #include <QtDebug>
 #include <QtEndian>
 
-#include "canbus.h"
 #include "ecubase.h"
 
 namespace
@@ -30,13 +30,6 @@ EcuBase::EcuBase(int ecuId, QCanBusDevice *canBus, QObject *parent)
     , m_ecuId{ecuId}
     , m_canBus{canBus}
 {
-    if (m_canBus == nullptr) {
-        return;
-    }
-    connect(m_canBus.get(), &QCanBusDevice::errorOccurred,
-            this, &EcuBase::onErrorOccurred);
-    connect(m_canBus.get(), &QCanBusDevice::framesReceived,
-            this, &EcuBase::onFramesReceived);
     connect(&m_receiptTimer, &QTimer::timeout, [this]() {
         if (!m_outgoingQueue.isEmpty() &&
                 isReceiptMissing(toMs(m_outgoingQueue.first()))) {
@@ -50,7 +43,6 @@ EcuBase::EcuBase(int ecuId, QCanBusDevice *canBus, QObject *parent)
 
 EcuBase::~EcuBase()
 {
-    CanBus::tearDown(m_canBus.get());
 }
 
 int EcuBase::ecuId() const
@@ -60,7 +52,7 @@ int EcuBase::ecuId() const
 
 QCanBusDevice *EcuBase::canBus() const
 {
-    return m_canBus.get();
+    return m_canBus;
 }
 
 bool EcuBase::isLogging() const

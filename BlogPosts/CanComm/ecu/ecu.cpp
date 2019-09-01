@@ -72,25 +72,28 @@ void Ecu::setMissingResponsesEnabled(bool enabled)
     }
 }
 
-void Ecu::sendFramesFromTwoEcus()
+void Ecu::sendUnsolicitedFrames()
 {
-    enqueueOutgoingFrame(QCanBusFrame{0x18FF3503, QByteArray::fromHex("0100000001000000")});
-    emitSendUnsolicitedMessage(3, "Send", 1);
+    if (ecuId() == 3) {
+        emitSendUnsolicitedMessage(3, "Send", 1);
+        enqueueOutgoingFrame(QCanBusFrame{0x18FF3503, QByteArray::fromHex("0100000001000000")});
 
-    enqueueOutgoingFrame(QCanBusFrame{0x18FF0602, QByteArray::fromHex("0A0000000A000000")});
-    emitSendUnsolicitedMessage(2, "Send", 10);
+        emitSendUnsolicitedMessage(3, "Send", 2);
+        enqueueOutgoingFrame(QCanBusFrame{0x18FF3503, QByteArray::fromHex("0200000002000000")});
 
-    enqueueOutgoingFrame(QCanBusFrame{0x18FF3503, QByteArray::fromHex("0200000002000000")});
-    emitSendUnsolicitedMessage(3, "Send", 2);
+        emitSendUnsolicitedMessage(3, "Send", 3);
+        enqueueOutgoingFrame(QCanBusFrame{0x18FF3503, QByteArray::fromHex("030000000C000000")});
+    }
+    else if (ecuId() == 2) {
+        emitSendUnsolicitedMessage(2, "Send", 10);
+        enqueueOutgoingFrame(QCanBusFrame{0x18FF0602, QByteArray::fromHex("0A0000000A000000")});
 
-    enqueueOutgoingFrame(QCanBusFrame{0x18FF0602, QByteArray::fromHex("0B0000000B000000")});
-    emitSendUnsolicitedMessage(2, "Send", 11);
+        emitSendUnsolicitedMessage(2, "Send", 11);
+        enqueueOutgoingFrame(QCanBusFrame{0x18FF0602, QByteArray::fromHex("0B0000000B000000")});
 
-    enqueueOutgoingFrame(QCanBusFrame{0x18FF3503, QByteArray::fromHex("030000000C000000")});
-    emitSendUnsolicitedMessage(3, "Send", 3);
-
-    enqueueOutgoingFrame(QCanBusFrame{0x18FF0602, QByteArray::fromHex("0C0000000C000000")});
-    emitSendUnsolicitedMessage(2, "Send", 12);
+        emitSendUnsolicitedMessage(2, "Send", 12);
+        enqueueOutgoingFrame(QCanBusFrame{0x18FF0602, QByteArray::fromHex("0C0000000C000000")});
+    }
 }
 
 

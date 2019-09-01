@@ -18,6 +18,8 @@
 #include <QtTest>
 
 #include "canbusext.h"
+#include "canbusrouter.h"
+#include "mockcanbusrouter.h"
 #include "mockcanutils.h"
 
 class TestConnectToMockCanBus : public QObject
@@ -26,22 +28,14 @@ class TestConnectToMockCanBus : public QObject
 
 private slots:
     void initTestCase();
-    void testAvailableDevices_data();
-    void testAvailableDevices();
-    void testCreateDevice_data();
-    void testCreateDevice();
-    void testConnectDevice_data();
-    void testConnectDevice();
-    void testConnectConnectedDevice();
-    void testDisconnectDevice();
-    void testDisconnectUnconnectedDevice();
-    void testActualCanIoConfiguration_data();
+    void testAvailableDevicesOfExistingPlugin();
+    void testAvailableDevicesOfNonExistingPlugin();
+    void testCreateExistingPlugin();
+    void testCreateNonExistingPlugin();
+    void testConnectToExistingDevice();
+    void testConnectToNonExistingDevice();
     void testActualCanIoConfiguration();
-    void testExpectedCanIoConfiguration_data();
     void testExpectedCanIoConfiguration();
-
-private:
-    QCanBusDevice *createAndConnectDevice(const QString &interface);
 };
 
 void TestConnectToMockCanBus::initTestCase()
@@ -52,193 +46,73 @@ void TestConnectToMockCanBus::initTestCase()
     QCoreApplication::addLibraryPath("../../");
 }
 
-void TestConnectToMockCanBus::testAvailableDevices_data()
+void TestConnectToMockCanBus::testAvailableDevicesOfExistingPlugin()
 {
-    QTest::addColumn<QString>("plugin");
-    QTest::addColumn<QStringList>("interfaces");
-
-    QTest::newRow("mockcan: mcan0, mcan1") << QString{"mockcan"} << QStringList{"mcan0", "mcan1"};
-    QTest::newRow("muppetcan: none") << QString{"muppetcan"} << QStringList{};
-}
-
-void TestConnectToMockCanBus::testAvailableDevices()
-{
-    QFETCH(QString, plugin);
-    QFETCH(QStringList, interfaces);
-
-    QString currentErrorStr;
-    auto currentDevices = QCanBus::instance()->availableDevices(plugin, &currentErrorStr);
+    auto currentDevices = QCanBus::instance()->availableDevices("mockcan");
     QStringList currentInterfaces;
-    std::transform(currentDevices.cbegin(), currentDevices.cend(),
-                   std::back_inserter(currentInterfaces),
-                   [](const QCanBusDeviceInfo &info) { return info.name(); });
-    QCOMPARE(currentInterfaces, interfaces);
+    for (const auto &device : currentDevices)
+    {
+        currentInterfaces.append(device.name());
+    }
+    QCOMPARE(currentInterfaces, (QStringList{"mcan0", "mcan1"}));
 }
 
-void TestConnectToMockCanBus::testCreateDevice_data()
+void TestConnectToMockCanBus::testAvailableDevicesOfNonExistingPlugin()
 {
-    QTest::addColumn<QString>("plugin");
-    QTest::addColumn<QString>("interface");
-    QTest::addColumn<bool>("isNull");
-    QTest::addColumn<QString>("errorStr");
-
-    QTest::newRow("mockcan/mcan0") << QString{"mockcan"} << QString{"mcan0"} << false
-                                  << QString{};
-    QTest::newRow("muppetcan/mcan0") << QString{"muppetcan"} << QString{"mcan0"} << true
-                                  << QString{"No such plugin: \'muppetcan\'"};
-    QTest::newRow("mockcan/sky9") << QString{"mockcan"} << QString{"sky9"} << false
-                                  << QString{};
-    QTest::newRow("muppetcan/sky9") << QString{"muppetcan"} << QString{"sky9"} << true
-                                  << QString{"No such plugin: \'muppetcan\'"};
+    auto currentDevices = QCanBus::instance()->availableDevices("muppetcan");
+    QVERIFY(currentDevices.isEmpty());
 }
 
-// QCanBus::createDevice() returns nullptr and an error message, if the plugin does not exist.
-// It returns a non-null QCanBusDevice, if the plugin exists. Whether the CAN interface exists,
-// does not matter.
-void TestConnectToMockCanBus::testCreateDevice()
+void TestConnectToMockCanBus::testCreateExistingPlugin()
 {
-    QFETCH(QString, plugin);
-    QFETCH(QString, interface);
-    QFETCH(bool, isNull);
-    QFETCH(QString, errorStr);
-
-    QString currentErrorStr;
-    std::unique_ptr<QCanBusDevice> device{
-        QCanBus::instance()->createDevice(plugin, interface, &currentErrorStr)};
-    QCOMPARE(device == nullptr, isNull);
-    QCOMPARE(currentErrorStr, errorStr);
+    CanBusRouter router{"mockcan", "mcan0"};
+    QCOMPARE(router.error(), QCanBusDevice::NoError);
+    QVERIFY(router.errorString().isEmpty());
 }
 
-void TestConnectToMockCanBus::testConnectDevice_data()
+void TestConnectToMockCanBus::testCreateNonExistingPlugin()
 {
-    QTest::addColumn<QString>("interface");
-    QTest::addColumn<bool>("connected");
-
-    QTest::newRow("mcan0") << QString{"mcan0"} << true;
-    QTest::newRow("sky7") << QString{"sky7"} << false;
+    CanBusRouter router{"muppetcan", "mcan1"};
+    QCOMPARE(router.error(), QCanBusDevice::ConnectionError);
+    QCOMPARE(router.errorString(), QString{"No such plugin: \'muppetcan\'"});
 }
 
-void TestConnectToMockCanBus::testConnectDevice()
+void TestConnectToMockCanBus::testConnectToExistingDevice()
 {
-    QFETCH(QString, interface);
-    QFETCH(bool, connected);
-
-    QString currentErrorStr;
-    std::unique_ptr<QCanBusDevice> device{
-        QCanBus::instance()->createDevice("mockcan", interface, &currentErrorStr)};
-
-    QCOMPARE(device->state(), QCanBusDevice::UnconnectedState);
-    auto ok = device->connectDevice();
-    QCOMPARE(ok, connected);
-    QCOMPARE(device->state(), connected ? QCanBusDevice::ConnectedState
-                                        : QCanBusDevice::UnconnectedState);
+    CanBusRouter router{"mockcan", "mcan0"};
+    QCOMPARE(router.error(), QCanBusDevice::NoError);
+    QCOMPARE(router.state(), QCanBusDevice::ConnectedState);
 }
 
-void TestConnectToMockCanBus::testConnectConnectedDevice()
+void TestConnectToMockCanBus::testConnectToNonExistingDevice()
 {
-    QString currentErrorStr;
-    std::unique_ptr<QCanBusDevice> device{
-        QCanBus::instance()->createDevice("mockcan", "mcan0", &currentErrorStr)};
-
-    QCOMPARE(device->state(), QCanBusDevice::UnconnectedState);
-    auto ok = device->connectDevice();
-    QVERIFY(ok);
-    QCOMPARE(device->state(), QCanBusDevice::ConnectedState);
-
-    ok = device->connectDevice();
-    QVERIFY(!ok);
-    QCOMPARE(device->state(), QCanBusDevice::ConnectedState);
-    QCOMPARE(device->error(), QCanBusDevice::ConnectionError);
-}
-
-void TestConnectToMockCanBus::testDisconnectDevice()
-{
-    QString currentErrorStr;
-    std::unique_ptr<QCanBusDevice> device{
-        QCanBus::instance()->createDevice("mockcan", "mcan1", &currentErrorStr)};
-
-    QCOMPARE(device->state(), QCanBusDevice::UnconnectedState);
-
-    auto ok = device->connectDevice();
-    QVERIFY(ok);
-    QCOMPARE(device->state(), QCanBusDevice::ConnectedState);
-    device->disconnectDevice();
-    QCOMPARE(device->state(), QCanBusDevice::UnconnectedState);
-}
-
-void TestConnectToMockCanBus::testDisconnectUnconnectedDevice()
-{
-    QString currentErrorStr;
-    std::unique_ptr<QCanBusDevice> device{
-        QCanBus::instance()->createDevice("mockcan", "mcan1", &currentErrorStr)};
-
-    QCOMPARE(device->state(), QCanBusDevice::UnconnectedState);
-    device->disconnectDevice();
-    QCOMPARE(device->state(), QCanBusDevice::UnconnectedState);
-}
-
-void TestConnectToMockCanBus::testActualCanIoConfiguration_data()
-{
-    QTest::addColumn<MockCanFrameCollection>("frames");
-
-    QTest::newRow("0 frames") << MockCanFrameCollection{};
-    QTest::newRow("1 frame") << MockCanFrameCollection{
-        MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000000000"}
-    };
-    QTest::newRow("2 frames") << MockCanFrameCollection{
-        MockCanFrame{MockCanFrame::Type::Outgoing, 0x185f0901U, "018A010102300405"},
-        MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ed0301U, "018A0105a2f0b405"}
-    };
+    CanBusRouter router{"mockcan", "sky7"};
+    QCOMPARE(router.error(), QCanBusDevice::CanBusError::ConnectionError);
+    QCOMPARE(router.state(), QCanBusDevice::UnconnectedState);
 }
 
 void TestConnectToMockCanBus::testActualCanIoConfiguration()
 {
-    QFETCH(MockCanFrameCollection, frames);
-
-    QString currentErrorStr;
-    std::unique_ptr<QCanBusDevice> device{
-        QCanBus::instance()->createDevice("mockcan", "mcan1", &currentErrorStr)};
-
-    QVERIFY(actualCanFrames(device.get()).isEmpty());
-
-    setActualCanFrames(device.get(), frames);
-    QCOMPARE(actualCanFrames(device.get()), frames);
-}
-
-void TestConnectToMockCanBus::testExpectedCanIoConfiguration_data()
-{
-    QTest::addColumn<MockCanFrameCollection>("frames");
-
-    QTest::newRow("0 frames") << MockCanFrameCollection{};
-    QTest::newRow("1 frame") << MockCanFrameCollection{
-        MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000000000"}
-    };
-    QTest::newRow("2 frames") << MockCanFrameCollection{
+    auto frames = MockCanFrameCollection{
         MockCanFrame{MockCanFrame::Type::Outgoing, 0x185f0901U, "018A010102300405"},
         MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ed0301U, "018A0105a2f0b405"}
     };
+
+    MockCanBusRouter router;
+    router.setActualCanFrames(frames);
+    QCOMPARE(router.actualCanFrames(), frames);
 }
 
 void TestConnectToMockCanBus::testExpectedCanIoConfiguration()
 {
-    QFETCH(MockCanFrameCollection, frames);
+    auto frames = MockCanFrameCollection{
+        MockCanFrame{MockCanFrame::Type::Outgoing, 0x185f0901U, "018A010102300405"},
+        MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ed0301U, "018A0105a2f0b405"}
+    };
 
-    QString currentErrorStr;
-    std::unique_ptr<QCanBusDevice> device{
-        QCanBus::instance()->createDevice("mockcan", "mcan1", &currentErrorStr)};
-
-    QVERIFY(expectedCanFrames(device.get()).isEmpty());
-
-    setExpectedCanFrames(device.get(), frames);
-    QCOMPARE(expectedCanFrames(device.get()), frames);
-}
-
-QCanBusDevice *TestConnectToMockCanBus::createAndConnectDevice(const QString &interface)
-{
-    QString errorStr;
-    auto device = QCanBus::instance()->createDevice("mockcan", interface, &errorStr);
-    device->connectDevice();
-    return device;
+    MockCanBusRouter router;
+    router.setExpectedCanFrames(frames);
+    QCOMPARE(router.expectedCanFrames(), frames);
 }
 
 QTEST_GUILESS_MAIN(TestConnectToMockCanBus)

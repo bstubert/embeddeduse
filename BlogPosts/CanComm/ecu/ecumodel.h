@@ -2,10 +2,13 @@
 
 #pragma once
 
+#include <memory>
+
 #include <QCanBusDevice>
 #include <QObject>
 #include <QSharedPointer>
 #include <QString>
+
 #include "ecu.h"
 
 class EcuModel : public QObject
@@ -38,6 +41,7 @@ private:
     Ecu *createEcu(int ecuId);
     QCanBusDevice *createCanBusDevice(const QString &interface);
 
+    std::unique_ptr<QCanBusDevice> m_can0;
     QSharedPointer<Ecu> m_a2;
     QSharedPointer<Ecu> m_a3;
 };

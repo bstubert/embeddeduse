@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include <memory>
 #include <tuple>
 
 #include <QCanBusDevice>
@@ -34,6 +33,7 @@ public:
     virtual void receiveUnsolicitedFrame(const QCanBusFrame &frame);
 
 signals:
+    void frameToWrite(const QCanBusFrame &frame);
     void logMessage(const QString &msg);
 
 public slots:
@@ -50,8 +50,8 @@ protected:
     void dequeueOutgoingFrame();
     virtual bool skipWrite(const QCanBusFrame &frame) const;
 
+    QCanBusDevice *m_canBus;
     int m_ecuId;
-    std::unique_ptr<QCanBusDevice> m_canBus;
     bool m_logging{true};
     QList<QCanBusFrame> m_outgoingQueue;
     qint64 m_receiptTimeout{100};
