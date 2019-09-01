@@ -15,6 +15,7 @@ TerminalModel::TerminalModel(QObject *parent)
                                   Qt::QueuedConnection);
     }
     m_can0->setConfigurationParameter(QCanBusDevice::ReceiveOwnKey, true);
+    m_can0->setConfigurationParameter(QCanBusDevice::LoopbackKey, true);
 
     m_a2Proxy.reset(createEcuProxy(2));
     m_a3Proxy.reset(createEcuProxy(3));
