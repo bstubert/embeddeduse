@@ -6,7 +6,7 @@
 #include <QString>
 #include "ecu.h"
 
-Ecu::Ecu(int ecuId, QSharedPointer<QCanBusDevice> canBus, QObject *parent)
+Ecu::Ecu(int ecuId, QCanBusDevice *canBus, QObject *parent)
     : EcuBase{ecuId, canBus, parent}
 {
 }

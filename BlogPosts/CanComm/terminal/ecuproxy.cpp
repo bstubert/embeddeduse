@@ -6,7 +6,7 @@
 #include <QtEndian>
 #include "ecuproxy.h"
 
-EcuProxy::EcuProxy(int ecuId, QSharedPointer<QCanBusDevice> canBus, QObject *parent)
+EcuProxy::EcuProxy(int ecuId, QCanBusDevice *canBus, QObject *parent)
     : EcuBase{ecuId, canBus, parent}
 {
 }

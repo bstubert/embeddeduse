@@ -2,12 +2,14 @@
 
 #pragma once
 
+#include <memory>
 #include <tuple>
+
 #include <QCanBusDevice>
 #include <QList>
 #include <QObject>
-#include <QSharedPointer>
 #include <QTimer>
+
 class QByteArray;
 class QCanBusFrame;
 
@@ -15,10 +17,10 @@ class EcuBase : public QObject
 {
     Q_OBJECT
 public:
-    explicit EcuBase(int ecuId, QSharedPointer<QCanBusDevice> canBus, QObject *parent = nullptr);
+    explicit EcuBase(int ecuId, QCanBusDevice *canBus, QObject *parent = nullptr);
     virtual ~EcuBase();
     int ecuId() const;
-    QSharedPointer<QCanBusDevice> canBus() const;
+    QCanBusDevice *canBus() const;
     bool isLogging() const;
     void setLogging(bool enabled);
 
@@ -49,7 +51,7 @@ protected:
     virtual bool skipWrite(const QCanBusFrame &frame) const;
 
     int m_ecuId;
-    QSharedPointer<QCanBusDevice> m_canBus;
+    std::unique_ptr<QCanBusDevice> m_canBus;
     bool m_logging{true};
     QList<QCanBusFrame> m_outgoingQueue;
     qint64 m_receiptTimeout{100};

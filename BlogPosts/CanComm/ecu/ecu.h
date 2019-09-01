@@ -9,7 +9,7 @@ class Ecu : public EcuBase
 {
     Q_OBJECT
 public:
-    explicit Ecu(int ecuId, QSharedPointer<QCanBusDevice> canBus, QObject *parent = nullptr);
+    explicit Ecu(int ecuId, QCanBusDevice *canBus, QObject *parent = nullptr);
     virtual ~Ecu();
     virtual bool isReadParameter(const QCanBusFrame &frame) const override;
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U) override;

@@ -6,29 +6,12 @@
 EcuModel::EcuModel(QObject *parent)
     : QObject{parent}
 {
-    auto errorStr = QString{};
-    m_can0.reset(CanBus::setUp(QStringLiteral("socketcan"), QStringLiteral("can0"),
-                                     errorStr));
-    if (!errorStr.isEmpty()) {
-        QMetaObject::invokeMethod(this,
-                                  [this, errorStr]() { emit logMessage(errorStr); },
-                                  Qt::QueuedConnection);
-    }
-    m_can0->setConfigurationParameter(QCanBusDevice::ReceiveOwnKey, true);
-
-    m_a2.reset(new Ecu{2, m_can0});
-    m_a2->setLogging(true);
-    connect(m_a2.get(), &Ecu::logMessage,
-            this, &EcuModel::logMessage);
-    connect(m_a2.get(), &Ecu::skipResponseEnabledChanged,
-            this, &EcuModel::skipResponseEnabledChanged);
-    connect(m_a2.get(), &Ecu::missingResponsesEnabledChanged,
-            this, &EcuModel::missingResponsesEnabledChanged);
+    m_a2.reset(createEcu(2));
+    m_a3.reset(createEcu(3));
 }
 
 EcuModel::~EcuModel()
 {
-    CanBus::tearDown(m_can0.get());
 }
 
 bool EcuModel::isSkipResponseEnabled() const
@@ -54,4 +37,31 @@ void EcuModel::setMissingResponsesEnabled(bool enabled)
 void EcuModel::sendFramesFromTwoEcus()
 {
     m_a2->sendFramesFromTwoEcus();
+}
+
+Ecu *EcuModel::createEcu(int ecuId)
+{
+    auto ecu = new Ecu{ecuId, createCanBusDevice("can0")};
+    ecu->setLogging(true);
+    connect(ecu, &Ecu::logMessage,
+            this, &EcuModel::logMessage);
+    connect(ecu, &Ecu::skipResponseEnabledChanged,
+            this, &EcuModel::skipResponseEnabledChanged);
+    connect(ecu, &Ecu::missingResponsesEnabledChanged,
+            this, &EcuModel::missingResponsesEnabledChanged);
+    return ecu;
+}
+
+QCanBusDevice *EcuModel::createCanBusDevice(const QString &interface)
+{
+    auto errorStr = QString{};
+    auto device = CanBus::setUp(QStringLiteral("socketcan"), interface, errorStr);
+    if (!errorStr.isEmpty()) {
+        QMetaObject::invokeMethod(this,
+                                  [this, errorStr]() { emit logMessage(errorStr); },
+                                  Qt::QueuedConnection);
+    }
+    device->setConfigurationParameter(QCanBusDevice::ReceiveOwnKey, true);
+    device->setConfigurationParameter(QCanBusDevice::LoopbackKey, false);
+    return device;
 }

@@ -35,6 +35,9 @@ signals:
     void missingResponsesEnabledChanged();
 
 private:
-    QSharedPointer<QCanBusDevice> m_can0;
+    Ecu *createEcu(int ecuId);
+    QCanBusDevice *createCanBusDevice(const QString &interface);
+
     QSharedPointer<Ecu> m_a2;
+    QSharedPointer<Ecu> m_a3;
 };

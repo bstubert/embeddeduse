@@ -36,8 +36,8 @@ public slots:
 
 private:
     EcuProxy *createEcuProxy(int ecuId);
+    QCanBusDevice *createCanBusDevice(const QString &interface);
 
-    QSharedPointer<QCanBusDevice> m_can0;
     QSharedPointer<EcuProxy> m_a2Proxy;
     QSharedPointer<EcuProxy> m_a3Proxy;
 };

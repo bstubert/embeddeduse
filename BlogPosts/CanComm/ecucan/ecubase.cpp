@@ -7,6 +7,8 @@
 #include <QLatin1Char>
 #include <QtDebug>
 #include <QtEndian>
+
+#include "canbus.h"
 #include "ecubase.h"
 
 namespace
@@ -23,7 +25,7 @@ qint64 toMs(const QCanBusFrame &frame)
 }
 }
 
-EcuBase::EcuBase(int ecuId, QSharedPointer<QCanBusDevice> canBus, QObject *parent)
+EcuBase::EcuBase(int ecuId, QCanBusDevice *canBus, QObject *parent)
     : QObject(parent)
     , m_ecuId{ecuId}
     , m_canBus{canBus}
@@ -48,6 +50,7 @@ EcuBase::EcuBase(int ecuId, QSharedPointer<QCanBusDevice> canBus, QObject *paren
 
 EcuBase::~EcuBase()
 {
+    CanBus::tearDown(m_canBus.get());
 }
 
 int EcuBase::ecuId() const
@@ -55,9 +58,9 @@ int EcuBase::ecuId() const
     return m_ecuId;
 }
 
-QSharedPointer<QCanBusDevice> EcuBase::canBus() const
+QCanBusDevice *EcuBase::canBus() const
 {
-    return m_canBus;
+    return m_canBus.get();
 }
 
 bool EcuBase::isLogging() const

@@ -6,24 +6,12 @@
 TerminalModel::TerminalModel(QObject *parent)
     : QObject{parent}
 {
-    auto errorStr = QString{};
-    m_can0.reset(CanBus::setUp(QStringLiteral("socketcan"), QStringLiteral("can0"),
-                               errorStr));
-    if (!errorStr.isEmpty()) {
-        QMetaObject::invokeMethod(this,
-                                  [this, errorStr]() { emit logMessage(errorStr); },
-                                  Qt::QueuedConnection);
-    }
-    m_can0->setConfigurationParameter(QCanBusDevice::ReceiveOwnKey, true);
-    m_can0->setConfigurationParameter(QCanBusDevice::LoopbackKey, true);
-
     m_a2Proxy.reset(createEcuProxy(2));
     m_a3Proxy.reset(createEcuProxy(3));
 }
 
 TerminalModel::~TerminalModel()
 {
-    CanBus::tearDown(m_can0.get());
 }
 
 bool TerminalModel::isSkipWriteEnabled() const
@@ -55,7 +43,7 @@ void TerminalModel::simulateTxBufferOverflow(int count)
 
 EcuProxy *TerminalModel::createEcuProxy(int ecuId)
 {
-    auto ecuProxy = new EcuProxy{ecuId, m_can0};
+    auto ecuProxy = new EcuProxy{ecuId, createCanBusDevice("can0")};
     ecuProxy->setLogging(true);
     connect(ecuProxy, &EcuProxy::logMessage,
             this, &TerminalModel::logMessage);
@@ -64,4 +52,18 @@ EcuProxy *TerminalModel::createEcuProxy(int ecuId)
     connect(ecuProxy, &EcuProxy::directWriteEnabledChanged,
             this, &TerminalModel::directWriteEnabledChanged);
     return ecuProxy;
+}
+
+QCanBusDevice *TerminalModel::createCanBusDevice(const QString &interface)
+{
+    auto errorStr = QString{};
+    auto device = CanBus::setUp(QStringLiteral("socketcan"), interface, errorStr);
+    if (!errorStr.isEmpty()) {
+        QMetaObject::invokeMethod(this,
+                                  [this, errorStr]() { emit logMessage(errorStr); },
+                                  Qt::QueuedConnection);
+    }
+    device->setConfigurationParameter(QCanBusDevice::ReceiveOwnKey, true);
+    device->setConfigurationParameter(QCanBusDevice::LoopbackKey, false);
+    return device;
 }
