@@ -37,7 +37,6 @@ void MockSocketCanDevice::setConfigurationParameter(int key, const QVariant &val
 {
     QCanBusDevice::setConfigurationParameter(key, value);
     if (key == int(MockConfigurationKey::ExpectedCanIo)) {
-        m_frameIndex = 0;
         m_frameCount = expectedCanFrames(this).size();
         checkForResponses();
     }
@@ -46,7 +45,7 @@ void MockSocketCanDevice::setConfigurationParameter(int key, const QVariant &val
 bool MockSocketCanDevice::writeFrame(const QCanBusFrame &frame)
 {
     if (m_frameIndex >= m_frameCount) {
-        qWarning() << "Expected no frame, but got " << frame.toString();
+        qWarning() << "Expected no frame, but got " << frame.toString() << m_frameCount;
     }
     else {
         auto expectedFrame = QCanBusFrame{expectedCanFrames(this)[m_frameIndex]};

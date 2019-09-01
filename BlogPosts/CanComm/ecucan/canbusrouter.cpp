@@ -22,7 +22,9 @@ CanBusRouter::CanBusRouter(const QString &plugin, const QString &interface, QObj
     connect(m_device, &QCanBusDevice::errorOccurred,
             this, &CanBusRouter::onErrorOccurred);
     connect(m_device, &QCanBusDevice::framesReceived,
-            this, &CanBusRouter::onFramesReceived);
+            this, &CanBusRouter::framesReceived);
+    connect(m_device, &QCanBusDevice::framesWritten,
+            this, &CanBusRouter::framesWritten);
 }
 
 CanBusRouter::~CanBusRouter()
@@ -48,7 +50,11 @@ QCanBusDevice::CanBusDeviceState CanBusRouter::state() const
 
 void CanBusRouter::writeFrame(const QCanBusFrame &frame)
 {
-
+    if (m_device == nullptr)
+    {
+        return;
+    }
+    m_device->writeFrame(frame);
 }
 
 void CanBusRouter::onErrorOccurred(QCanBusDevice::CanBusError error)
@@ -56,10 +62,10 @@ void CanBusRouter::onErrorOccurred(QCanBusDevice::CanBusError error)
     emit errorOccurred(error, m_device->errorString());
 }
 
-void CanBusRouter::onFramesReceived()
-{
-    emit framesReceived(m_device->readAllFrames());
-}
+//void CanBusRouter::onFramesReceived()
+//{
+//    emit framesReceived(m_device->readAllFrames());
+//}
 
 // QCanBus::createDevice() returns nullptr and an error message, if the plugin does not exist.
 // It returns a non-null QCanBusDevice, if the plugin exists. Whether the CAN interface exists,

@@ -5,6 +5,8 @@
 MockCanBusRouter::MockCanBusRouter(const QString &interface, QObject *parent)
     : CanBusRouter{"mockcan", interface, parent}
 {
+    setActualCanFrames({});
+    setExpectedCanFrames({});
 }
 
 MockCanBusRouter::~MockCanBusRouter()
@@ -13,24 +15,25 @@ MockCanBusRouter::~MockCanBusRouter()
 
 MockCanFrameCollection MockCanBusRouter::actualCanFrames() const
 {
-    return m_device->configurationParameter(int(MockConfigurationKey::ActualCanIo))
-            .value<MockCanFrameCollection>();
+    return ::actualCanFrames(m_device);
 }
 
 void MockCanBusRouter::setActualCanFrames(const MockCanFrameCollection &frames)
 {
-    m_device->setConfigurationParameter(int(MockConfigurationKey::ActualCanIo),
-                                        QVariant::fromValue(frames));
+    ::setActualCanFrames(m_device, frames);
 }
 
 MockCanFrameCollection MockCanBusRouter::expectedCanFrames() const
 {
-    return m_device->configurationParameter(int(MockConfigurationKey::ExpectedCanIo))
-            .value<MockCanFrameCollection>();
+    return ::expectedCanFrames(m_device);
 }
 
 void MockCanBusRouter::setExpectedCanFrames(const MockCanFrameCollection &frames)
 {
-    m_device->setConfigurationParameter(int(MockConfigurationKey::ExpectedCanIo),
-                                        QVariant::fromValue(frames));
+    ::setExpectedCanFrames(m_device, frames);
+}
+
+int MockCanBusRouter::expectedFrameCount(MockCanFrame::Type frameType)
+{
+    return ::expectedCanFrameCount(m_device, frameType);
 }

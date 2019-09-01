@@ -15,4 +15,5 @@ public:
     void setActualCanFrames(const MockCanFrameCollection &frames);
     MockCanFrameCollection expectedCanFrames() const;
     void setExpectedCanFrames(const MockCanFrameCollection &frames);
+    int expectedFrameCount(MockCanFrame::Type frameType);
 };

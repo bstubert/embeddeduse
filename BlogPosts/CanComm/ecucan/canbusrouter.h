@@ -23,7 +23,8 @@ public:
 
 signals:
     void errorOccurred(QCanBusDevice::CanBusError error, const QString &errorStr);
-    void framesReceived(const QVector<QCanBusFrame> &frames);
+    void framesWritten(qint64 framesCount);
+    void framesReceived();
 
 public slots:
     void writeFrame(const QCanBusFrame &frame);
@@ -33,7 +34,7 @@ protected:
 
 private slots:
     void onErrorOccurred(QCanBusDevice::CanBusError error);
-    void onFramesReceived();
+//    void onFramesReceived();
 
 private:
     QCanBusDevice *createDevice(const QString &plugin, const QString &interface);
