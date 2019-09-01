@@ -11,9 +11,9 @@ public:
     MockCanBusRouter(const QString &interface = QString{"mcan0"}, QObject *parent = nullptr);
     ~MockCanBusRouter() override;
 
+    void expectWriteFrame(const QCanBusFrame &frame);
+    void expectReadFrame(const QCanBusFrame &frame);
+
     MockCanFrameCollection actualCanFrames() const;
-    void setActualCanFrames(const MockCanFrameCollection &frames);
     MockCanFrameCollection expectedCanFrames() const;
-    void setExpectedCanFrames(const MockCanFrameCollection &frames);
-    int expectedFrameCount(MockCanFrame::Type frameType);
 };

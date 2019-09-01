@@ -34,8 +34,6 @@ private slots:
     void testCreateNonExistingPlugin();
     void testConnectToExistingDevice();
     void testConnectToNonExistingDevice();
-    void testActualCanIoConfiguration();
-    void testExpectedCanIoConfiguration();
 };
 
 void TestConnectToMockCanBus::initTestCase()
@@ -89,30 +87,6 @@ void TestConnectToMockCanBus::testConnectToNonExistingDevice()
     CanBusRouter router{"mockcan", "sky7"};
     QCOMPARE(router.error(), QCanBusDevice::CanBusError::ConnectionError);
     QCOMPARE(router.state(), QCanBusDevice::UnconnectedState);
-}
-
-void TestConnectToMockCanBus::testActualCanIoConfiguration()
-{
-    auto frames = MockCanFrameCollection{
-        MockCanFrame{MockCanFrame::Type::Outgoing, 0x185f0901U, "018A010102300405"},
-        MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ed0301U, "018A0105a2f0b405"}
-    };
-
-    MockCanBusRouter router;
-    router.setActualCanFrames(frames);
-    QCOMPARE(router.actualCanFrames(), frames);
-}
-
-void TestConnectToMockCanBus::testExpectedCanIoConfiguration()
-{
-    auto frames = MockCanFrameCollection{
-        MockCanFrame{MockCanFrame::Type::Outgoing, 0x185f0901U, "018A010102300405"},
-        MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ed0301U, "018A0105a2f0b405"}
-    };
-
-    MockCanBusRouter router;
-    router.setExpectedCanFrames(frames);
-    QCOMPARE(router.expectedCanFrames(), frames);
 }
 
 QTEST_GUILESS_MAIN(TestConnectToMockCanBus)

@@ -48,9 +48,6 @@ private:
     void testWriteFrameErrors();
 
 private:    
-    void expectWriteFrame(const QCanBusFrame &frame);
-    void expectReadFrame(const QCanBusFrame &frame);
-
     const QCanBusFrame c_frame1{0x18ef0201U, QByteArray::fromHex("018A010000000000")};
     const QCanBusFrame c_frame2{0x18ef0301U, QByteArray::fromHex("01B5010000000000")};
 
@@ -66,9 +63,9 @@ private:
     QSignalSpy *m_errorSpy;
 };
 
-#define CHECK_FRAMES_EXPECTED_EQUAL \
+#define CHECK_FRAMES_EXPECTED_EQUAL(writeCount) \
     QCOMPARE(m_router->actualCanFrames(), m_router->expectedCanFrames()); \
-    QCOMPARE(m_writtenSpy->size(), m_router->expectedFrameCount(MockCanFrame::Type::Outgoing))
+    QCOMPARE(m_writtenSpy->size(), writeCount)
 
 #define CHECK_FRAMES_EXPECTED_NOT_EQUAL \
     QEXPECT_FAIL("", "Frames expected to differ!", Continue); \
@@ -114,16 +111,16 @@ void TestReadWriteOnMockCanBus::cleanup()
 
 void TestReadWriteOnMockCanBus::testWriteOneExpectedFrame()
 {
-    expectWriteFrame(c_frame1);
+    m_router->expectWriteFrame(c_frame1);
 
     m_router->writeFrame(c_frame1);
 
-    CHECK_FRAMES_EXPECTED_EQUAL;
+    CHECK_FRAMES_EXPECTED_EQUAL(1);
 }
 
 void TestReadWriteOnMockCanBus::testWriteOneUnexpectedFrame()
 {
-    expectWriteFrame(c_frame1);
+    m_router->expectWriteFrame(c_frame1);
 
     m_router->writeFrame(c_frame2);
 
@@ -132,7 +129,7 @@ void TestReadWriteOnMockCanBus::testWriteOneUnexpectedFrame()
 
 void TestReadWriteOnMockCanBus::testWriteMoreFramesThanExpected()
 {
-    expectWriteFrame(c_frame1);
+    m_router->expectWriteFrame(c_frame1);
 
     m_router->writeFrame(c_frame1);
     m_router->writeFrame(c_frame2);
@@ -142,8 +139,8 @@ void TestReadWriteOnMockCanBus::testWriteMoreFramesThanExpected()
 
 void TestReadWriteOnMockCanBus::testWriteLessFramesThanExpected()
 {
-    expectWriteFrame(c_frame1);
-    expectWriteFrame(c_frame2);
+    m_router->expectWriteFrame(c_frame1);
+    m_router->expectWriteFrame(c_frame2);
 
     m_router->writeFrame(c_frame1);
 
@@ -152,19 +149,19 @@ void TestReadWriteOnMockCanBus::testWriteLessFramesThanExpected()
 
 void TestReadWriteOnMockCanBus::testWriteTwoFramesInExpectedOrder()
 {
-    expectWriteFrame(c_frame1);
-    expectWriteFrame(c_frame2);
+    m_router->expectWriteFrame(c_frame1);
+    m_router->expectWriteFrame(c_frame2);
 
     m_router->writeFrame(c_frame1);
     m_router->writeFrame(c_frame2);
 
-    CHECK_FRAMES_EXPECTED_EQUAL;
+    CHECK_FRAMES_EXPECTED_EQUAL(2);
 }
 
 void TestReadWriteOnMockCanBus::testWriteTwoFramesInUnexpectedOrder()
 {
-    expectWriteFrame(c_frame1);
-    expectWriteFrame(c_frame2);
+    m_router->expectWriteFrame(c_frame1);
+    m_router->expectWriteFrame(c_frame2);
 
     m_router->writeFrame(c_frame2);
     m_router->writeFrame(c_frame1);
@@ -174,8 +171,8 @@ void TestReadWriteOnMockCanBus::testWriteTwoFramesInUnexpectedOrder()
 
 void TestReadWriteOnMockCanBus::testReq1Rsp1()
 {
-    expectWriteFrame(c_request1);
-    expectReadFrame(c_response1);
+    m_router->expectWriteFrame(c_request1);
+    m_router->expectReadFrame(c_response1);
 
     m_router->writeFrame(c_request1);
 
@@ -184,10 +181,10 @@ void TestReadWriteOnMockCanBus::testReq1Rsp1()
 
 void TestReadWriteOnMockCanBus::testReq1Rsp1Req2Rsp2()
 {
-    expectWriteFrame(c_request1);
-    expectReadFrame(c_response1);
-    expectWriteFrame(c_request2);
-    expectReadFrame(c_response2);
+    m_router->expectWriteFrame(c_request1);
+    m_router->expectReadFrame(c_response1);
+    m_router->expectWriteFrame(c_request2);
+    m_router->expectReadFrame(c_response2);
 
     m_router->writeFrame(c_request1);
     m_router->writeFrame(c_request2);
@@ -197,10 +194,10 @@ void TestReadWriteOnMockCanBus::testReq1Rsp1Req2Rsp2()
 
 void TestReadWriteOnMockCanBus::testReq1Req2Rsp1Rsp2()
 {
-    expectWriteFrame(c_request1);
-    expectWriteFrame(c_request2);
-    expectReadFrame(c_response1);
-    expectReadFrame(c_response2);
+    m_router->expectWriteFrame(c_request1);
+    m_router->expectWriteFrame(c_request2);
+    m_router->expectReadFrame(c_response1);
+    m_router->expectReadFrame(c_response2);
 
     m_router->writeFrame(c_request1);
     m_router->writeFrame(c_request2);
@@ -210,9 +207,9 @@ void TestReadWriteOnMockCanBus::testReq1Req2Rsp1Rsp2()
 
 void TestReadWriteOnMockCanBus::testReq1Req2Rsp2()
 {
-    expectWriteFrame(c_request1);
-    expectWriteFrame(c_request2);
-    expectReadFrame(c_response2);
+    m_router->expectWriteFrame(c_request1);
+    m_router->expectWriteFrame(c_request2);
+    m_router->expectReadFrame(c_response2);
 
     m_router->writeFrame(c_request1);
     m_router->writeFrame(c_request2);
@@ -222,10 +219,10 @@ void TestReadWriteOnMockCanBus::testReq1Req2Rsp2()
 
 void TestReadWriteOnMockCanBus::testRsp1Rsp2Req1Rsp1()
 {
-    expectReadFrame(c_response1);
-    expectReadFrame(c_response2);
-    expectWriteFrame(c_request1);
-    expectReadFrame(c_response1);
+    m_router->expectReadFrame(c_response1);
+    m_router->expectReadFrame(c_response2);
+    m_router->expectWriteFrame(c_request1);
+    m_router->expectReadFrame(c_response1);
 
     m_router->writeFrame(c_request1);
 
@@ -293,20 +290,6 @@ void TestReadWriteOnMockCanBus::testWriteFrameErrors()
         QCOMPARE((*m_errorSpy)[i][0].value<QCanBusDevice::CanBusError>(), canErrors[i]);
     }
     QCOMPARE(actualCanFrames(m_device), expectedCanFrames);
-}
-
-void TestReadWriteOnMockCanBus::expectWriteFrame(const QCanBusFrame &frame)
-{
-    auto frames = m_router->expectedCanFrames();
-    frames.append(MockCanFrame{MockCanFrame::Type::Outgoing, frame});
-    m_router->setExpectedCanFrames(frames);
-}
-
-void TestReadWriteOnMockCanBus::expectReadFrame(const QCanBusFrame &frame)
-{
-    auto frames = m_router->expectedCanFrames();
-    frames.append(MockCanFrame{MockCanFrame::Type::Incoming, frame});
-    m_router->setExpectedCanFrames(frames);
 }
 
 QTEST_GUILESS_MAIN(TestReadWriteOnMockCanBus)
