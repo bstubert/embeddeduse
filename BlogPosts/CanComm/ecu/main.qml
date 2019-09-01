@@ -20,6 +20,18 @@ ApplicationWindow {
             color: "#effbd8"
         }
 
+        Button {
+            id: twoEcus
+            anchors {
+                left: parent.left
+                top: parent.top
+            }
+            text: "2 ECUs"
+            font.pixelSize: 24
+            onReleased: gEcu.sendFramesFromTwoEcus()
+        }
+
+
         CheckBox {
             id: missingResponses
             anchors {

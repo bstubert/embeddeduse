@@ -72,4 +72,25 @@ void Ecu::setMissingResponsesEnabled(bool enabled)
     }
 }
 
+void Ecu::sendFramesFromTwoEcus()
+{
+    enqueueOutgoingFrame(QCanBusFrame{0x18FF3501, QByteArray::fromHex("0100000001000000")});
+    emitSendUnsolicitedMessage(1, "Send", 1);
+
+    enqueueOutgoingFrame(QCanBusFrame{0x18FF0602, QByteArray::fromHex("0A0000000A000000")});
+    emitSendUnsolicitedMessage(2, "Send", 10);
+
+    enqueueOutgoingFrame(QCanBusFrame{0x18FF3501, QByteArray::fromHex("0200000002000000")});
+    emitSendUnsolicitedMessage(1, "Send", 2);
+
+    enqueueOutgoingFrame(QCanBusFrame{0x18FF0602, QByteArray::fromHex("0B0000000B000000")});
+    emitSendUnsolicitedMessage(2, "Send", 11);
+
+    enqueueOutgoingFrame(QCanBusFrame{0x18FF3501, QByteArray::fromHex("030000000C000000")});
+    emitSendUnsolicitedMessage(1, "Send", 3);
+
+    enqueueOutgoingFrame(QCanBusFrame{0x18FF0602, QByteArray::fromHex("0C0000000C000000")});
+    emitSendUnsolicitedMessage(2, "Send", 12);
+}
+
 

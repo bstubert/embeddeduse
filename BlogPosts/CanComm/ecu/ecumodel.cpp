@@ -50,3 +50,8 @@ void EcuModel::setMissingResponsesEnabled(bool enabled)
 {
     m_a2->setMissingResponsesEnabled(enabled);
 }
+
+void EcuModel::sendFramesFromTwoEcus()
+{
+    m_a2->sendFramesFromTwoEcus();
+}

@@ -20,6 +20,8 @@ public:
     bool isMissingResponsesEnabled() const;
     void setMissingResponsesEnabled(bool enabled);
 
+    void sendFramesFromTwoEcus();
+
 signals:
     void parameterRead(quint16 pid, quint32 value);
     void skipResponseEnabledChanged();

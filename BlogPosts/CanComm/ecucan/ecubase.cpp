@@ -109,6 +109,11 @@ void EcuBase::receiveReadParameter(const QCanBusFrame &frame)
     Q_UNUSED(frame)
 }
 
+void EcuBase::receiveUnsolicitedFrame(const QCanBusFrame &frame)
+{
+    Q_UNUSED(frame)
+}
+
 void EcuBase::onErrorOccurred(QCanBusDevice::CanBusError error)
 {
     emit logMessage(QString("ERROR: %1 (%2).").arg(canBus()->errorString()).arg(error));
@@ -127,6 +132,9 @@ void EcuBase::onFramesReceived()
         }
         else if (isReadParameter(frame)) {
             receiveReadParameter(frame);
+        }
+        else {
+            receiveUnsolicitedFrame(frame);
         }
     }
 }
@@ -148,6 +156,11 @@ std::tuple<quint16, quint32> EcuBase::decodedReadParameter(const QCanBusFrame &f
     return std::make_tuple(pid, value);
 }
 
+int EcuBase::sourceEcuId(quint32 frameId) const
+{
+    return static_cast<int>(frameId & 0x000000FF);
+}
+
 void EcuBase::emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value)
 {
     if (isLogging()) {
@@ -156,6 +169,14 @@ void EcuBase::emitReadParameterMessage(const QString &prefix, quint16 pid, quint
                         .arg(quint32(value), 8, 16, QLatin1Char('0')));
     }
 }
+
+void EcuBase::emitSendUnsolicitedMessage(int ecuId, const QString &direction, int value)
+{
+    if (isLogging()) {
+        emit logMessage(QString("Ecu %1/%2: unsolicited %3").arg(ecuId).arg(direction).arg(value));
+    }
+}
+
 
 void EcuBase::enqueueOutgoingFrame(const QCanBusFrame &frame)
 {

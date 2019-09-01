@@ -3,6 +3,7 @@
 #include <tuple>
 #include <QCanBusFrame>
 #include <QString>
+#include <QtEndian>
 #include "ecuproxy.h"
 
 EcuProxy::EcuProxy(int ecuId, QSharedPointer<QCanBusDevice> canBus, QObject *parent)
@@ -36,6 +37,13 @@ void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)
     quint32 value = 0U;
     std::tie(pid, value) = decodedReadParameter(frame);
     emitReadParameterMessage(QStringLiteral("Trm/Recv"), pid, value);
+}
+
+void EcuProxy::receiveUnsolicitedFrame(const QCanBusFrame &frame)
+{
+    auto sourceId = sourceEcuId(frame.frameId());
+    auto value = qFromLittleEndian<qint32>(frame.payload().data());
+    emitSendUnsolicitedMessage(sourceId, "Recv", value);
 }
 
 bool EcuProxy::isSkipWriteEnabled() const

@@ -29,6 +29,7 @@ public:
     virtual bool isReadParameter(const QCanBusFrame &frame) const;
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U);
     virtual void receiveReadParameter(const QCanBusFrame &frame);
+    virtual void receiveUnsolicitedFrame(const QCanBusFrame &frame);
 
 signals:
     void logMessage(const QString &msg);
@@ -40,7 +41,9 @@ public slots:
 protected:
     QByteArray encodedReadParameter(quint16 pid, quint32 value) const;
     std::tuple<quint16, quint32> decodedReadParameter(const QCanBusFrame &frame) const;
+    int sourceEcuId(quint32 frameId) const;
     void emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value);
+    void emitSendUnsolicitedMessage(int ecuId, const QString &direction, int value);
     void enqueueOutgoingFrame(const QCanBusFrame &frame);
     void dequeueOutgoingFrame();
     virtual bool skipWrite(const QCanBusFrame &frame) const;

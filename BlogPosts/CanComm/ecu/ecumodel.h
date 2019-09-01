@@ -26,6 +26,9 @@ public:
     bool isMissingResponsesEnabled() const;
     void setMissingResponsesEnabled(bool enabled);
 
+public slots:
+    void sendFramesFromTwoEcus();
+
 signals:
     void logMessage(const QString &msg);
     void skipResponseEnabledChanged();

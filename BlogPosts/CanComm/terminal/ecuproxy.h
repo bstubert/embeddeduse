@@ -15,6 +15,7 @@ public:
     virtual bool isReadParameter(const QCanBusFrame &frame) const override;
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U) override;
     virtual void receiveReadParameter(const QCanBusFrame &frame) override;
+    virtual void receiveUnsolicitedFrame(const QCanBusFrame &frame) override;
 
     bool isSkipWriteEnabled() const;
     void setSkipWriteEnabled(bool enabled);

@@ -17,7 +17,7 @@ TerminalModel::TerminalModel(QObject *parent)
     m_can0->setConfigurationParameter(QCanBusDevice::ReceiveOwnKey, true);
 
     m_a2Proxy.reset(new EcuProxy{2, m_can0});
-    m_a2Proxy->setLogging(false);
+    m_a2Proxy->setLogging(true);
     connect(m_a2Proxy.get(), &EcuProxy::logMessage,
             this, &TerminalModel::logMessage);
     connect(m_a2Proxy.get(), &EcuProxy::skipWriteEnabledChanged,
