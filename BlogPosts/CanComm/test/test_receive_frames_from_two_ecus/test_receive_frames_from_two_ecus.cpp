@@ -14,7 +14,9 @@ class TestReceiveFramesFromTwoEcus : public QObject
     QSignalSpy *m_receivedSpy{nullptr};
 
     const QCanBusFrame c_ecu2_1{QCanBusFrame{0x18FF0602, QByteArray::fromHex("0A0000000A000000")}};
+    const QCanBusFrame c_ecu2_2{QCanBusFrame{0x18FF0602, QByteArray::fromHex("0B0000000B000000")}};
     const QCanBusFrame c_ecu3_1{QCanBusFrame{0x18FF3503, QByteArray::fromHex("0100000001000000")}};
+    const QCanBusFrame c_ecu3_2{QCanBusFrame{0x18FF3503, QByteArray::fromHex("0200000002000000")}};
 
 
 private slots:
@@ -42,22 +44,21 @@ private slots:
     {
         m_router->expectReadFrame(c_ecu2_1);
         m_router->expectReadFrame(c_ecu3_1);
-
+        m_router->expectReadFrame(c_ecu2_2);
         QVERIFY(!m_receivedSpy->isEmpty());
 
         auto fromEcu2 = m_router->allReceivedFrames(2);
-        QCOMPARE(fromEcu2.count(), 1);
-        QCOMPARE(fromEcu2[0], c_ecu2_1);
+        QCOMPARE(fromEcu2, (QVector<QCanBusFrame>{c_ecu2_1, c_ecu2_2}));
 
         auto fromEcu3 = m_router->allReceivedFrames(3);
-        QCOMPARE(fromEcu3.count(), 1);
-        QCOMPARE(fromEcu3[0], c_ecu3_1);
+        QCOMPARE(fromEcu3, (QVector<QCanBusFrame>{c_ecu3_1}));
     }
 
     void testDontRetrieveOldFramesAgain()
     {
         m_router->expectReadFrame(c_ecu2_1);
         m_router->expectReadFrame(c_ecu3_1);
+        QVERIFY(!m_receivedSpy->isEmpty());
 
         m_router->allReceivedFrames(2);
         m_router->allReceivedFrames(3);
@@ -66,6 +67,26 @@ private slots:
         QVERIFY(m_router->allReceivedFrames(3).isEmpty());
     }
 
+    void testReceiveFramesTwice()
+    {
+        m_router->expectReadFrame(c_ecu2_1);
+        m_router->expectReadFrame(c_ecu3_1);
+        QVERIFY(!m_receivedSpy->isEmpty());
+
+        m_router->allReceivedFrames(2);
+        m_router->allReceivedFrames(3);
+
+        m_router->expectReadFrame(c_ecu2_2);
+        m_router->expectReadFrame(c_ecu3_2);
+        m_router->expectReadFrame(c_ecu3_1);
+        QVERIFY(!m_receivedSpy->isEmpty());
+
+        auto fromEcu2 = m_router->allReceivedFrames(2);
+        QCOMPARE(fromEcu2, (QVector<QCanBusFrame>{c_ecu2_2}));
+
+        auto fromEcu3 = m_router->allReceivedFrames(3);
+        QCOMPARE(fromEcu3, (QVector<QCanBusFrame>{c_ecu3_2, c_ecu3_1}));
+    }
 };
 
 
