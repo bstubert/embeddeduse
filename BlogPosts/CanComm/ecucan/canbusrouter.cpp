@@ -77,11 +77,14 @@ void CanBusRouter::onFramesReceived()
     {
         return;
     }
+    auto ecuIdColl = QSet<int>{};
     for (const auto &frame : m_device->readAllFrames())
     {
-        m_frameCache[ecuId(frame)].append(frame);
+        auto id = ecuId(frame);
+        ecuIdColl.insert(id);
+        m_frameCache[id].append(frame);
     }
-    emit framesReceived();
+    emit framesReceived(ecuIdColl);
 }
 
 // QCanBus::createDevice() returns nullptr and an error message, if the plugin does not exist.

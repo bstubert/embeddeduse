@@ -6,6 +6,7 @@
 #include <QCanBusFrame>
 #include <QMap>
 #include <QObject>
+#include <QSet>
 #include <QString>
 #include <QVector>
 
@@ -27,7 +28,7 @@ public:
 signals:
     void errorOccurred(QCanBusDevice::CanBusError error, const QString &errorStr);
     void framesWritten(qint64 framesCount);
-    void framesReceived();
+    void framesReceived(const QSet<int> &ecuIdColl);
 
 public slots:
     void writeFrame(const QCanBusFrame &frame);
