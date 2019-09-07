@@ -54,7 +54,7 @@ QVector<QCanBusFrame> CanBusRouter::allReceivedFrames(int ecuId) const
     {
         return {};
     }
-    return m_frameCache.value(ecuId);
+    return m_frameCache.take(ecuId);
 }
 
 void CanBusRouter::writeFrame(const QCanBusFrame &frame)

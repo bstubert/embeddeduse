@@ -34,16 +34,30 @@ private slots:
 
     void cleanup()
     {
-
+        delete m_receivedSpy;
+        delete m_router;
     }
 
-    void testReceiveFramesFromTwoEcusAtSameTime()
+    void testReceiveFramesOnce()
     {
         m_router->expectReadFrame(c_ecu2_1);
         m_router->expectReadFrame(c_ecu3_1);
 
-        QCOMPARE(m_receivedSpy->count(), 2);
+        QVERIFY(!m_receivedSpy->isEmpty());
         QCOMPARE(m_router->allReceivedFrames(2).count(), 1);
+        QCOMPARE(m_router->allReceivedFrames(3).count(), 1);
+    }
+
+    void testDontRetrieveOldFramesAgain()
+    {
+        m_router->expectReadFrame(c_ecu2_1);
+        m_router->expectReadFrame(c_ecu3_1);
+
+        m_router->allReceivedFrames(2);
+        m_router->allReceivedFrames(3);
+
+        QVERIFY(m_router->allReceivedFrames(2).isEmpty());
+        QVERIFY(m_router->allReceivedFrames(3).isEmpty());
     }
 
 };

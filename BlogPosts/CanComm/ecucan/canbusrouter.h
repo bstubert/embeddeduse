@@ -34,7 +34,6 @@ public slots:
 
 protected:
     QCanBusDevice *m_device{nullptr};
-    QMap<int, QVector<QCanBusFrame>> m_frameCache;
 
 private slots:
     void onErrorOccurred(QCanBusDevice::CanBusError error);
@@ -49,5 +48,6 @@ private:
     QCanBusDevice::CanBusError m_error{QCanBusDevice::CanBusError::NoError};
     QString m_errorStr;
     QCanBusDevice::CanBusDeviceState m_state;
+    mutable QMap<int, QVector<QCanBusFrame>> m_frameCache;
 };
 
