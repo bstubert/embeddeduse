@@ -2,6 +2,10 @@
 
 #pragma once
 
+#include <QCanBusDevice>
+#include <QCanBusFrame>
+#include <QVector>
+
 #include "canbusrouter.h"
 #include "mockcanutils.h"
 
@@ -13,6 +17,7 @@ public:
 
     void expectWriteFrame(const QCanBusFrame &frame);
     void expectReadFrame(const QCanBusFrame &frame);
+    void expectReadFrames(const QVector<QCanBusFrame> &frames);
     void expectError(QCanBusDevice::CanBusError deviceError, MockCanFrame::ErrorNo errorNo);
 
     MockCanFrameCollection actualCanFrames() const;
