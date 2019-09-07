@@ -45,7 +45,6 @@ private:
     QCanBusDevice *createDevice(const QString &plugin, const QString &interface);
     void connectToDevice();
     void disconnectFromDevice();
-    int sourceEcuId(const QCanBusFrame &frame) const;
 
     QCanBusDevice::CanBusError m_error{QCanBusDevice::CanBusError::NoError};
     QString m_errorStr;

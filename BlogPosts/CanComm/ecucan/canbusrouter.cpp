@@ -119,8 +119,3 @@ void CanBusRouter::disconnectFromDevice()
         m_device->disconnectDevice();
     }
 }
-
-int CanBusRouter::sourceEcuId(const QCanBusFrame &frame) const
-{
-    return static_cast<int>(frame.frameId() & 0x000000FF);
-}
