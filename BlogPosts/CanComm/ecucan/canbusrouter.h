@@ -23,7 +23,7 @@ public:
     QCanBusDevice::CanBusError error() const;
     QString errorString() const;
     QCanBusDevice::CanBusDeviceState state() const;
-    QVector<QCanBusFrame> allReceivedFrames(int ecuId) const;
+    QVector<QCanBusFrame> allReceivedFrames(int sourceEcuId) const;
 
 signals:
     void errorOccurred(QCanBusDevice::CanBusError error, const QString &errorStr);
@@ -44,7 +44,7 @@ private:
     QCanBusDevice *createDevice(const QString &plugin, const QString &interface);
     void connectToDevice();
     void disconnectFromDevice();
-    int ecuId(const QCanBusFrame &frame) const;
+    int sourceEcuId(const QCanBusFrame &frame) const;
 
     QCanBusDevice::CanBusError m_error{QCanBusDevice::CanBusError::NoError};
     QString m_errorStr;

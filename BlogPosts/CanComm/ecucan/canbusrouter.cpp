@@ -80,7 +80,7 @@ void CanBusRouter::onFramesReceived()
     auto ecuIdColl = QSet<int>{};
     for (const auto &frame : m_device->readAllFrames())
     {
-        auto id = ecuId(frame);
+        auto id = sourceEcuId(frame);
         ecuIdColl.insert(id);
         m_frameCache[id].append(frame);
     }
@@ -126,7 +126,7 @@ void CanBusRouter::disconnectFromDevice()
     }
 }
 
-int CanBusRouter::ecuId(const QCanBusFrame &frame) const
+int CanBusRouter::sourceEcuId(const QCanBusFrame &frame) const
 {
     return static_cast<int>(frame.frameId() & 0x000000FF);
 }
