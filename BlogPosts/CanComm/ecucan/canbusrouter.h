@@ -4,11 +4,12 @@
 
 #include <QCanBusDevice>
 #include <QCanBusFrame>
-#include <QMap>
 #include <QObject>
 #include <QSet>
 #include <QString>
 #include <QVector>
+
+#include "received_frames_cache.h"
 
 class QCanBusFrame;
 
@@ -49,6 +50,6 @@ private:
     QCanBusDevice::CanBusError m_error{QCanBusDevice::CanBusError::NoError};
     QString m_errorStr;
     QCanBusDevice::CanBusDeviceState m_state;
-    QMap<int, QVector<QCanBusFrame>> m_frameCache;
+    ReceivedFramesCache m_receivedFrameCache;
 };
 

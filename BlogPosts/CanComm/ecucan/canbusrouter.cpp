@@ -54,7 +54,7 @@ QVector<QCanBusFrame> CanBusRouter::takeReceivedFrames(int ecuId)
     {
         return {};
     }
-    return m_frameCache.take(ecuId);
+    return m_receivedFrameCache.takeFrames(ecuId);
 }
 
 void CanBusRouter::writeFrame(const QCanBusFrame &frame)
@@ -77,13 +77,7 @@ void CanBusRouter::onFramesReceived()
     {
         return;
     }
-    auto ecuIdColl = QSet<int>{};
-    for (const auto &frame : m_device->readAllFrames())
-    {
-        auto id = sourceEcuId(frame);
-        ecuIdColl.insert(id);
-        m_frameCache[id].append(frame);
-    }
+    auto ecuIdColl = m_receivedFrameCache.updateFrames(m_device->readAllFrames());
     emit framesReceived(ecuIdColl);
 }
 
