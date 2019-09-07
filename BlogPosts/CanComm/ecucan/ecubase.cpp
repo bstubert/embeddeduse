@@ -9,36 +9,14 @@
 #include <QtDebug>
 #include <QtEndian>
 
+#include "canbusrouter.h"
 #include "ecubase.h"
 
-namespace
-{
-QCanBusFrame::TimeStamp currentTimeStampSinceEpoch()
-{
-    return QCanBusFrame::TimeStamp::fromMicroSeconds(1000 * QDateTime::currentMSecsSinceEpoch());
-}
-
-qint64 toMs(const QCanBusFrame &frame)
-{
-    auto stamp = frame.timeStamp();
-    return (stamp.seconds() * 1000) + (stamp.microSeconds() / 1000);
-}
-}
-
-EcuBase::EcuBase(int ecuId, QCanBusDevice *canBus, QObject *parent)
+EcuBase::EcuBase(int ecuId, CanBusRouter *router, QObject *parent)
     : QObject(parent)
+    , m_router{router}
     , m_ecuId{ecuId}
-    , m_canBus{canBus}
 {
-    connect(&m_receiptTimer, &QTimer::timeout, [this]() {
-        if (!m_outgoingQueue.isEmpty() &&
-                isReceiptMissing(toMs(m_outgoingQueue.first()))) {
-            emit logMessage(QString("ERROR: Frame not written to CAN bus: %1.")
-                            .arg(m_outgoingQueue.first().toString()));
-            dequeueOutgoingFrame();
-        }
-    });
-    m_receiptTimer.start(receiptTimeOut() / 2);
 }
 
 EcuBase::~EcuBase()
@@ -50,11 +28,6 @@ int EcuBase::ecuId() const
     return m_ecuId;
 }
 
-QCanBusDevice *EcuBase::canBus() const
-{
-    return m_canBus;
-}
-
 bool EcuBase::isLogging() const
 {
     return m_logging;
@@ -63,28 +36,6 @@ bool EcuBase::isLogging() const
 void EcuBase::setLogging(bool enabled)
 {
     m_logging = enabled;
-}
-
-qint64 EcuBase::receiptTimeOut() const
-{
-    return m_receiptTimeout;
-}
-
-void EcuBase::setReceiptTimeOut(qint64 timeout)
-{
-    m_receiptTimeout = timeout;
-}
-
-bool EcuBase::isReceiptMissing(qint64 stamp) const
-{
-    return QDateTime::currentMSecsSinceEpoch() - stamp > receiptTimeOut();
-}
-
-bool EcuBase::isOwnFrame(const QCanBusFrame &frame) const
-{
-    return !m_outgoingQueue.isEmpty() &&
-            frame.frameId() == m_outgoingQueue.first().frameId() &&
-            frame.payload() == m_outgoingQueue.first().payload();
 }
 
 bool EcuBase::isReadParameter(const QCanBusFrame &frame) const
@@ -111,21 +62,24 @@ void EcuBase::receiveUnsolicitedFrame(const QCanBusFrame &frame)
 
 void EcuBase::onErrorOccurred(QCanBusDevice::CanBusError error)
 {
-    emit logMessage(QString("ERROR: %1 (%2).").arg(canBus()->errorString()).arg(error));
+    emit logMessage(QString("ERROR: %1 (%2).").arg(m_router->errorString()).arg(error));
 }
 
-void EcuBase::onFramesReceived()
+bool EcuBase::areReceivedFramesRelevant(const QSet<int> &ecuIdColl) const
 {
-    if (canBus() == nullptr) {
+    Q_UNUSED(ecuIdColl)
+    return true;
+}
+
+void EcuBase::onFramesReceived(const QSet<int> &ecuIdColl)
+{
+    if (!areReceivedFramesRelevant(ecuIdColl))
+    {
         return;
     }
-    auto count = canBus()->framesAvailable();
-    for (qint64 i = count; i > 0; --i) {
-        auto frame = canBus()->readFrame();
-        if (isOwnFrame(frame)) {
-            dequeueOutgoingFrame();
-        }
-        else if (isReadParameter(frame)) {
+    for (const auto &frame : m_router->takeReceivedFrames(1))
+    {
+        if (isReadParameter(frame)) {
             receiveReadParameter(frame);
         }
         else {
@@ -170,38 +124,4 @@ void EcuBase::emitSendUnsolicitedMessage(int ecuId, const QString &direction, in
     if (isLogging()) {
         emit logMessage(QString("Ecu %1/%2: unsolicited %3").arg(ecuId).arg(direction).arg(value));
     }
-}
-
-
-void EcuBase::enqueueOutgoingFrame(const QCanBusFrame &frame)
-{
-    auto empty = m_outgoingQueue.isEmpty();
-    m_outgoingQueue.append(frame);
-    if (empty) {
-        m_outgoingQueue.first().setTimeStamp(currentTimeStampSinceEpoch());
-        if (skipWrite(m_outgoingQueue.first())) {
-            return;
-        }
-        canBus()->writeFrame(m_outgoingQueue.first());
-    }
-}
-
-void EcuBase::dequeueOutgoingFrame()
-{
-    if (!m_outgoingQueue.isEmpty()) {
-        m_outgoingQueue.removeFirst();
-    }
-    if (!m_outgoingQueue.isEmpty()) {
-        m_outgoingQueue.first().setTimeStamp(currentTimeStampSinceEpoch());
-        if (skipWrite(m_outgoingQueue.first())) {
-            return;
-        }
-        canBus()->writeFrame(m_outgoingQueue.first());
-    }
-}
-
-bool EcuBase::skipWrite(const QCanBusFrame &frame) const
-{
-    Q_UNUSED(frame)
-    return false;
 }

@@ -4,15 +4,22 @@
 #include <QCanBusFrame>
 #include <QString>
 #include <QtEndian>
+
+#include "canbusrouter.h"
 #include "ecuproxy.h"
 
-EcuProxy::EcuProxy(int ecuId, QCanBusDevice *canBus, QObject *parent)
-    : EcuBase{ecuId, canBus, parent}
+EcuProxy::EcuProxy(int ecuId, CanBusRouter *router, QObject *parent)
+    : EcuBase{ecuId, router, parent}
 {
 }
 
 EcuProxy::~EcuProxy()
 {
+}
+
+bool EcuProxy::areReceivedFramesRelevant(const QSet<int> &ecuIdColl) const
+{
+    return ecuIdColl.contains(ecuId());
 }
 
 bool EcuProxy::isReadParameter(const QCanBusFrame &frame) const
@@ -23,12 +30,7 @@ bool EcuProxy::isReadParameter(const QCanBusFrame &frame) const
 void EcuProxy::sendReadParameter(quint16 pid, quint32 value)
 {
     emitReadParameterMessage(QStringLiteral("Trm/Send"), pid, value);
-    if (isDirectWriteEnabled()) {
-        canBus()->writeFrame(QCanBusFrame(0x18ef0201U, encodedReadParameter(pid, value)));
-    }
-    else {
-        enqueueOutgoingFrame(QCanBusFrame(0x18ef0201U, encodedReadParameter(pid, value)));
-    }
+    m_router->writeFrame(QCanBusFrame(0x18ef0201U, encodedReadParameter(pid, value)));
 }
 
 void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)
@@ -45,41 +47,4 @@ void EcuProxy::receiveUnsolicitedFrame(const QCanBusFrame &frame)
     auto value = qFromLittleEndian<qint32>(frame.payload().data());
     auto info = QString{"Recv in Proxy %1"}.arg(ecuId());
     emitSendUnsolicitedMessage(sourceId, info, value);
-}
-
-bool EcuProxy::isSkipWriteEnabled() const
-{
-    return m_skipWriteEnabled;
-}
-
-void EcuProxy::setSkipWriteEnabled(bool enabled)
-{
-    if (m_skipWriteEnabled != enabled) {
-        m_skipWriteEnabled = enabled;
-        emit skipWriteEnabledChanged();
-    }
-}
-
-bool EcuProxy::isDirectWriteEnabled() const
-{
-    return m_directWriteEnabled;
-}
-
-void EcuProxy::setDirectWriteEnabled(bool enabled)
-{
-    if (m_directWriteEnabled != enabled) {
-        m_directWriteEnabled = enabled;
-        emit directWriteEnabledChanged();
-    }
-}
-
-bool EcuProxy::skipWrite(const QCanBusFrame &frame) const
-{
-    if (!isSkipWriteEnabled()) {
-        return false;
-    }
-    quint16 pid = 0U;
-    quint32 value = 0U;
-    std::tie(pid, value) = decodedReadParameter(frame);
-    return pid % 8U == 0U;
 }

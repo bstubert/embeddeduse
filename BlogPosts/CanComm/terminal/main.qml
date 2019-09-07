@@ -55,32 +55,6 @@ ApplicationWindow {
             onReleased: gTerminal.simulateTxBufferOverflow(500)
         }
 
-        CheckBox {
-            id: directWrite
-            anchors {
-                right: skipWrite.left
-                rightMargin: 16
-                top: parent.top
-            }
-            checked: gTerminal.directWriteEnabled
-            text: "Direct Write"
-            font.pixelSize: 24
-            onReleased: gTerminal.directWriteEnabled = !gTerminal.directWriteEnabled
-        }
-
-        CheckBox {
-            id: skipWrite
-            anchors {
-                right: clear.left
-                rightMargin: 16
-                top: parent.top
-            }
-            checked: gTerminal.skipWriteEnabled
-            text: "Skip Write"
-            font.pixelSize: 24
-            onReleased: gTerminal.skipWriteEnabled = !gTerminal.skipWriteEnabled
-        }
-
         Button {
             id: clear
             anchors {

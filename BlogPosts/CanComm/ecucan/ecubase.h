@@ -5,40 +5,36 @@
 #include <tuple>
 
 #include <QCanBusDevice>
-#include <QList>
 #include <QObject>
-#include <QTimer>
+#include <QSet>
 
 class QByteArray;
 class QCanBusFrame;
+
+class CanBusRouter;
 
 class EcuBase : public QObject
 {
     Q_OBJECT
 public:
-    explicit EcuBase(int ecuId, QCanBusDevice *canBus, QObject *parent = nullptr);
+    explicit EcuBase(int ecuId, CanBusRouter *router, QObject *parent = nullptr);
     virtual ~EcuBase();
     int ecuId() const;
-    QCanBusDevice *canBus() const;
     bool isLogging() const;
     void setLogging(bool enabled);
 
-    qint64 receiptTimeOut() const;
-    void setReceiptTimeOut(qint64 timeout);
-    bool isReceiptMissing(qint64 stamp) const;
-    bool isOwnFrame(const QCanBusFrame &frame) const;
+    virtual bool areReceivedFramesRelevant(const QSet<int> &ecuIdColl) const;
     virtual bool isReadParameter(const QCanBusFrame &frame) const;
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U);
     virtual void receiveReadParameter(const QCanBusFrame &frame);
     virtual void receiveUnsolicitedFrame(const QCanBusFrame &frame);
 
 signals:
-    void frameToWrite(const QCanBusFrame &frame);
     void logMessage(const QString &msg);
 
 public slots:
     void onErrorOccurred(QCanBusDevice::CanBusError error);
-    void onFramesReceived();
+    void onFramesReceived(const QSet<int> &ecuIdColl);
 
 protected:
     QByteArray encodedReadParameter(quint16 pid, quint32 value) const;
@@ -46,15 +42,9 @@ protected:
     int sourceEcuId(quint32 frameId) const;
     void emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value);
     void emitSendUnsolicitedMessage(int ecuId, const QString &direction, int value);
-    void enqueueOutgoingFrame(const QCanBusFrame &frame);
-    void dequeueOutgoingFrame();
-    virtual bool skipWrite(const QCanBusFrame &frame) const;
 
-    QCanBusDevice *m_canBus;
-    int m_ecuId;
+    CanBusRouter *m_router{nullptr};
+    int m_ecuId{-1};
     bool m_logging{true};
-    QList<QCanBusFrame> m_outgoingQueue;
-    qint64 m_receiptTimeout{100};
-    QTimer m_receiptTimer;
 };
 
