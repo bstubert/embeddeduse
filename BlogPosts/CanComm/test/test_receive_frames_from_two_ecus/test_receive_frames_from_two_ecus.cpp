@@ -51,10 +51,10 @@ private slots:
         QCOMPARE(m_receivedSpy->count(), 1);
         QCOMPARE(receivedEcuIds(0), (QSet<int>{2, 3}));
 
-        auto fromEcu2 = m_router->allReceivedFrames(2);
+        auto fromEcu2 = m_router->takeReceivedFrames(2);
         QCOMPARE(fromEcu2, (QVector<QCanBusFrame>{c_ecu2_1, c_ecu2_2}));
 
-        auto fromEcu3 = m_router->allReceivedFrames(3);
+        auto fromEcu3 = m_router->takeReceivedFrames(3);
         QCOMPARE(fromEcu3, (QVector<QCanBusFrame>{c_ecu3_1}));
     }
 
@@ -62,28 +62,28 @@ private slots:
     {
         m_router->expectReadFrames({c_ecu2_1, c_ecu3_1});
 
-        m_router->allReceivedFrames(2);
-        m_router->allReceivedFrames(3);
+        m_router->takeReceivedFrames(2);
+        m_router->takeReceivedFrames(3);
 
-        QVERIFY(m_router->allReceivedFrames(2).isEmpty());
-        QVERIFY(m_router->allReceivedFrames(3).isEmpty());
+        QVERIFY(m_router->takeReceivedFrames(2).isEmpty());
+        QVERIFY(m_router->takeReceivedFrames(3).isEmpty());
     }
 
     void testReceiveFramesTwice()
     {
         m_router->expectReadFrames({c_ecu2_1, c_ecu3_1});
 
-        m_router->allReceivedFrames(2);
-        m_router->allReceivedFrames(3);
+        m_router->takeReceivedFrames(2);
+        m_router->takeReceivedFrames(3);
 
         m_router->expectReadFrames({c_ecu2_2, c_ecu3_2, c_ecu3_1});
         QCOMPARE(m_receivedSpy->count(), 2);
         QCOMPARE(receivedEcuIds(1), (QSet<int>{2, 3}));
 
-        auto fromEcu2 = m_router->allReceivedFrames(2);
+        auto fromEcu2 = m_router->takeReceivedFrames(2);
         QCOMPARE(fromEcu2, (QVector<QCanBusFrame>{c_ecu2_2}));
 
-        auto fromEcu3 = m_router->allReceivedFrames(3);
+        auto fromEcu3 = m_router->takeReceivedFrames(3);
         QCOMPARE(fromEcu3, (QVector<QCanBusFrame>{c_ecu3_2, c_ecu3_1}));
     }
 };
