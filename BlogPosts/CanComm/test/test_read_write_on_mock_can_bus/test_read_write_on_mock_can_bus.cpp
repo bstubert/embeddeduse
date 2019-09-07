@@ -70,7 +70,7 @@ private:
 
 #define CHECK_FRAMES_EXPECTED_NOT_EQUAL \
     QEXPECT_FAIL("", "Frames expected to differ!", Continue); \
-    QCOMPARE(m_router->actualCanFrames(), m_router->expectedCanFrames());
+    QCOMPARE(m_router->actualCanFrames(), m_router->expectedCanFrames())
 
 #define CHECK_REQUESTS_AND_RESPONSES(writeCount, readCount) \
     QCOMPARE(m_router->actualCanFrames(), m_router->expectedCanFrames()); \
@@ -83,7 +83,7 @@ private:
     for (int i = 0; i < canErrors.size(); ++i) { \
         QCOMPARE((*m_errorSpy)[i][0].value<QCanBusDevice::CanBusError>(), canErrors[i]); \
     } \
-    QCOMPARE(m_router->actualCanFrames(), m_router->expectedCanFrames());
+    QCOMPARE(m_router->actualCanFrames(), m_router->expectedCanFrames())
 
 
 void TestReadWriteOnMockCanBus::initTestCase()
