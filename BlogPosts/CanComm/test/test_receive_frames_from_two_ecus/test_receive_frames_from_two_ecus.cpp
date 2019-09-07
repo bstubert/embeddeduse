@@ -44,8 +44,14 @@ private slots:
         m_router->expectReadFrame(c_ecu3_1);
 
         QVERIFY(!m_receivedSpy->isEmpty());
-        QCOMPARE(m_router->allReceivedFrames(2).count(), 1);
-        QCOMPARE(m_router->allReceivedFrames(3).count(), 1);
+
+        auto fromEcu2 = m_router->allReceivedFrames(2);
+        QCOMPARE(fromEcu2.count(), 1);
+        QCOMPARE(fromEcu2[0], c_ecu2_1);
+
+        auto fromEcu3 = m_router->allReceivedFrames(3);
+        QCOMPARE(fromEcu3.count(), 1);
+        QCOMPARE(fromEcu3[0], c_ecu3_1);
     }
 
     void testDontRetrieveOldFramesAgain()
