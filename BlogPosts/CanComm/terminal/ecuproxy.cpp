@@ -17,9 +17,21 @@ EcuProxy::~EcuProxy()
 {
 }
 
-bool EcuProxy::areReceivedFramesRelevant(const QSet<int> &ecuIdColl) const
+void EcuProxy::onFramesReceived(const QSet<int> &ecuIdColl)
 {
-    return ecuIdColl.contains(ecuId());
+    if (!ecuIdColl.contains(ecuId()))
+    {
+        return;
+    }
+    for (const auto &frame : m_router->takeReceivedFrames(ecuId()))
+    {
+        if (isReadParameter(frame)) {
+            receiveReadParameter(frame);
+        }
+        else {
+            receiveUnsolicitedFrame(frame);
+        }
+    }
 }
 
 bool EcuProxy::isReadParameter(const QCanBusFrame &frame) const

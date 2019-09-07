@@ -14,6 +14,8 @@ class Ecu : public EcuBase
 public:
     explicit Ecu(int ecuId, CanBusRouter *router, QObject *parent = nullptr);
     virtual ~Ecu() override;
+
+    virtual void onFramesReceived(const QSet<int> &ecuIdColl) override;
     virtual bool isReadParameter(const QCanBusFrame &frame) const override;
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U) override;
     virtual void receiveReadParameter(const QCanBusFrame &frame) override;

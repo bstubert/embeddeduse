@@ -23,7 +23,6 @@ public:
     bool isLogging() const;
     void setLogging(bool enabled);
 
-    virtual bool areReceivedFramesRelevant(const QSet<int> &ecuIdColl) const;
     virtual bool isReadParameter(const QCanBusFrame &frame) const;
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U);
     virtual void receiveReadParameter(const QCanBusFrame &frame);
@@ -34,7 +33,7 @@ signals:
 
 public slots:
     void onErrorOccurred(QCanBusDevice::CanBusError error);
-    void onFramesReceived(const QSet<int> &ecuIdColl);
+    virtual void onFramesReceived(const QSet<int> &ecuIdColl);
 
 protected:
     QByteArray encodedReadParameter(quint16 pid, quint32 value) const;

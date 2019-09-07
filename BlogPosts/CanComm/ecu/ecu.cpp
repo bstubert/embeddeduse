@@ -17,6 +17,20 @@ Ecu::~Ecu()
 {
 }
 
+void Ecu::onFramesReceived(const QSet<int> &ecuIdColl)
+{
+    if (!ecuIdColl.contains(1))
+    {
+        return;
+    }
+    for (const auto &frame : m_router->takeReceivedFrames(1))
+    {
+        if (isReadParameter(frame)) {
+            receiveReadParameter(frame);
+        }
+    }
+}
+
 bool Ecu::isReadParameter(const QCanBusFrame &frame) const
 {
     return frame.frameId() == 0x18ef0201U && frame.payload()[0] == char(1);

@@ -65,27 +65,9 @@ void EcuBase::onErrorOccurred(QCanBusDevice::CanBusError error)
     emit logMessage(QString("ERROR: %1 (%2).").arg(m_router->errorString()).arg(error));
 }
 
-bool EcuBase::areReceivedFramesRelevant(const QSet<int> &ecuIdColl) const
-{
-    Q_UNUSED(ecuIdColl)
-    return true;
-}
-
 void EcuBase::onFramesReceived(const QSet<int> &ecuIdColl)
 {
-    if (!areReceivedFramesRelevant(ecuIdColl))
-    {
-        return;
-    }
-    for (const auto &frame : m_router->takeReceivedFrames(1))
-    {
-        if (isReadParameter(frame)) {
-            receiveReadParameter(frame);
-        }
-        else {
-            receiveUnsolicitedFrame(frame);
-        }
-    }
+    Q_UNUSED(ecuIdColl)
 }
 
 QByteArray EcuBase::encodedReadParameter(quint16 pid, quint32 value) const
