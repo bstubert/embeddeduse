@@ -10,7 +10,7 @@ class EcuProxy : public EcuBase
     Q_OBJECT
 public:
     explicit EcuProxy(int ecuId, QCanBusDevice *canBus, QObject *parent = nullptr);
-    virtual ~EcuProxy();
+    virtual ~EcuProxy() override;
 
     virtual bool isReadParameter(const QCanBusFrame &frame) const override;
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U) override;
