@@ -28,7 +28,9 @@ void TerminalModel::simulateTxBufferOverflow(int count)
 EcuProxy *TerminalModel::createEcuProxy(int ecuId)
 {
     auto ecuProxy = new EcuProxy{ecuId, m_router, this};
-    ecuProxy->setLogging(false);
+    // NOTE: The write buffer overflow only happens, if logging is switched off. Logging introduces
+    // a delay between two writeFrame() calls big enough to avoid the overflow.
+    ecuProxy->setLogging(true);
     connect(m_router, &CanBusRouter::errorOccurred,
             ecuProxy, &EcuProxy::onErrorOccurred);
     connect(m_router, &CanBusRouter::framesReceived,
