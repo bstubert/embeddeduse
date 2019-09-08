@@ -45,6 +45,7 @@ private:
     QCanBusDevice *createDevice(const QString &plugin, const QString &interface);
     void connectToDevice();
     void disconnectFromDevice();
+    QVector<QCanBusFrame> readAllFrames();
 
     QCanBusDevice::CanBusError m_error{QCanBusDevice::CanBusError::NoError};
     QString m_errorStr;

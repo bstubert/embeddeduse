@@ -1,6 +1,6 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
-import QtQuick 2.12
+import QtQuick 2.10
 import QtQuick.Controls 2.3
 
 
