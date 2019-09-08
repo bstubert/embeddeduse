@@ -4,7 +4,6 @@
 
 #include <tuple>
 
-#include <QCanBusDevice>
 #include <QObject>
 #include <QSet>
 
@@ -32,7 +31,7 @@ signals:
     void logMessage(const QString &msg);
 
 public slots:
-    void onErrorOccurred(QCanBusDevice::CanBusError error);
+    void onErrorOccurred();
     virtual void onFramesReceived(const QSet<int> &ecuIdColl);
 
 protected:

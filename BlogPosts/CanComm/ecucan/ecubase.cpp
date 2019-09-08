@@ -60,9 +60,9 @@ void EcuBase::receiveUnsolicitedFrame(const QCanBusFrame &frame)
     Q_UNUSED(frame)
 }
 
-void EcuBase::onErrorOccurred(QCanBusDevice::CanBusError error)
+void EcuBase::onErrorOccurred()
 {
-    emit logMessage(QString("ERROR: %1 (%2).").arg(m_router->errorString()).arg(error));
+    emit logMessage(QString("ERROR: %1.").arg(m_router->errorString()));
 }
 
 void EcuBase::onFramesReceived(const QSet<int> &ecuIdColl)

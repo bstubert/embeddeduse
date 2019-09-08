@@ -27,7 +27,7 @@ public:
     QVector<QCanBusFrame> takeReceivedFrames(int sourceEcuId);
 
 signals:
-    void errorOccurred(QCanBusDevice::CanBusError error, const QString &errorStr);
+    void errorOccurred();
     void framesWritten(qint64 framesCount);
     void framesReceived(const QSet<int> &ecuIdColl);
 

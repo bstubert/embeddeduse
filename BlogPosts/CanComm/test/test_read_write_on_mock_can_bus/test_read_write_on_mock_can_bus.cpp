@@ -78,11 +78,9 @@ private:
     QCOMPARE(m_receivedSpy->size(), readCount)
 
 
-#define CHECK_ERRORS(canErrors) \
-    QCOMPARE(m_errorSpy->size(), canErrors.size()); \
-    for (int i = 0; i < canErrors.size(); ++i) { \
-        QCOMPARE((*m_errorSpy)[i][0].value<QCanBusDevice::CanBusError>(), canErrors[i]); \
-    } \
+#define CHECK_ERROR_COUNT_AND_LAST_ERROR(errorCount, lastError) \
+    QCOMPARE(m_errorSpy->size(), errorCount); \
+    QCOMPARE(m_router->error(), lastError); \
     QCOMPARE(m_router->actualCanFrames(), m_router->expectedCanFrames())
 
 
@@ -239,7 +237,7 @@ void TestReadWriteOnMockCanBus::testReq1WriteError()
 
     m_router->writeFrame(c_request1);
 
-    CHECK_ERRORS(CanBusErrorCollection{QCanBusDevice::WriteError});
+    CHECK_ERROR_COUNT_AND_LAST_ERROR(1, QCanBusDevice::WriteError);
 }
 
 void TestReadWriteOnMockCanBus::testReq1WriteErrorReq2Rsp2()
@@ -252,7 +250,7 @@ void TestReadWriteOnMockCanBus::testReq1WriteErrorReq2Rsp2()
     m_router->writeFrame(c_request1);
     m_router->writeFrame(c_request2);
 
-    CHECK_ERRORS(CanBusErrorCollection{QCanBusDevice::WriteError});
+    CHECK_ERROR_COUNT_AND_LAST_ERROR(1, QCanBusDevice::WriteError);
 }
 
 void TestReadWriteOnMockCanBus::testTwoRequestsTwoWriteErrors()
@@ -265,7 +263,7 @@ void TestReadWriteOnMockCanBus::testTwoRequestsTwoWriteErrors()
     m_router->writeFrame(c_request1);
     m_router->writeFrame(c_request2);
 
-    CHECK_ERRORS((CanBusErrorCollection{QCanBusDevice::WriteError, QCanBusDevice::WriteError}));
+    CHECK_ERROR_COUNT_AND_LAST_ERROR(2, QCanBusDevice::WriteError);
 }
 
 void TestReadWriteOnMockCanBus::testConfErrorReq2Rsp2()
@@ -277,7 +275,7 @@ void TestReadWriteOnMockCanBus::testConfErrorReq2Rsp2()
 
     m_router->writeFrame(c_request2);
 
-    CHECK_ERRORS(CanBusErrorCollection{QCanBusDevice::ConfigurationError});
+    CHECK_ERROR_COUNT_AND_LAST_ERROR(1, QCanBusDevice::ConfigurationError);
 }
 
 void TestReadWriteOnMockCanBus::testRsp2ConfErrorReq1()
@@ -289,7 +287,7 @@ void TestReadWriteOnMockCanBus::testRsp2ConfErrorReq1()
 
     m_router->writeFrame(c_request1);
 
-    CHECK_ERRORS(CanBusErrorCollection{QCanBusDevice::ConfigurationError});
+    CHECK_ERROR_COUNT_AND_LAST_ERROR(1, QCanBusDevice::ConfigurationError);
 }
 
 QTEST_GUILESS_MAIN(TestReadWriteOnMockCanBus)

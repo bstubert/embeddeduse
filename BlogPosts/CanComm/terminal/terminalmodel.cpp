@@ -28,7 +28,7 @@ void TerminalModel::simulateTxBufferOverflow(int count)
 EcuProxy *TerminalModel::createEcuProxy(int ecuId)
 {
     auto ecuProxy = new EcuProxy{ecuId, m_router, this};
-    ecuProxy->setLogging(true);
+    ecuProxy->setLogging(false);
     connect(m_router, &CanBusRouter::errorOccurred,
             ecuProxy, &EcuProxy::onErrorOccurred);
     connect(m_router, &CanBusRouter::framesReceived,

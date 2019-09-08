@@ -68,7 +68,9 @@ void CanBusRouter::writeFrame(const QCanBusFrame &frame)
 
 void CanBusRouter::onErrorOccurred(QCanBusDevice::CanBusError error)
 {
-    emit errorOccurred(error, m_device->errorString());
+    m_error = error;
+    m_errorStr = m_device->errorString();
+    emit errorOccurred();
 }
 
 void CanBusRouter::onFramesReceived()
