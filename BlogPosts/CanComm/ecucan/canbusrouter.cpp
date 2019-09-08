@@ -18,7 +18,6 @@ CanBusRouter::CanBusRouter(const QString &plugin, const QString &interface, QObj
     }
     connectToDevice();
     m_device->setConfigurationParameter(QCanBusDevice::ReceiveOwnKey, false);
-    m_device->setConfigurationParameter(QCanBusDevice::LoopbackKey, false);
     connect(m_device, &QCanBusDevice::errorOccurred,
             this, &CanBusRouter::onErrorOccurred);
     connect(m_device, &QCanBusDevice::framesReceived,
