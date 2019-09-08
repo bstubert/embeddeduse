@@ -18,6 +18,7 @@ public:
     void expectWriteFrame(const QCanBusFrame &frame);
     void expectReadFrame(const QCanBusFrame &frame);
     void expectReadFrames(const QVector<QCanBusFrame> &frames);
+    void expectReadOwnFrame(const QCanBusFrame &frame);
     void expectError(QCanBusDevice::CanBusError deviceError, MockCanFrame::ErrorNo errorNo);
 
     MockCanFrameCollection actualCanFrames() const;

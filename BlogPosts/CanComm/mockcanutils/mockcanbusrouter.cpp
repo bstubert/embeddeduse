@@ -37,6 +37,13 @@ void MockCanBusRouter::expectReadFrames(const QVector<QCanBusFrame> &frames)
     ::setExpectedCanFrames(m_device, expectedFrames);
 }
 
+void MockCanBusRouter::expectReadOwnFrame(const QCanBusFrame &frame)
+{
+    auto frames = ::expectedCanFrames(m_device);
+    frames.append(MockCanFrame{MockCanFrame::Type::OwnIncoming, frame});
+    ::setExpectedCanFrames(m_device, frames);
+}
+
 void MockCanBusRouter::expectError(QCanBusDevice::CanBusError deviceError,
                                    MockCanFrame::ErrorNo errorNo)
 {

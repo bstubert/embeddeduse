@@ -14,7 +14,7 @@ class MockSocketCanDevice : public QCanBusDevice
     Q_OBJECT
 public:
     explicit MockSocketCanDevice(const QString &name, QObject *parent = nullptr);
-    ~MockSocketCanDevice();
+    ~MockSocketCanDevice() override;
     static QList<QCanBusDeviceInfo> interfaces();
     void setConfigurationParameter(int key, const QVariant &value) override;
     bool writeFrame(const QCanBusFrame &frame) override;

@@ -18,113 +18,81 @@
 #include <QtTest>
 
 #include "canbusext.h"
+#include "mockcanbusrouter.h"
 #include "mockcanutils.h"
 
 class TestWriteBufferOverflow : public QObject
 {
     Q_OBJECT
 
+    MockCanBusRouter *m_router{nullptr};
+
+    const QCanBusFrame c_out1{QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")}};
+    const QCanBusFrame c_in1{QCanBusFrame{0x18ef0102U, QByteArray::fromHex("018A0103A4000000")}};
+
 private slots:
-    void initTestCase();
-    void testReceiveOwnConfigurationKey();
-    void testReceiveOwnWrittenFrames_data();
-    void testReceiveOwnWrittenFrames();
-    void testWriteBufferOverflow_data();
-    void testWriteBufferOverflow();
-
-private:
-    QCanBusDevice *createAndConnectDevice(const QString &interface);
-};
-
-void TestWriteBufferOverflow::initTestCase()
-{
-    // The loader for the CAN bus plugins adds /canbus to each library path and looks for
-    // plugins in /library/path/canbus. Hence, the directory containing the mockcan plugin
-    // is called "canbus".
-    QCoreApplication::addLibraryPath("../../");
-}
-void TestWriteBufferOverflow::testReceiveOwnConfigurationKey()
-{
-    const auto receiveOwnConfKey = QCanBusDevice::ConfigurationKey::ReceiveOwnKey;
-    std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
-    QVERIFY(!device->configurationParameter(receiveOwnConfKey).toBool());
-    device->setConfigurationParameter(receiveOwnConfKey, true);
-    QVERIFY(device->configurationParameter(receiveOwnConfKey).toBool());
-    device->setConfigurationParameter(receiveOwnConfKey, false);
-    QVERIFY(!device->configurationParameter(receiveOwnConfKey).toBool());
-}
-
-void TestWriteBufferOverflow::testReceiveOwnWrittenFrames_data()
-{
-    QTest::addColumn<bool>("receiveOwn");
-    QTest::addColumn<CanBusFrameCollection>("outgoingFrames");
-    QTest::addColumn<MockCanFrameCollection>("expectedCanFrames");
-
-    auto out1 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000000000"};
-    auto ownOut1 = MockCanFrame{MockCanFrame::Type::OwnIncoming, out1};
-    auto in1 = MockCanFrame{MockCanFrame::Type::Incoming, 0x18ef0102U, "018A0103A4000000"};
-
-    QTest::newRow("own on: out1-ownOut1")
-            << true
-            << CanBusFrameCollection{out1}
-            << MockCanFrameCollection{out1, ownOut1};
-    QTest::newRow("own on: out1-ownOut1-in1")
-            << true
-            << CanBusFrameCollection{out1}
-            << MockCanFrameCollection{out1, ownOut1, in1};
-    QTest::newRow("own on: out1-in1-ownOut1")
-            << true
-            << CanBusFrameCollection{out1}
-            << MockCanFrameCollection{out1, in1, ownOut1};
-    QTest::newRow("own off, but own expected")
-            << false
-            << CanBusFrameCollection{out1}
-            << MockCanFrameCollection{out1, ownOut1};
-}
-
-void TestWriteBufferOverflow::testReceiveOwnWrittenFrames()
-{
-    QFETCH(bool, receiveOwn);
-    QFETCH(CanBusFrameCollection, outgoingFrames);
-    QFETCH(MockCanFrameCollection, expectedCanFrames);
-
-    std::unique_ptr<QCanBusDevice> device{createAndConnectDevice("mcan0")};
-    device->setConfigurationParameter(QCanBusDevice::ConfigurationKey::ReceiveOwnKey,
-                                      receiveOwn);
-    setExpectedCanFrames(device.get(), expectedCanFrames);
-
-    for (const auto &frame : outgoingFrames) {
-        device->writeFrame(frame);
+    void initTestCase()
+    {
+        // The loader for the CAN bus plugins adds /canbus to each library path and looks for
+        // plugins in /library/path/canbus. Hence, the directory containing the mockcan plugin
+        // is called "canbus".
+        QCoreApplication::addLibraryPath("../../");
     }
-    auto goldenCanIo = MockCanFrameCollection{};
-    std::copy_if(expectedCanFrames.cbegin(), expectedCanFrames.cend(), std::back_inserter(goldenCanIo),
-                 [receiveOwn](const MockCanFrame &f) {
-                     return receiveOwn || !f.isOwnIncoming();
-                 });
-    QCOMPARE(actualCanFrames(device.get()), goldenCanIo);
-}
 
-void TestWriteBufferOverflow::testWriteBufferOverflow_data()
-{
-    auto req1 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "0101000000000000"};
-    auto rsp1 = MockCanFrame{MockCanFrame::Type::Incoming, 0x18ef0102U, "0101001200000000"};
-    auto req2 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "0102000000000000"};
-    auto rsp2 = MockCanFrame{MockCanFrame::Type::Incoming, 0x18ef0102U, "0102002300000000"};
+    void init()
+    {
+        m_router = new MockCanBusRouter{};
+        QVERIFY(!m_router->isReceiveOwnFrameEnabled());
+        m_router->setReceiveOwnFrameEnabled(true);
+        QVERIFY(m_router->isReceiveOwnFrameEnabled());
+    }
 
-}
+    void cleanup()
+    {
+        delete m_router;
+    }
 
-void TestWriteBufferOverflow::testWriteBufferOverflow()
-{
+    void testOwnFrameAfterOutgoingFrame()
+    {
+        m_router->expectWriteFrame(c_out1);
+        m_router->expectReadOwnFrame(c_out1);
 
-}
+        m_router->writeFrame(c_out1);
 
-QCanBusDevice *TestWriteBufferOverflow::createAndConnectDevice(const QString &interface)
-{
-    QString errorStr;
-    auto device = QCanBus::instance()->createDevice("mockcan", interface, &errorStr);
-    device->connectDevice();
-    return device;
-}
+        auto actualFrames = m_router->actualCanFrames();
+        QCOMPARE(actualFrames.count(), 2);
+        QCOMPARE(QCanBusFrame{actualFrames[0]}, QCanBusFrame{actualFrames[1]});
+        QVERIFY(actualFrames[1].isOwnIncoming());
+    }
+
+    void testIncomingFrameBetweenOutgoingAndOwnFrame()
+    {
+        m_router->expectWriteFrame(c_out1);
+        m_router->expectReadFrame(c_in1);
+        m_router->expectReadOwnFrame(c_out1);
+
+        m_router->writeFrame(c_out1);
+
+        auto actualFrames = m_router->actualCanFrames();
+        QCOMPARE(actualFrames.count(), 3);
+        QCOMPARE(QCanBusFrame{actualFrames[0]}, QCanBusFrame{actualFrames[2]});
+        QVERIFY(actualFrames[2].isOwnIncoming());
+    }
+
+    void testReceivedOwnFrameAlthoughSwitchedOff()
+    {
+        m_router->setReceiveOwnFrameEnabled(false);
+        m_router->expectWriteFrame(c_out1);
+        m_router->expectReadOwnFrame(c_out1);
+
+        m_router->writeFrame(c_out1);
+
+        auto actualFrames = m_router->actualCanFrames();
+        QCOMPARE(actualFrames.count(), 1);
+        QVERIFY(actualFrames[0].isOutgoing());
+    }
+
+};
 
 QTEST_GUILESS_MAIN(TestWriteBufferOverflow)
 

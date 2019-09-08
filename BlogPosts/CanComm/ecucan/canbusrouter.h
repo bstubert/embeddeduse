@@ -26,6 +26,9 @@ public:
     QCanBusDevice::CanBusDeviceState state() const;
     QVector<QCanBusFrame> takeReceivedFrames(int sourceEcuId);
 
+    bool isReceiveOwnFrameEnabled() const;
+    void setReceiveOwnFrameEnabled(bool enabled);
+
 signals:
     void errorOccurred();
     void framesWritten(qint64 framesCount);

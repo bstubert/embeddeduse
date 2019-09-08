@@ -17,7 +17,6 @@ CanBusRouter::CanBusRouter(const QString &plugin, const QString &interface, QObj
         return;
     }
     connectToDevice();
-    m_device->setConfigurationParameter(QCanBusDevice::ReceiveOwnKey, false);
     connect(m_device, &QCanBusDevice::errorOccurred,
             this, &CanBusRouter::onErrorOccurred);
     connect(m_device, &QCanBusDevice::framesReceived,
@@ -54,6 +53,24 @@ QVector<QCanBusFrame> CanBusRouter::takeReceivedFrames(int ecuId)
         return {};
     }
     return m_receivedFrameCache.takeFrames(ecuId);
+}
+
+bool CanBusRouter::isReceiveOwnFrameEnabled() const
+{
+    if (m_device == nullptr)
+    {
+        return false;
+    }
+    return m_device->configurationParameter(QCanBusDevice::ReceiveOwnKey).toBool();
+}
+
+void CanBusRouter::setReceiveOwnFrameEnabled(bool enabled)
+{
+    if (m_device == nullptr)
+    {
+        return;
+    }
+    m_device->setConfigurationParameter(QCanBusDevice::ReceiveOwnKey, enabled);
 }
 
 void CanBusRouter::writeFrame(const QCanBusFrame &frame)
