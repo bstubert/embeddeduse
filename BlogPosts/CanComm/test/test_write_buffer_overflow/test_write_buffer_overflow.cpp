@@ -82,7 +82,9 @@ private slots:
 
     void testWriteBufferOverflow()
     {
-        auto [requestColl, responseColl] = createReadParameterRequests(2 * c_writeErrorInterval, 32);
+        auto requestColl = QVector<QCanBusFrame>{};
+        auto responseColl = QVector<QCanBusFrame>{};
+        std::tie(requestColl, responseColl) = createReadParameterRequests(2 * c_writeErrorInterval, 32);
         m_router->expectWriteFrames(requestColl);
 
         for (const auto &request : requestColl)
