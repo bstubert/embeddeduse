@@ -8,6 +8,7 @@
 #include <QString>
 #include <QVariant>
 
+class MockCanFrame;
 
 class MockSocketCanDevice : public QCanBusDevice
 {
@@ -25,11 +26,13 @@ protected:
     void close() override;
 
 private:
+    void appendActualCanFrame(MockCanFrame mockFrame);
     bool isReceiveOwnFrameEnabled() const;
     void checkForResponses();
 
     QString m_interface;
     int m_frameIndex{0};
     int m_frameCount{0};
+    int m_sequentialWriteFrameCount{0};
 };
 

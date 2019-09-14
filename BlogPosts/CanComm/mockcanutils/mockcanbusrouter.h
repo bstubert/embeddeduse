@@ -16,6 +16,7 @@ public:
     ~MockCanBusRouter() override;
 
     void expectWriteFrame(const QCanBusFrame &frame);
+    void expectWriteFrames(const QVector<QCanBusFrame> &frames);
     void expectReadFrame(const QCanBusFrame &frame);
     void expectReadFrames(const QVector<QCanBusFrame> &frames);
     void expectReadOwnFrame(const QCanBusFrame &frame);

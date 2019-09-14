@@ -49,8 +49,8 @@ struct MockCanFrame
         , frame{QCanBusFrame::FrameType::InvalidFrame}
     {
         QByteArray payload(8, 0x00);
-        payload[0] = quint8(deviceError);
-        payload[1] = quint8(errorNo);
+        payload[0] = static_cast<qint8>(deviceError);
+        payload[1] = static_cast<qint8>(errorNo);
         frame.setPayload(payload);
     }
 
@@ -66,7 +66,11 @@ struct MockCanFrame
 
     QCanBusDevice::CanBusError deviceError() const
     {
-        return QCanBusDevice::CanBusError(quint8(frame.payload()[0]));
+        if (isDeviceError())
+        {
+            return QCanBusDevice::CanBusError(quint8(frame.payload()[0]));
+        }
+        return QCanBusDevice::NoError;
     }
 
     QString deviceErrorString() const

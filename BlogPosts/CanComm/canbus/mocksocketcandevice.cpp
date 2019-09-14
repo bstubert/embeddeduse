@@ -55,7 +55,7 @@ bool MockSocketCanDevice::writeFrame(const QCanBusFrame &frame)
                        << ", but got " << frame.toString();
         }
     }
-    appendActualCanFrame(this, MockCanFrame{MockCanFrame::Type::Outgoing, frame});
+    appendActualCanFrame(MockCanFrame{MockCanFrame::Type::Outgoing, frame});
     emit framesWritten(1);
     checkForResponses();
     return true;
@@ -89,6 +89,25 @@ void MockSocketCanDevice::close()
     setState(QCanBusDevice::UnconnectedState);
 }
 
+void MockSocketCanDevice::appendActualCanFrame(MockCanFrame mockFrame)
+{
+    if (mockFrame.isOutgoing())
+    {
+        ++m_sequentialWriteFrameCount;
+        if (m_sequentialWriteFrameCount == 4)
+        {
+            mockFrame = MockCanFrame{QCanBusDevice::WriteError,
+                    MockCanFrame::ErrorNo::NoBufferSpaceAvailable};
+            m_sequentialWriteFrameCount = 0;
+        }
+    }
+    else
+    {
+        m_sequentialWriteFrameCount = 0;
+    }
+    ::appendActualCanFrame(this, mockFrame);
+}
+
 bool MockSocketCanDevice::isReceiveOwnFrameEnabled() const
 {
     return configurationParameter(QCanBusDevice::ConfigurationKey::ReceiveOwnKey).toBool();
@@ -104,7 +123,7 @@ void MockSocketCanDevice::checkForResponses()
             break;
         }
         if (!expectedFrame.isOwnIncoming() || isReceiveOwnFrameEnabled()) {
-            appendActualCanFrame(this, expectedFrame);
+            appendActualCanFrame(expectedFrame);
         }
         else {
             qWarning() << "Received own frame " << QCanBusFrame{expectedFrame}.toString()

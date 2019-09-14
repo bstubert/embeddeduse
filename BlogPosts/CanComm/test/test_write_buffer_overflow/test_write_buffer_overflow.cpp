@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <utility>
 
 #include <QByteArray>
 #include <QCanBus>
@@ -11,11 +12,13 @@
 #include <QCoreApplication>
 #include <QList>
 #include <QObject>
+#include <QRandomGenerator>
 #include <QSignalSpy>
 #include <QString>
 #include <QStringList>
 #include <QtDebug>
 #include <QtTest>
+#include <QVector>
 
 #include "canbusext.h"
 #include "mockcanbusrouter.h"
@@ -29,6 +32,29 @@ class TestWriteBufferOverflow : public QObject
 
     const QCanBusFrame c_out1{QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")}};
     const QCanBusFrame c_in1{QCanBusFrame{0x18ef0102U, QByteArray::fromHex("018A0103A4000000")}};
+
+    QByteArray encodedReadParameter(int pid, int value = 0) const
+    {
+        QByteArray payload(8, 0x00);
+        qToLittleEndian(static_cast<quint8>(1), payload.data());
+        qToLittleEndian(static_cast<quint16>(pid), payload.data() + 1);
+        qToLittleEndian(static_cast<qint32>(value), payload.data() + 3);
+        return payload;
+    }
+
+    std::pair<QVector<QCanBusFrame>, QVector<QCanBusFrame>>
+    createReadParameterRequests(int count, int startPid)
+    {
+        auto requestColl = QVector<QCanBusFrame>{};
+        auto responseColl = QVector<QCanBusFrame>{};
+        for (int i = 0; i < count; ++i)
+        {
+            requestColl.append(QCanBusFrame{0x18ef0201U, encodedReadParameter(startPid + i)});
+            auto value = static_cast<int>(QRandomGenerator::global()->generate());
+            responseColl.append(QCanBusFrame{0x18ef0201U, encodedReadParameter(startPid + i, value)});
+        }
+        return std::make_pair(requestColl, responseColl);
+    }
 
 private slots:
     void initTestCase()
@@ -50,6 +76,20 @@ private slots:
     void cleanup()
     {
         delete m_router;
+    }
+
+    void testWriteBufferOverflow()
+    {
+        auto [requestColl, responseColl] = createReadParameterRequests(4, 32);
+        m_router->expectWriteFrames(requestColl);
+
+        for (const auto &request : requestColl)
+        {
+            m_router->writeFrame(request);
+        }
+
+        const auto &actualFrameColl = m_router->actualCanFrames();
+        QCOMPARE(actualFrameColl[3].deviceError(), QCanBusDevice::WriteError);
     }
 
     void testOwnFrameAfterOutgoingFrame()
