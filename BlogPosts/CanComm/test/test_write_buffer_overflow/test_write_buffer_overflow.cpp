@@ -120,10 +120,9 @@ private slots:
             m_router->writeFrame(request);
         }
 
-        QTRY_COMPARE_WITH_TIMEOUT(m_router->actualCanFrames().count(), 2 * c_writeErrorInterval, 200);
+        QTRY_COMPARE_WITH_TIMEOUT(m_router->actualCanFrames(), m_router->expectedCanFrames(), 200);
         const auto &actualFrameColl = m_router->actualCanFrames();
-        QCOMPARE(actualFrameColl[c_writeErrorInterval - 1].deviceError(),
-                 QCanBusDevice::NoError);
+        QCOMPARE(actualFrameColl[c_writeErrorInterval - 1].deviceError(), QCanBusDevice::NoError);
     }
 
     void testOwnFrameAfterOutgoingFrame()
