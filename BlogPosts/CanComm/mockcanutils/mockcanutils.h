@@ -102,7 +102,8 @@ inline bool operator!=(const MockCanFrame &lhs, const MockCanFrame &rhs)
 
 enum class MockConfigurationKey : int {
     ActualCanIo = QCanBusDevice::UserKey,
-    ExpectedCanIo
+    ExpectedCanIo,
+    WriteErrorInterval
 };
 
 

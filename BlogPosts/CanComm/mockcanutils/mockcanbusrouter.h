@@ -15,6 +15,8 @@ public:
     MockCanBusRouter(const QString &interface = QString{"mcan0"}, QObject *parent = nullptr);
     ~MockCanBusRouter() override;
 
+    void setWriteErrorInterval(int interval);
+
     void expectWriteFrame(const QCanBusFrame &frame);
     void expectWriteFrames(const QVector<QCanBusFrame> &frames);
     void expectReadFrame(const QCanBusFrame &frame);

@@ -36,9 +36,12 @@ QList<QCanBusDeviceInfo> MockSocketCanDevice::interfaces()
 void MockSocketCanDevice::setConfigurationParameter(int key, const QVariant &value)
 {
     QCanBusDevice::setConfigurationParameter(key, value);
-    if (key == int(MockConfigurationKey::ExpectedCanIo)) {
+    if (key == static_cast<int>(MockConfigurationKey::ExpectedCanIo)) {
         m_frameCount = expectedCanFrames(this).size();
         checkForResponses();
+    }
+    else if (key == static_cast<int>(MockConfigurationKey::WriteErrorInterval)) {
+        m_writeBufferInterval = value.toInt();
     }
 }
 
@@ -94,7 +97,7 @@ void MockSocketCanDevice::appendActualCanFrame(MockCanFrame mockFrame)
     if (mockFrame.isOutgoing())
     {
         ++m_sequentialWriteFrameCount;
-        if (m_sequentialWriteFrameCount == 4)
+        if (m_sequentialWriteFrameCount == m_writeBufferInterval)
         {
             mockFrame = MockCanFrame{QCanBusDevice::WriteError,
                     MockCanFrame::ErrorNo::NoBufferSpaceAvailable};

@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <limits>
+
 #include <QCanBusDevice>
 #include <QCanBusDeviceInfo>
 #include <QCanBusFrame>
@@ -33,6 +35,7 @@ private:
     QString m_interface;
     int m_frameIndex{0};
     int m_frameCount{0};
+    int m_writeBufferInterval{std::numeric_limits<int>::max()};
     int m_sequentialWriteFrameCount{0};
 };
 

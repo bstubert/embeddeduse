@@ -13,6 +13,12 @@ MockCanBusRouter::~MockCanBusRouter()
 {
 }
 
+void MockCanBusRouter::setWriteErrorInterval(int interval)
+{
+    m_device->setConfigurationParameter(static_cast<int>(MockConfigurationKey::WriteErrorInterval),
+                                        interval);
+}
+
 void MockCanBusRouter::expectWriteFrame(const QCanBusFrame &frame)
 {
     auto frames = ::expectedCanFrames(m_device);
