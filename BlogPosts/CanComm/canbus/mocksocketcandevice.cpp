@@ -109,6 +109,10 @@ void MockSocketCanDevice::appendActualCanFrame(MockCanFrame mockFrame)
         m_sequentialWriteFrameCount = 0;
     }
     ::appendActualCanFrame(this, mockFrame);
+    if (mockFrame.isOutgoing() && isReceiveOwnFrameEnabled())
+    {
+        enqueueReceivedFrames({mockFrame});
+    }
 }
 
 bool MockSocketCanDevice::isReceiveOwnFrameEnabled() const

@@ -73,9 +73,9 @@ private:
     QCOMPARE(m_router->actualCanFrames(), m_router->expectedCanFrames())
 
 #define CHECK_REQUESTS_AND_RESPONSES(writeCount, readCount) \
-    QCOMPARE(m_router->actualCanFrames(), m_router->expectedCanFrames()); \
+    QTRY_COMPARE_WITH_TIMEOUT(m_receivedSpy->size(), readCount, 200); \
     QCOMPARE(m_writtenSpy->size(), writeCount); \
-    QCOMPARE(m_receivedSpy->size(), readCount)
+    QCOMPARE(m_router->actualCanFrames(), m_router->expectedCanFrames());
 
 
 #define CHECK_ERROR_COUNT_AND_LAST_ERROR(errorCount, lastError) \

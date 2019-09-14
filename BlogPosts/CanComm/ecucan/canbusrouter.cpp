@@ -20,7 +20,8 @@ CanBusRouter::CanBusRouter(const QString &plugin, const QString &interface, QObj
     connect(m_device, &QCanBusDevice::errorOccurred,
             this, &CanBusRouter::onErrorOccurred);
     connect(m_device, &QCanBusDevice::framesReceived,
-            this, &CanBusRouter::onFramesReceived);
+            this, &CanBusRouter::onFramesReceived,
+            Qt::QueuedConnection);
     connect(m_device, &QCanBusDevice::framesWritten,
             this, &CanBusRouter::framesWritten);
 }
@@ -79,7 +80,14 @@ void CanBusRouter::writeFrame(const QCanBusFrame &frame)
     {
         return;
     }
-    m_device->writeFrame(frame);
+    if (isReceiveOwnFrameEnabled())
+    {
+        enqueueOutoingFrame(frame);
+    }
+    else
+    {
+        m_device->writeFrame(frame);
+    }
 }
 
 void CanBusRouter::onErrorOccurred(QCanBusDevice::CanBusError error)
@@ -100,6 +108,7 @@ void CanBusRouter::onFramesReceived()
 #else
     auto ecuIdColl = m_receivedFrameCache.updateFrames(m_device->readAllFrames());
 #endif
+    processOwnFrames(ecuIdColl);
     emit framesReceived(ecuIdColl);
 }
 
@@ -139,6 +148,38 @@ void CanBusRouter::disconnectFromDevice()
     if (m_device->state() == QCanBusDevice::ConnectedState)
     {
         m_device->disconnectDevice();
+    }
+}
+
+void CanBusRouter::enqueueOutoingFrame(const QCanBusFrame &frame)
+{
+    auto canWriteFrameDirectly = m_writtenFrameCache.isEmpty();
+    m_writtenFrameCache.append(frame);
+    if (canWriteFrameDirectly) {
+        m_device->writeFrame(frame);
+    }
+}
+
+void CanBusRouter::dequeueOutgoingFrame()
+{
+    if (!m_writtenFrameCache.isEmpty()) {
+        m_writtenFrameCache.removeFirst();
+    }
+    if (!m_writtenFrameCache.isEmpty()) {
+        m_device->writeFrame(m_writtenFrameCache.first());
+    }
+}
+
+void CanBusRouter::processOwnFrames(QSet<int> &ecuIdColl)
+{
+    if (ecuIdColl.contains(1))
+    {
+        ecuIdColl.remove(1);
+        const auto &ownFrameColl = m_receivedFrameCache.takeFrames(1);
+        for (int i = 0; i < ownFrameColl.count(); ++i)
+        {
+            dequeueOutgoingFrame();
+        }
     }
 }
 

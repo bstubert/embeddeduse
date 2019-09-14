@@ -48,12 +48,18 @@ private:
     QCanBusDevice *createDevice(const QString &plugin, const QString &interface);
     void connectToDevice();
     void disconnectFromDevice();
+    void enqueueOutoingFrame(const QCanBusFrame &frame);
+    void dequeueOutgoingFrame();
+    void processOwnFrames(QSet<int> &ecuIdColl);
+
 #if (QT_VERSION < QT_VERSION_CHECK(5, 12, 0))
     QVector<QCanBusFrame> readAllFrames();
 #endif
+
     QCanBusDevice::CanBusError m_error{QCanBusDevice::CanBusError::NoError};
     QString m_errorStr;
     QCanBusDevice::CanBusDeviceState m_state;
     ReceivedFramesCache m_receivedFrameCache;
+    QVector<QCanBusFrame> m_writtenFrameCache;
 };
 

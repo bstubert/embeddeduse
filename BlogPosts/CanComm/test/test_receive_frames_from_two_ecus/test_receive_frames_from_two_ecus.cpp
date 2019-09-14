@@ -48,7 +48,7 @@ private slots:
     void testReceiveFramesOnce()
     {
         m_router->expectReadFrames({c_ecu2_1, c_ecu3_1, c_ecu2_2});
-        QCOMPARE(m_receivedSpy->count(), 1);
+        QTRY_COMPARE_WITH_TIMEOUT(m_receivedSpy->count(), 1, 200);
         QCOMPARE(receivedEcuIds(0), (QSet<int>{2, 3}));
 
         auto fromEcu2 = m_router->takeReceivedFrames(2);
@@ -72,12 +72,13 @@ private slots:
     void testReceiveFramesTwice()
     {
         m_router->expectReadFrames({c_ecu2_1, c_ecu3_1});
+        QTRY_COMPARE_WITH_TIMEOUT(m_receivedSpy->count(), 1, 200);
 
         m_router->takeReceivedFrames(2);
         m_router->takeReceivedFrames(3);
 
         m_router->expectReadFrames({c_ecu2_2, c_ecu3_2, c_ecu3_1});
-        QCOMPARE(m_receivedSpy->count(), 2);
+        QTRY_COMPARE_WITH_TIMEOUT(m_receivedSpy->count(), 2, 200);
         QCOMPARE(receivedEcuIds(1), (QSet<int>{2, 3}));
 
         auto fromEcu2 = m_router->takeReceivedFrames(2);
