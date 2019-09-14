@@ -30,6 +30,9 @@ class TestWriteBufferOverflow : public QObject
 
     MockCanBusRouter *m_router{nullptr};
 
+    static constexpr int c_writeBufferSize{3};
+    static const int c_overflowFrameCount{c_writeBufferSize + 1};
+
     const QCanBusFrame c_out1{QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")}};
     const QCanBusFrame c_in1{QCanBusFrame{0x18ef0102U, QByteArray::fromHex("018A0103A4000000")}};
 
@@ -80,7 +83,7 @@ private slots:
 
     void testWriteBufferOverflow()
     {
-        auto [requestColl, responseColl] = createReadParameterRequests(4, 32);
+        auto [requestColl, responseColl] = createReadParameterRequests(2 * c_overflowFrameCount, 32);
         m_router->expectWriteFrames(requestColl);
 
         for (const auto &request : requestColl)
@@ -89,7 +92,10 @@ private slots:
         }
 
         const auto &actualFrameColl = m_router->actualCanFrames();
-        QCOMPARE(actualFrameColl[3].deviceError(), QCanBusDevice::WriteError);
+        QCOMPARE(actualFrameColl[c_writeBufferSize].deviceError(),
+                 QCanBusDevice::WriteError);
+        QCOMPARE(actualFrameColl[c_writeBufferSize + c_overflowFrameCount].deviceError(),
+                QCanBusDevice::WriteError);
     }
 
     void testOwnFrameAfterOutgoingFrame()
