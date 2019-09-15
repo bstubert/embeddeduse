@@ -8,8 +8,10 @@
 
 #include "canbusrouter.h"
 
-CanBusRouter::CanBusRouter(const QString &plugin, const QString &interface, QObject *parent)
+CanBusRouter::CanBusRouter(int canId, const QString &plugin, const QString &interface,
+                           QObject *parent)
     : QObject(parent)
+    , m_canId{canId}
 {
     m_device = createDevice(plugin, interface);
     if (m_device == nullptr)
@@ -172,10 +174,10 @@ void CanBusRouter::dequeueOutgoingFrame()
 
 void CanBusRouter::processOwnFrames(QSet<int> &ecuIdColl)
 {
-    if (ecuIdColl.contains(1))
+    if (ecuIdColl.contains(m_canId))
     {
-        ecuIdColl.remove(1);
-        const auto &ownFrameColl = m_receivedFrameCache.takeFrames(1);
+        ecuIdColl.remove(m_canId);
+        const auto &ownFrameColl = m_receivedFrameCache.takeFrames(m_canId);
         for (int i = 0; i < ownFrameColl.count(); ++i)
         {
             dequeueOutgoingFrame();

@@ -3,7 +3,7 @@
 #include "mockcanbusrouter.h"
 
 MockCanBusRouter::MockCanBusRouter(const QString &interface, QObject *parent)
-    : CanBusRouter{"mockcan", interface, parent}
+    : CanBusRouter{1, "mockcan", interface, parent}
 {
     ::setActualCanFrames(m_device, {});
     ::setExpectedCanFrames(m_device, {});

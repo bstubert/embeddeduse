@@ -17,7 +17,7 @@ class CanBusRouter : public QObject
 {
     Q_OBJECT
 public:
-    explicit CanBusRouter(const QString &plugin, const QString &interface,
+    explicit CanBusRouter(int canId, const QString &plugin, const QString &interface,
                           QObject *parent = nullptr);
     virtual ~CanBusRouter() override;
 
@@ -56,6 +56,7 @@ private:
     QVector<QCanBusFrame> readAllFrames();
 #endif
 
+    int m_canId{-1};
     QCanBusDevice::CanBusError m_error{QCanBusDevice::CanBusError::NoError};
     QString m_errorStr;
     QCanBusDevice::CanBusDeviceState m_state;

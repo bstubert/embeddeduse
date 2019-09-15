@@ -63,28 +63,28 @@ void TestConnectToMockCanBus::testAvailableDevicesOfNonExistingPlugin()
 
 void TestConnectToMockCanBus::testCreateExistingPlugin()
 {
-    CanBusRouter router{"mockcan", "mcan0"};
+    CanBusRouter router{1, "mockcan", "mcan0"};
     QCOMPARE(router.error(), QCanBusDevice::NoError);
     QVERIFY(router.errorString().isEmpty());
 }
 
 void TestConnectToMockCanBus::testCreateNonExistingPlugin()
 {
-    CanBusRouter router{"muppetcan", "mcan1"};
+    CanBusRouter router{1, "muppetcan", "mcan1"};
     QCOMPARE(router.error(), QCanBusDevice::ConnectionError);
     QCOMPARE(router.errorString(), QString{"No such plugin: \'muppetcan\'"});
 }
 
 void TestConnectToMockCanBus::testConnectToExistingDevice()
 {
-    CanBusRouter router{"mockcan", "mcan0"};
+    CanBusRouter router{1, "mockcan", "mcan0"};
     QCOMPARE(router.error(), QCanBusDevice::NoError);
     QCOMPARE(router.state(), QCanBusDevice::ConnectedState);
 }
 
 void TestConnectToMockCanBus::testConnectToNonExistingDevice()
 {
-    CanBusRouter router{"mockcan", "sky7"};
+    CanBusRouter router{1, "mockcan", "sky7"};
     QCOMPARE(router.error(), QCanBusDevice::CanBusError::ConnectionError);
     QCOMPARE(router.state(), QCanBusDevice::UnconnectedState);
 }

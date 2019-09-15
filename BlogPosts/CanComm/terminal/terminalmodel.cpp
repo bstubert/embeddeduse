@@ -8,7 +8,7 @@
 
 TerminalModel::TerminalModel(QObject *parent)
     : QObject{parent}
-    , m_router{new CanBusRouter{"socketcan", "can0", this}}
+    , m_router{new CanBusRouter{1, "socketcan", "can0", this}}
     , m_a2Proxy{createEcuProxy(2)}
     , m_a3Proxy{createEcuProxy(3)}
 {
