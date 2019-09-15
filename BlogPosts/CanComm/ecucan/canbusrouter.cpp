@@ -55,7 +55,7 @@ QVector<QCanBusFrame> CanBusRouter::takeReceivedFrames(int ecuId)
     {
         return {};
     }
-    return m_receivedFrameCache.takeFrames(ecuId);
+    return m_receivedFrameCache.takeIncomingFrames(ecuId);
 }
 
 bool CanBusRouter::isReceiveOwnFrameEnabled() const
@@ -86,7 +86,7 @@ void CanBusRouter::writeFrame(const QCanBusFrame &frame)
     // error handling.
     if (isReceiveOwnFrameEnabled())
     {
-        enqueueOutoingFrame(frame);
+        writeQueuedFrame(m_receivedFrameCache.enqueueOutgoingFrame(frame));
     }
     else
     {
@@ -110,7 +110,7 @@ void CanBusRouter::onFramesReceived()
 #if (QT_VERSION < QT_VERSION_CHECK(5, 12, 0))
     auto ecuIdColl = m_receivedFrameCache.updateFrames(readAllFrames());
 #else
-    auto ecuIdColl = m_receivedFrameCache.updateFrames(m_device->readAllFrames());
+    auto ecuIdColl = m_receivedFrameCache.enqueueIncomingFrames(m_device->readAllFrames());
 #endif
     processOwnFrames();
     emit framesReceived(ecuIdColl);
@@ -155,32 +155,19 @@ void CanBusRouter::disconnectFromDevice()
     }
 }
 
-void CanBusRouter::enqueueOutoingFrame(const QCanBusFrame &frame)
+void CanBusRouter::writeQueuedFrame(const QCanBusFrame &frame)
 {
-    auto wasEmptyOnEntry = m_writtenFrameCache.isEmpty();
-    // NOTE: If the frame was appended to the cache after writing it, the own frame could be
-    // received before the frame is in the cache.
-    m_writtenFrameCache.append(frame);
-    if (wasEmptyOnEntry) {
+    if (frame.isValid())
+    {
         m_device->writeFrame(frame);
-    }
-}
-
-void CanBusRouter::dequeueOutgoingFrame()
-{
-    if (!m_writtenFrameCache.isEmpty()) {
-        m_writtenFrameCache.removeFirst();
-    }
-    if (!m_writtenFrameCache.isEmpty()) {
-        m_device->writeFrame(m_writtenFrameCache.first());
     }
 }
 
 void CanBusRouter::processOwnFrames()
 {
-    if (!m_receivedFrameCache.takeFrames(m_canId).isEmpty())
+    if (!m_receivedFrameCache.takeIncomingFrames(m_canId).isEmpty())
     {
-        dequeueOutgoingFrame();
+        writeQueuedFrame(m_receivedFrameCache.dequeueOutgoingFrame());
     }
 }
 

@@ -18,8 +18,8 @@ add_library(
     canbusrouter.h
     ecubase.cpp
     ecubase.h
-    received_frames_cache.cpp
-    received_frames_cache.h
+    can_frame_cache.cpp
+    can_frame_cache.h
 )
 
 add_library(EmUse::ecucan ALIAS ${PROJECT_NAME})
