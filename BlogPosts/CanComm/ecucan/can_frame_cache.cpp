@@ -1,9 +1,15 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
+#include <QTimer>
+
 #include "can_frame_cache.h"
 
-CanFrameCache::CanFrameCache()
+CanFrameCache::CanFrameCache(QObject *parent)
+    : QObject{parent}
 {
+    m_receiptTimer.setSingleShot(true);
+    m_receiptTimer.setInterval(200);
+    m_receiptTimer.callOnTimeout([this]() { handleLostOwnFrame(); });
 }
 
 QSet<int> CanFrameCache::enqueueIncomingFrames(const QVector<QCanBusFrame> &frameColl)
@@ -31,22 +37,40 @@ QCanBusFrame CanFrameCache::enqueueOutgoingFrame(const QCanBusFrame &frame)
     m_outgoingCache.append(frame);
     if (wasEmptyOnEntry)
     {
+        m_receiptTimer.start();
         return frame;
     }
-    return QCanBusFrame{QCanBusFrame::InvalidFrame};
+    return c_invalidFrame;
 }
 
 QCanBusFrame CanFrameCache::dequeueOutgoingFrame()
 {
     if (!m_outgoingCache.isEmpty())
     {
+        m_receiptTimer.stop();
         m_outgoingCache.removeFirst();
     }
     if (!m_outgoingCache.isEmpty())
     {
+        m_receiptTimer.start();
         return m_outgoingCache.first();
     }
-    return QCanBusFrame{QCanBusFrame::InvalidFrame};
+    return c_invalidFrame;
+}
+
+void CanFrameCache::handleLostOwnFrame()
+{
+    auto lostFrame = c_invalidFrame;
+    if (!m_outgoingCache.isEmpty())
+    {
+        lostFrame = m_outgoingCache.takeFirst();
+    }
+    auto nextFrame = c_invalidFrame;
+    if (!m_outgoingCache.isEmpty())
+    {
+        nextFrame = m_outgoingCache.first();
+    }
+    emit ownFrameLost(lostFrame, nextFrame);
 }
 
 int CanFrameCache::sourceEcuId(const QCanBusFrame &frame) const

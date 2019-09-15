@@ -43,6 +43,7 @@ protected:
 private slots:
     void onErrorOccurred(QCanBusDevice::CanBusError error);
     void onFramesReceived();
+    void onOwnFrameLost(const QCanBusFrame &lostFrame, const QCanBusFrame &nextFrame);
 
 private:
     QCanBusDevice *createDevice(const QString &plugin, const QString &interface);

@@ -26,6 +26,6 @@ add_library(EmUse::ecucan ALIAS ${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME} INTERFACE .)
 
-target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::SerialBus)
+target_link_libraries(${PROJECT_NAME} EmUse::CanBusExt Qt5::Core Qt5::SerialBus)
 
 

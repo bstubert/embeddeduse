@@ -6,6 +6,7 @@
 #include <QVariant>
 #include <QtDebug>
 
+#include "canbusext.h"
 #include "canbusrouter.h"
 
 CanBusRouter::CanBusRouter(int canId, const QString &plugin, const QString &interface,
@@ -19,6 +20,8 @@ CanBusRouter::CanBusRouter(int canId, const QString &plugin, const QString &inte
         return;
     }
     connectToDevice();
+    connect(&m_frameCache, &CanFrameCache::ownFrameLost,
+            this, &CanBusRouter::onOwnFrameLost);
     connect(m_device, &QCanBusDevice::errorOccurred,
             this, &CanBusRouter::onErrorOccurred);
     connect(m_device, &QCanBusDevice::framesReceived,
@@ -114,6 +117,12 @@ void CanBusRouter::onFramesReceived()
 #endif
     processOwnFrames();
     emit framesReceived(ecuIdColl);
+}
+
+void CanBusRouter::onOwnFrameLost(const QCanBusFrame &lostFrame, const QCanBusFrame &nextFrame)
+{
+    qWarning() << "ERROR: Lost own frame " << lostFrame;
+    writeQueuedFrame(nextFrame);
 }
 
 // QCanBus::createDevice() returns nullptr and an error message, if the plugin does not exist.
