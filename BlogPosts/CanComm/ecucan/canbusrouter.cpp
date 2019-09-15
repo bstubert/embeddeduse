@@ -166,8 +166,6 @@ void CanBusRouter::enqueueOutoingFrame(const QCanBusFrame &frame)
     }
 }
 
-// TODO: Removing the first frame from the cache is wrong in general. Correct: Remove from the cache
-// the own frames received and then write as many frames as own frames removed.
 void CanBusRouter::dequeueOutgoingFrame()
 {
     if (!m_writtenFrameCache.isEmpty()) {
