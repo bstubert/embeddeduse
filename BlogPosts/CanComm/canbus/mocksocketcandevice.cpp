@@ -120,26 +120,28 @@ void MockSocketCanDevice::checkForResponses()
 {
     auto expectedFrameColl = expectedCanFrames(this);
     auto incomingFrameColl = CanBusFrameCollection{};
-    while (m_frameIndex < m_frameCount) {
+    while (m_frameIndex < m_frameCount)
+    {
         auto expectedFrame = expectedFrameColl[m_frameIndex];
-        if (expectedFrame.isOutgoing()) {
+        if (expectedFrame.isOutgoing())
+        {
             if (isReceiveOwnFrameEnabled())
             {
                 enqueueReceivedFrames({expectedFrame});
             }
+            else
+            {
+                qWarning() << "Received own frame " << QCanBusFrame{expectedFrame}.toString()
+                           << ", although ReceiveOwnKey disabled.";
+            }
             break;
         }
-        if (!expectedFrame.isOwnIncoming() || isReceiveOwnFrameEnabled()) {
-            appendActualCanFrame(expectedFrame);
-        }
-        else {
-            qWarning() << "Received own frame " << QCanBusFrame{expectedFrame}.toString()
-                       << ", although ReceiveOwnKey disabled.";
-        }
         if (expectedFrame.isDeviceError()) {
+            appendActualCanFrame(expectedFrame);
             setError(expectedFrame.deviceErrorString(), expectedFrame.deviceError());
         }
         else if (expectedFrame.isIncoming()) {
+            appendActualCanFrame(expectedFrame);
             incomingFrameColl.append(expectedFrame);
         }
         ++m_frameIndex;

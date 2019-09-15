@@ -70,9 +70,6 @@ private slots:
     void init()
     {
         m_router = new MockCanBusRouter{};
-        QVERIFY(!m_router->isReceiveOwnFrameEnabled());
-        m_router->setReceiveOwnFrameEnabled(true);
-        QVERIFY(m_router->isReceiveOwnFrameEnabled());
     }
 
     void cleanup()
@@ -124,47 +121,6 @@ private slots:
         const auto &actualFrameColl = m_router->actualCanFrames();
         QCOMPARE(actualFrameColl[c_writeErrorInterval - 1].deviceError(), QCanBusDevice::NoError);
     }
-
-    void testOwnFrameAfterOutgoingFrame()
-    {
-        m_router->expectWriteFrame(c_out1);
-        m_router->expectReadOwnFrame(c_out1);
-
-        m_router->writeFrame(c_out1);
-
-        auto actualFrames = m_router->actualCanFrames();
-        QCOMPARE(actualFrames.count(), 2);
-        QCOMPARE(QCanBusFrame{actualFrames[0]}, QCanBusFrame{actualFrames[1]});
-        QVERIFY(actualFrames[1].isOwnIncoming());
-    }
-
-    void testIncomingFrameBetweenOutgoingAndOwnFrame()
-    {
-        m_router->expectWriteFrame(c_out1);
-        m_router->expectReadFrame(c_in1);
-        m_router->expectReadOwnFrame(c_out1);
-
-        m_router->writeFrame(c_out1);
-
-        auto actualFrames = m_router->actualCanFrames();
-        QCOMPARE(actualFrames.count(), 3);
-        QCOMPARE(QCanBusFrame{actualFrames[0]}, QCanBusFrame{actualFrames[2]});
-        QVERIFY(actualFrames[2].isOwnIncoming());
-    }
-
-    void testReceivedOwnFrameAlthoughSwitchedOff()
-    {
-        m_router->setReceiveOwnFrameEnabled(false);
-        m_router->expectWriteFrame(c_out1);
-        m_router->expectReadOwnFrame(c_out1);
-
-        m_router->writeFrame(c_out1);
-
-        auto actualFrames = m_router->actualCanFrames();
-        QCOMPARE(actualFrames.count(), 1);
-        QVERIFY(actualFrames[0].isOutgoing());
-    }
-
 };
 
 QTEST_GUILESS_MAIN(TestWriteBufferOverflow)
