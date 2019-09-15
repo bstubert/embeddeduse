@@ -50,7 +50,7 @@ private:
     void disconnectFromDevice();
     void enqueueOutoingFrame(const QCanBusFrame &frame);
     void dequeueOutgoingFrame();
-    void processOwnFrames(QSet<int> &ecuIdColl);
+    void processOwnFrames();
 
 #if (QT_VERSION < QT_VERSION_CHECK(5, 12, 0))
     QVector<QCanBusFrame> readAllFrames();

@@ -112,7 +112,7 @@ void CanBusRouter::onFramesReceived()
 #else
     auto ecuIdColl = m_receivedFrameCache.updateFrames(m_device->readAllFrames());
 #endif
-    processOwnFrames(ecuIdColl);
+    processOwnFrames();
     emit framesReceived(ecuIdColl);
 }
 
@@ -178,16 +178,11 @@ void CanBusRouter::dequeueOutgoingFrame()
     }
 }
 
-void CanBusRouter::processOwnFrames(QSet<int> &ecuIdColl)
+void CanBusRouter::processOwnFrames()
 {
-    if (ecuIdColl.contains(m_canId))
+    if (!m_receivedFrameCache.takeFrames(m_canId).isEmpty())
     {
-        ecuIdColl.remove(m_canId);
-        const auto &ownFrameColl = m_receivedFrameCache.takeFrames(m_canId);
-        for (int i = 0; i < ownFrameColl.count(); ++i)
-        {
-            dequeueOutgoingFrame();
-        }
+        dequeueOutgoingFrame();
     }
 }
 
