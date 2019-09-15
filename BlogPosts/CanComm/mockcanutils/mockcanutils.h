@@ -54,7 +54,7 @@ struct MockCanFrame
         frame.setPayload(payload);
     }
 
-    operator QCanBusFrame() const { return frame; }
+    QCanBusFrame toCanFrame() const { return frame; }
 
     bool isOutgoing() const { return type == Type::Outgoing; }
 

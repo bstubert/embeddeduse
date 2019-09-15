@@ -142,7 +142,7 @@ private slots:
         }
 
         QTRY_COMPARE_WITH_TIMEOUT(m_router->actualCanFrames().count(), 4, 200);
-        qDebug() << "### actual = " << m_router->actualCanFrames();
+//        qDebug() << "### actual = " << m_router->actualCanFrames();
 
 //        QTRY_COMPARE_WITH_TIMEOUT(m_router->actualCanFrames(), m_router->expectedCanFrames(), 200);
     }

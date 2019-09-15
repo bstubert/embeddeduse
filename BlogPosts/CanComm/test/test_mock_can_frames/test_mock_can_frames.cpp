@@ -42,7 +42,7 @@ void TestMockCanFrames::testMockCanFrameEquality_data()
     auto out1 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000000000"};
     auto out2 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0301U, "018A010000000000"};
     auto out3 = MockCanFrame{MockCanFrame::Type::Outgoing, 0x18ef0201U, "018A010000050000"};
-    auto in1 = MockCanFrame{MockCanFrame::Type::Incoming, out1};
+    auto in1 = MockCanFrame{MockCanFrame::Type::Incoming, out1.toCanFrame()};
 
     QTest::newRow("same type, same frame") << in1 << in1 << true;
     QTest::newRow("same type, different frame ID") << out1 << out2 << false;
@@ -119,7 +119,7 @@ void TestMockCanFrames::testDeviceErrors()
 
     auto expectedError = MockCanFrame{canError, errorNo};
     QCOMPARE(expectedError.type, MockCanFrame::Type::DeviceError);
-    QVERIFY(!QCanBusFrame{expectedError}.isValid());
+    QVERIFY(!expectedError.toCanFrame().isValid());
     QCOMPARE(expectedError.deviceErrorString(), errorString);
     QCOMPARE(expectedError.deviceError(), canError);
 }
