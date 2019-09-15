@@ -82,6 +82,8 @@ void CanBusRouter::writeFrame(const QCanBusFrame &frame)
     {
         return;
     }
+    // TODO: Find out whether own frame is always guaranteed to be received. If not, add some
+    // error handling.
     if (isReceiveOwnFrameEnabled())
     {
         enqueueOutoingFrame(frame);
@@ -155,9 +157,11 @@ void CanBusRouter::disconnectFromDevice()
 
 void CanBusRouter::enqueueOutoingFrame(const QCanBusFrame &frame)
 {
-    auto canWriteFrameDirectly = m_writtenFrameCache.isEmpty();
+    auto wasEmptyOnEntry = m_writtenFrameCache.isEmpty();
+    // NOTE: If the frame was appended to the cache after writing it, the own frame could be
+    // received before the frame is in the cache.
     m_writtenFrameCache.append(frame);
-    if (canWriteFrameDirectly) {
+    if (wasEmptyOnEntry) {
         m_device->writeFrame(frame);
     }
 }
