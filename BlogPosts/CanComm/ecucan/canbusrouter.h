@@ -59,6 +59,6 @@ private:
     QCanBusDevice::CanBusError m_error{QCanBusDevice::CanBusError::NoError};
     QString m_errorStr;
     QCanBusDevice::CanBusDeviceState m_state;
-    CanFrameCache m_receivedFrameCache;
+    CanFrameCache m_frameCache;
 };
 

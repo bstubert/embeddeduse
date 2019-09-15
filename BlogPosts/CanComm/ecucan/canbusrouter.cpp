@@ -55,7 +55,7 @@ QVector<QCanBusFrame> CanBusRouter::takeReceivedFrames(int ecuId)
     {
         return {};
     }
-    return m_receivedFrameCache.takeIncomingFrames(ecuId);
+    return m_frameCache.takeIncomingFrames(ecuId);
 }
 
 bool CanBusRouter::isReceiveOwnFrameEnabled() const
@@ -86,7 +86,7 @@ void CanBusRouter::writeFrame(const QCanBusFrame &frame)
     // error handling.
     if (isReceiveOwnFrameEnabled())
     {
-        writeQueuedFrame(m_receivedFrameCache.enqueueOutgoingFrame(frame));
+        writeQueuedFrame(m_frameCache.enqueueOutgoingFrame(frame));
     }
     else
     {
@@ -110,7 +110,7 @@ void CanBusRouter::onFramesReceived()
 #if (QT_VERSION < QT_VERSION_CHECK(5, 12, 0))
     auto ecuIdColl = m_receivedFrameCache.updateFrames(readAllFrames());
 #else
-    auto ecuIdColl = m_receivedFrameCache.enqueueIncomingFrames(m_device->readAllFrames());
+    auto ecuIdColl = m_frameCache.enqueueIncomingFrames(m_device->readAllFrames());
 #endif
     processOwnFrames();
     emit framesReceived(ecuIdColl);
@@ -165,9 +165,9 @@ void CanBusRouter::writeQueuedFrame(const QCanBusFrame &frame)
 
 void CanBusRouter::processOwnFrames()
 {
-    if (!m_receivedFrameCache.takeIncomingFrames(m_canId).isEmpty())
+    if (!m_frameCache.takeIncomingFrames(m_canId).isEmpty())
     {
-        writeQueuedFrame(m_receivedFrameCache.dequeueOutgoingFrame());
+        writeQueuedFrame(m_frameCache.dequeueOutgoingFrame());
     }
 }
 

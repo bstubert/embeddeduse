@@ -70,6 +70,8 @@ private slots:
     void init()
     {
         m_router = new MockCanBusRouter{};
+        m_router->setWriteErrorInterval(c_writeErrorInterval);
+        m_router->setReceiveOwnFrameEnabled(true);
     }
 
     void cleanup()
@@ -80,7 +82,6 @@ private slots:
     void testWriteBufferOverflow()
     {
         m_router->setReceiveOwnFrameEnabled(false);
-        m_router->setWriteErrorInterval(c_writeErrorInterval);
 
         auto requestColl = QVector<QCanBusFrame>{};
         auto responseColl = QVector<QCanBusFrame>{};
@@ -100,9 +101,6 @@ private slots:
 
     void testAvoidWriteBufferOverflow()
     {
-        m_router->setReceiveOwnFrameEnabled(true);
-        m_router->setWriteErrorInterval(c_writeErrorInterval);
-
         auto requestColl = QVector<QCanBusFrame>{};
         auto responseColl = QVector<QCanBusFrame>{};
         std::tie(requestColl, responseColl) = createReadParameterRequests(c_writeErrorInterval, 32);
@@ -121,6 +119,32 @@ private slots:
         QTRY_COMPARE_WITH_TIMEOUT(m_router->actualCanFrames(), m_router->expectedCanFrames(), 200);
         const auto &actualFrameColl = m_router->actualCanFrames();
         QCOMPARE(actualFrameColl[c_writeErrorInterval - 1].deviceError(), QCanBusDevice::NoError);
+    }
+
+    void testRecoverFromLostOwnFrame()
+    {
+        auto requestColl = QVector<QCanBusFrame>{};
+        auto responseColl = QVector<QCanBusFrame>{};
+        std::tie(requestColl, responseColl) = createReadParameterRequests(3, 32);
+        for (int i = 0; i < requestColl.count(); ++i)
+        {
+            m_router->expectWriteFrame(requestColl[i]);
+            if (i != 1)
+            {
+                m_router->expectReadOwnFrame(requestColl[i]);
+                m_router->expectReadFrame(responseColl[i]);
+            }
+        }
+
+        for (const auto &request : requestColl)
+        {
+            m_router->writeFrame(request);
+        }
+
+        QTRY_COMPARE_WITH_TIMEOUT(m_router->actualCanFrames().count(), 4, 200);
+        qDebug() << "### actual = " << m_router->actualCanFrames();
+
+//        QTRY_COMPARE_WITH_TIMEOUT(m_router->actualCanFrames(), m_router->expectedCanFrames(), 200);
     }
 };
 
