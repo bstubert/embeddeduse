@@ -56,6 +56,29 @@ struct MockCanFrame
 
     QCanBusFrame toCanFrame() const { return frame; }
 
+    QByteArray typeString() const
+    {
+        switch (type)
+        {
+        case Type::Invalid:
+            return QByteArray{"Invalid"};
+        case Type::Outgoing:
+            return QByteArray{"Outgoing"};
+        case Type::Incoming:
+            return QByteArray{"Incoming"};
+        case Type::OwnIncoming:
+            return QByteArray{"OwnIncoming"};
+        case Type::DeviceError:
+            return QByteArray{"DeviceError"};
+        }
+    }
+
+    QByteArray toByteArray() const
+    {
+        return typeString() + "::" + QByteArray::number(frame.frameId(), 16) + "#" +
+                frame.payload().toHex();
+    }
+
     bool isOutgoing() const { return type == Type::Outgoing; }
 
     bool isIncoming() const { return type == Type::Incoming; }
@@ -99,6 +122,35 @@ inline bool operator!=(const MockCanFrame &lhs, const MockCanFrame &rhs)
 {
     return !(lhs == rhs);
 }
+
+inline QDebug operator<<(QDebug debug, const MockCanFrame &mockFrame)
+{
+    QDebugStateSaver saver(debug);
+    debug.nospace().noquote() << mockFrame.typeString() << ": " << mockFrame.toCanFrame();
+    return debug;
+}
+
+inline char *toString(const MockCanFrame &mockFrame)
+{
+    auto src = mockFrame.toByteArray();
+    char *dst = new char[src.size() + 1];
+    return qstrcpy(dst, src.data());
+}
+
+
+inline char *toString(const MockCanFrameCollection &coll)
+{
+    auto src = QByteArray{"[ "};
+    for (const auto &frame : coll)
+    {
+        src += frame.toByteArray();
+        src += ", ";
+    }
+    src += " ]";
+    char *dst = new char[src.size() + 1];
+    return qstrcpy(dst, src.data());
+}
+
 
 enum class MockConfigurationKey : int {
     ActualCanIo = QCanBusDevice::UserKey,

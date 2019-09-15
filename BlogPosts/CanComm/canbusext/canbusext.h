@@ -10,7 +10,7 @@ Q_DECLARE_METATYPE(QCanBusFrame)
 
 namespace
 {
-QByteArray toByteArray(const QCanBusFrame &frame)
+inline QByteArray toByteArray(const QCanBusFrame &frame)
 {
     return QByteArray::number(frame.frameId(), 16) + "#" + frame.payload().toHex();
 }
