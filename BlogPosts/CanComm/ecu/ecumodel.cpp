@@ -6,7 +6,7 @@
 
 EcuModel::EcuModel(QObject *parent)
     : QObject{parent}
-    , m_router{new CanBusRouter{1, "socketcan", "can0", this}}
+    , m_router{new CanBusRouter{2, "socketcan", "can0", this}}
     , m_a2{createEcu(2)}
     , m_a3{createEcu(3)}
 {
