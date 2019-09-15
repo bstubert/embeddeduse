@@ -12,7 +12,7 @@
 class MockCanBusRouter : public CanBusRouter
 {
 public:
-    MockCanBusRouter(const QString &interface = QString{"mcan0"}, QObject *parent = nullptr);
+    MockCanBusRouter(int canId = 1, const QString &interface = QString{"mcan0"}, QObject *parent = nullptr);
     ~MockCanBusRouter() override;
 
     void setWriteErrorInterval(int interval);
@@ -21,6 +21,7 @@ public:
     void expectWriteFrames(const QVector<QCanBusFrame> &frames);
     void expectReadFrame(const QCanBusFrame &frame);
     void expectReadFrames(const QVector<QCanBusFrame> &frames);
+    void expectReadOwnFrame(const QCanBusFrame &frame);
     void expectError(QCanBusDevice::CanBusError deviceError, MockCanFrame::ErrorNo errorNo);
 
     MockCanFrameCollection actualCanFrames() const;

@@ -109,6 +109,7 @@ private slots:
         for (int i = 0; i < requestColl.count(); ++i)
         {
             m_router->expectWriteFrame(requestColl[i]);
+            m_router->expectReadOwnFrame(requestColl[i]);
             m_router->expectReadFrame(responseColl[i]);
         }
 

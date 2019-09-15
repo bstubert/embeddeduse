@@ -2,8 +2,8 @@
 
 #include "mockcanbusrouter.h"
 
-MockCanBusRouter::MockCanBusRouter(const QString &interface, QObject *parent)
-    : CanBusRouter{1, "mockcan", interface, parent}
+MockCanBusRouter::MockCanBusRouter(int canId, const QString &interface, QObject *parent)
+    : CanBusRouter{canId, "mockcan", interface, parent}
 {
     ::setActualCanFrames(m_device, {});
     ::setExpectedCanFrames(m_device, {});
@@ -51,6 +51,13 @@ void MockCanBusRouter::expectReadFrames(const QVector<QCanBusFrame> &frames)
         expectedFrames.append(MockCanFrame{MockCanFrame::Type::Incoming, frame});
     }
     ::setExpectedCanFrames(m_device, expectedFrames);
+}
+
+void MockCanBusRouter::expectReadOwnFrame(const QCanBusFrame &frame)
+{
+    auto frames = ::expectedCanFrames(m_device);
+    frames.append(MockCanFrame{MockCanFrame::Type::OwnIncoming, frame});
+    ::setExpectedCanFrames(m_device, frames);
 }
 
 void MockCanBusRouter::expectError(QCanBusDevice::CanBusError deviceError,
