@@ -12,11 +12,37 @@ TerminalModel::TerminalModel(QObject *parent)
     , m_a2Proxy{createEcuProxy(2)}
     , m_a3Proxy{createEcuProxy(3)}
 {
-    m_router->setReceiveOwnFrameEnabled(true);
+    setLoggingOn(true);
+    setTxBufferOn(false);
 }
 
 TerminalModel::~TerminalModel()
 {
+}
+
+bool TerminalModel::isLoggingOn() const
+{
+    return m_a2Proxy->isLogging();
+}
+
+void TerminalModel::setLoggingOn(bool isOn)
+{
+    m_a2Proxy->setLogging(isOn);
+    m_a3Proxy->setLogging(isOn);
+    emit loggingOnChanged();
+}
+
+bool TerminalModel::isTxBufferOn() const
+{
+    return m_router->isReceiveOwnFrameEnabled();
+}
+
+// NOTE: The write buffer overflow only happens, if logging is switched off. Logging introduces
+// a delay between two writeFrame() calls big enough to avoid the overflow.
+void TerminalModel::setTxBufferOn(bool isOn)
+{
+    m_router->setReceiveOwnFrameEnabled(isOn);
+    emit txBufferOnChanged();
 }
 
 void TerminalModel::simulateTxBufferOverflow(int count)
@@ -29,9 +55,6 @@ void TerminalModel::simulateTxBufferOverflow(int count)
 EcuProxy *TerminalModel::createEcuProxy(int ecuId)
 {
     auto ecuProxy = new EcuProxy{ecuId, m_router, this};
-    // NOTE: The write buffer overflow only happens, if logging is switched off. Logging introduces
-    // a delay between two writeFrame() calls big enough to avoid the overflow.
-    ecuProxy->setLogging(false);
     connect(m_router, &CanBusRouter::errorOccurred,
             ecuProxy, &EcuProxy::onErrorOccurred);
     connect(m_router, &CanBusRouter::framesReceived,

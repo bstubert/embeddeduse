@@ -55,6 +55,32 @@ ApplicationWindow {
             onReleased: gTerminal.simulateTxBufferOverflow(500)
         }
 
+        CheckBox {
+            id: txBuffer
+            anchors {
+                right: logging.left
+                rightMargin: 16
+                top: parent.top
+            }
+            checked: gTerminal.isTxBufferOn
+            text: "TX Buffer"
+            font.pixelSize: 24
+            onReleased: gTerminal.isTxBufferOn = checked
+        }
+
+        CheckBox {
+            id: logging
+            anchors {
+                right: clear.left
+                rightMargin: 48
+                top: parent.top
+            }
+            checked: gTerminal.isLoggingOn
+            text: "Logging"
+            font.pixelSize: 24
+            onReleased: gTerminal.isLoggingOn = checked
+        }
+
         Button {
             id: clear
             anchors {
