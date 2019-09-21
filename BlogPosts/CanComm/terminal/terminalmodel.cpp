@@ -108,9 +108,3 @@ EcuProxy *TerminalModel::createEcuProxy(int ecuId)
             this, &TerminalModel::logMessage);
     return ecuProxy;
 }
-
-void TerminalModel::printRawFilters()
-{
-    auto filters = m_router->rawFilters();
-    qDebug() << "Raw filters: " << filters.size();
-}

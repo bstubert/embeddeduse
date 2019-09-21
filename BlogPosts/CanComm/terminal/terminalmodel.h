@@ -44,7 +44,6 @@ signals:
 
 private:
     EcuProxy *createEcuProxy(int ecuId);
-    void printRawFilters();
 
     CanBusRouter *m_router;
     EcuProxy *m_a2Proxy;
