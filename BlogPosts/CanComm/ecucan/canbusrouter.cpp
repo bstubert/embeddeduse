@@ -79,6 +79,27 @@ void CanBusRouter::setReceiveOwnFrameEnabled(bool enabled)
     m_device->setConfigurationParameter(QCanBusDevice::ReceiveOwnKey, enabled);
 }
 
+QList<QCanBusDevice::Filter> CanBusRouter::rawFilters() const
+{
+    if (m_device == nullptr)
+    {
+        return {};
+    }
+    auto filters = m_device->configurationParameter(QCanBusDevice::RawFilterKey);
+    return filters.value<QList<QCanBusDevice::Filter>>();
+}
+
+void CanBusRouter::setRawFilters(const QList<QCanBusDevice::Filter> &filters)
+{
+    if (m_device == nullptr)
+    {
+        return;
+    }
+    QVariant v;
+    v.setValue(filters);
+    m_device->setConfigurationParameter(QCanBusDevice::RawFilterKey, v);
+}
+
 void CanBusRouter::writeFrame(const QCanBusFrame &frame)
 {
     if (m_device == nullptr)
@@ -101,6 +122,7 @@ void CanBusRouter::onErrorOccurred(QCanBusDevice::CanBusError error)
 {
     m_error = error;
     m_errorStr = m_device->errorString();
+    qDebug() << "ERROR: " << m_errorStr;
     emit errorOccurred();
 }
 

@@ -13,31 +13,38 @@ class TerminalModel : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool isLoggingOn READ isLoggingOn WRITE setLoggingOn
-               NOTIFY loggingOnChanged)
+    Q_PROPERTY(bool isFilterOn READ isFilterOn WRITE setFilterOn
+               NOTIFY filterOnChanged)
     Q_PROPERTY(bool isTxBufferOn READ isTxBufferOn WRITE setTxBufferOn
                NOTIFY txBufferOnChanged)
+    Q_PROPERTY(bool isLoggingOn READ isLoggingOn WRITE setLoggingOn
+               NOTIFY loggingOnChanged)
 
 public:
     explicit TerminalModel(QObject *parent = nullptr);
     virtual ~TerminalModel();
 
-    bool isLoggingOn() const;
-    void setLoggingOn(bool isOn);
+    bool isFilterOn() const;
+    void setFilterOn(bool isOn);
 
     bool isTxBufferOn() const;
     void setTxBufferOn(bool isOn);
+
+    bool isLoggingOn() const;
+    void setLoggingOn(bool isOn);
 
 public slots:
     void simulateTxBufferOverflow(int count);
 
 signals:
     void logMessage(const QString &msg);
-    void loggingOnChanged();
+    void filterOnChanged();
     void txBufferOnChanged();
+    void loggingOnChanged();
 
 private:
     EcuProxy *createEcuProxy(int ecuId);
+    void printRawFilters();
 
     CanBusRouter *m_router;
     EcuProxy *m_a2Proxy;

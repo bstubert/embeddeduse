@@ -1,10 +1,38 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
+#include <QCanBusDevice>
 #include <QString>
+#include <QtDebug>
 
 #include "canbusrouter.h"
 #include "ecuproxy.h"
 #include "terminalmodel.h"
+
+namespace
+{
+QCanBusDevice::Filter createEcuFilter(int ecuId)
+{
+    auto filter{QCanBusDevice::Filter{}};
+    filter.frameId = static_cast<quint32>(ecuId);
+    filter.frameIdMask = 0xFFU;
+    filter.type = QCanBusFrame::DataFrame;
+    filter.format = QCanBusDevice::Filter::MatchExtendedFormat;
+    return filter;
+}
+
+// TODO: Find out why blocking filter produces this error:
+// ERROR: FrameId 536870914 larger than 29 bit..
+//QCanBusDevice::Filter createEcuBlocker(int ecuId)
+//{
+//    auto filter{QCanBusDevice::Filter{}};
+//    filter.frameId = static_cast<quint32>(ecuId) | 0x20000000U;
+//    filter.frameIdMask = 0xFFU;
+//    filter.type = QCanBusFrame::DataFrame;
+//    filter.format = QCanBusDevice::Filter::MatchExtendedFormat;
+//    return filter;
+//}
+}
+
 
 TerminalModel::TerminalModel(QObject *parent)
     : QObject{parent}
@@ -18,6 +46,23 @@ TerminalModel::TerminalModel(QObject *parent)
 
 TerminalModel::~TerminalModel()
 {
+}
+
+bool TerminalModel::isFilterOn() const
+{
+    return false;
+}
+
+void TerminalModel::setFilterOn(bool isOn)
+{
+    if (isOn)
+    {
+        m_router->setRawFilters({createEcuFilter(2)});
+    }
+    else
+    {
+        m_router->setRawFilters({QCanBusDevice::Filter{}});
+    }
 }
 
 bool TerminalModel::isLoggingOn() const
@@ -62,4 +107,10 @@ EcuProxy *TerminalModel::createEcuProxy(int ecuId)
     connect(ecuProxy, &EcuProxy::logMessage,
             this, &TerminalModel::logMessage);
     return ecuProxy;
+}
+
+void TerminalModel::printRawFilters()
+{
+    auto filters = m_router->rawFilters();
+    qDebug() << "Raw filters: " << filters.size();
 }

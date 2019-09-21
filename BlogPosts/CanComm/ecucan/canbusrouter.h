@@ -29,6 +29,9 @@ public:
     bool isReceiveOwnFrameEnabled() const;
     void setReceiveOwnFrameEnabled(bool enabled);
 
+    QList<QCanBusDevice::Filter> rawFilters() const;
+    void setRawFilters(const QList<QCanBusDevice::Filter> &filters);
+
 signals:
     void errorOccurred();
     void framesWritten(qint64 framesCount);

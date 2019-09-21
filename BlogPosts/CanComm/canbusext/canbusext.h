@@ -3,10 +3,12 @@
 #pragma once
 
 #include <QByteArray>
+#include <QCanBusDevice>
 #include <QCanBusFrame>
 #include <QDebug>
 
 Q_DECLARE_METATYPE(QCanBusFrame)
+Q_DECLARE_METATYPE(QCanBusDevice::Filter)
 
 namespace
 {

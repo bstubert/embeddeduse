@@ -56,6 +56,19 @@ ApplicationWindow {
         }
 
         CheckBox {
+            id: filter
+            anchors {
+                right: txBuffer.left
+                rightMargin: 16
+                top: parent.top
+            }
+            checked: gTerminal.isFilterOn
+            text: "Filter"
+            font.pixelSize: 24
+            onReleased: gTerminal.isFilterOn = checked
+        }
+
+        CheckBox {
             id: txBuffer
             anchors {
                 right: logging.left
