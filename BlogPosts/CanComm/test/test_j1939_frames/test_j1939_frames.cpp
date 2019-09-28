@@ -121,7 +121,7 @@ private slots:
         QTest::newRow("pf = 255") << quint16{0xffU} << false;
         QTest::newRow("pf = 256") << quint16{0x100U} << true;
         QTest::newRow("pf = 495") << quint16{0x1efU} << true;
-        QTest::newRow("pf = 496") << quint16{0x1f0U} << true;
+        QTest::newRow("pf = 496") << quint16{0x1f0U} << false;
         QTest::newRow("pf = 511") << quint16{0x1ffU} << false;
     }
 

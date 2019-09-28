@@ -13,7 +13,7 @@ constexpr quint32 MASK_PDU_FORMAT{0x01FF0000U};
 constexpr quint32 SHIFT_PDU_FORMAT{16U};
 constexpr quint16 MAX_PDU_FORMAT{511U};
 
-constexpr quint32 MASK_PDU_FORMAT_1{0x00FFU};
+constexpr quint32 SHIFTED_MASK_PDU_FORMAT_1{0x00FFU};
 constexpr quint16 LAST_PDU_FORMAT_1{239U};
 
 constexpr quint32 MASK_PDU_SPECIFIC{0x0000FF00U};
@@ -68,6 +68,6 @@ quint8 J1939Frame::sourceAddress() const
 
 bool J1939Frame::isPeerToPeer() const
 {
-    return (pduFormat() & MASK_PDU_FORMAT_1) <= LAST_PDU_FORMAT_1;
+    return (pduFormat() & SHIFTED_MASK_PDU_FORMAT_1) <= LAST_PDU_FORMAT_1;
 }
 
