@@ -22,7 +22,7 @@ private slots:
         QTest::newRow("pf = 498") << quint16{498U} << 0x01f20000U;
         QTest::newRow("pf = 0") << quint16{0U} << 0x00000000U;
         QTest::newRow("pf = 511") << quint16{511U} << 0x01ff0000U;
-        QTest::newRow("pf = 512") << quint16{512U} << 0x00000000U;
+        QTest::newRow("pf = 512") << quint16{512U} << 0x01ff0000U;
         QTest::newRow("pf = 65535") << quint16{65535U} << 0x01ff0000U;
     }
 
@@ -32,7 +32,7 @@ private slots:
         QFETCH(quint32, frameId);
 
         auto frame{J1939Frame{quint8{0U}, pduFormat, quint8{0U}, quint8{0U}}};
-        QCOMPARE(frame.pduFormat(), (pduFormat % 512));
+        QCOMPARE(frame.pduFormat(), qBound(quint16{0}, pduFormat, quint16{511}));
         QCOMPARE(frame.frameId(), frameId);
         QVERIFY(frame.isValid());
     }
