@@ -15,7 +15,4 @@ public:
     quint16 pduFormat() const;
     quint8 pduSpecific() const;
     quint8 sourceAddress() const;
-
-private:
-    bool isJ1939Compliant(quint16 pduFormat) const;
 };

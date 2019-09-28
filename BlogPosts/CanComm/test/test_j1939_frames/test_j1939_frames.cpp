@@ -16,25 +16,30 @@ private slots:
     void testPduFormat_data()
     {
         QTest::addColumn<quint16>("pduFormat");
+        QTest::addColumn<bool>("isValid");
         QTest::addColumn<quint32>("frameId");
 
-        QTest::newRow("pf = 73") << quint16{73U} << 0x00490000U;
-        QTest::newRow("pf = 498") << quint16{498U} << 0x01f20000U;
-        QTest::newRow("pf = 0") << quint16{0U} << 0x00000000U;
-        QTest::newRow("pf = 511") << quint16{511U} << 0x01ff0000U;
-        QTest::newRow("pf = 512") << quint16{512U} << 0x01ff0000U;
-        QTest::newRow("pf = 65535") << quint16{65535U} << 0x01ff0000U;
+        QTest::newRow("pf = 73") << quint16{73U} << true << 0x00490000U;
+        QTest::newRow("pf = 498") << quint16{498U} << true << 0x01f20000U;
+        QTest::newRow("pf = 0") << quint16{0U} << true << 0U;
+        QTest::newRow("pf = 511") << quint16{511U} << true << 0x01ff0000U;
+        QTest::newRow("pf = 512") << quint16{512U} << false << 0U;
+        QTest::newRow("pf = 65535") << quint16{65535U} << false << 0U;
     }
 
     void testPduFormat()
     {
         QFETCH(quint16, pduFormat);
+        QFETCH(bool, isValid);
         QFETCH(quint32, frameId);
 
         auto frame{J1939Frame{quint8{0U}, pduFormat, quint8{0U}, quint8{0U}}};
-        QCOMPARE(frame.pduFormat(), qBound(quint16{0}, pduFormat, quint16{511}));
-        QCOMPARE(frame.frameId(), frameId);
-        QVERIFY(frame.isValid());
+        QCOMPARE(frame.isValid(), isValid);
+        if (isValid)
+        {
+            QCOMPARE(frame.pduFormat(), pduFormat);
+            QCOMPARE(frame.frameId(), frameId);
+        }
     }
 
     void testPduSpecific_data()
