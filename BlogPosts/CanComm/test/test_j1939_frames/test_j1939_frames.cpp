@@ -29,7 +29,7 @@ private slots:
         QFETCH(quint16, pduFormat);
         QFETCH(quint32, frameId);
 
-        auto frame{J1939Frame{pduFormat, quint8{0U}, quint8{0U}}};
+        auto frame{J1939Frame{quint8{0U}, pduFormat, quint8{0U}, quint8{0U}}};
         QCOMPARE(frame.pduFormat(), pduFormat);
         QCOMPARE(frame.frameId(), frameId);
         QVERIFY(frame.isValid());
@@ -47,7 +47,7 @@ private slots:
     {
         QFETCH(quint16, pduFormat);
 
-        auto frame{J1939Frame{pduFormat, quint8{0U}, quint8{0U}}};
+        auto frame{J1939Frame{quint8{0U}, pduFormat, quint8{0U}, quint8{0U}}};
         QVERIFY(!frame.isValid());
         QCOMPARE(frame.frameId(), 0U);
     }
@@ -68,12 +68,11 @@ private slots:
         QFETCH(quint8, pduSpecific);
         QFETCH(quint32, frameId);
 
-        auto frame{J1939Frame{quint8{0U}, pduSpecific, quint8{0U}}};
+        auto frame{J1939Frame{quint8{0U}, quint8{0U}, pduSpecific, quint8{0U}}};
         QCOMPARE(frame.pduSpecific(), pduSpecific);
         QCOMPARE(frame.frameId(), frameId);
         QVERIFY(frame.isValid());
     }
-
 
     void testSourceAddress_data()
     {
@@ -91,12 +90,50 @@ private slots:
         QFETCH(quint8, sourceAddress);
         QFETCH(quint32, frameId);
 
-        auto frame{J1939Frame{quint8{0U}, quint8{0U}, sourceAddress}};
+        auto frame{J1939Frame{quint8{0U}, quint8{0U}, quint8{0U}, sourceAddress}};
         QCOMPARE(frame.sourceAddress(), sourceAddress);
         QCOMPARE(frame.frameId(), frameId);
         QVERIFY(frame.isValid());
     }
 
+    void testPriority_data()
+    {
+        QTest::addColumn<quint8>("priority");
+        QTest::addColumn<quint32>("frameId");
+
+        QTest::newRow("prio = 3") << quint8{3U} << 0x0C000000U;
+        QTest::newRow("prio = 6") << quint8{6U} << 0x18000000U;
+        QTest::newRow("prio = 0") << quint8{0U} << 0x00000000U;
+        QTest::newRow("prio = 7") << quint8{7U} << 0x1C000000U;
+    }
+
+    void testPriority()
+    {
+        QFETCH(quint8, priority);
+        QFETCH(quint32, frameId);
+
+        auto frame{J1939Frame{priority, quint8{0U}, quint8{0U}, quint8{0U}}};
+        QCOMPARE(frame.priority(), priority);
+        QCOMPARE(frame.frameId(), frameId);
+        QVERIFY(frame.isValid());
+    }
+
+    void testInvalidPriority_data()
+    {
+        QTest::addColumn<quint8>("priority");
+
+        QTest::newRow("prio = 8") << quint8{8U};
+        QTest::newRow("prio = 255") << quint8{255U};
+    }
+
+    void testInvalidPriority()
+    {
+        QFETCH(quint8, priority);
+
+        auto frame{J1939Frame{priority, quint8{0U}, quint8{0U}, quint8{0U}}};
+        QVERIFY(!frame.isValid());
+        QCOMPARE(frame.frameId(), 0U);
+    }
 };
 
 QTEST_GUILESS_MAIN(TestJ1939Frames)
