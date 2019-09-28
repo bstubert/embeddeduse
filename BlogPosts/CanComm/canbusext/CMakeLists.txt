@@ -12,6 +12,7 @@ find_package(Qt5SerialBus)
 add_library(
     ${PROJECT_NAME} SHARED
     canbusext.h
+    j1939_frame.cpp
 )
 
 add_library(EmUse::CanBusExt ALIAS ${PROJECT_NAME})
