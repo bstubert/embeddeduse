@@ -29,8 +29,30 @@ private slots:
         QFETCH(quint8, pduFormat);
         QFETCH(quint32, frameId);
 
-        auto frame{J1939Frame{pduFormat}};
+        auto frame{J1939Frame{pduFormat, quint8{0U}}};
         QCOMPARE(frame.pduFormat(), pduFormat);
+        QCOMPARE(frame.frameId(), frameId);
+        QVERIFY(frame.isValid());
+    }
+
+    void testPduSpecific_data()
+    {
+        QTest::addColumn<quint8>("pduSpecific");
+        QTest::addColumn<quint32>("frameId");
+
+        QTest::newRow("pf = 73") << quint8{73U} << 0x00004900U;
+        QTest::newRow("pf = 241") << quint8{241U} << 0x0000f100U;
+        QTest::newRow("pf = 0") << quint8{0U} << 0x00000000U;
+        QTest::newRow("pf = 255") << quint8{255U} << 0x0000ff00U;
+    }
+
+    void testPduSpecific()
+    {
+        QFETCH(quint8, pduSpecific);
+        QFETCH(quint32, frameId);
+
+        auto frame{J1939Frame{quint8{0U}, pduSpecific}};
+        QCOMPARE(frame.pduSpecific(), pduSpecific);
         QCOMPARE(frame.frameId(), frameId);
         QVERIFY(frame.isValid());
     }
