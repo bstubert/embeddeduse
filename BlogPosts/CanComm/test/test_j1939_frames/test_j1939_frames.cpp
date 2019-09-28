@@ -22,6 +22,8 @@ private slots:
         QTest::newRow("pf = 498") << quint16{498U} << 0x01f20000U;
         QTest::newRow("pf = 0") << quint16{0U} << 0x00000000U;
         QTest::newRow("pf = 511") << quint16{511U} << 0x01ff0000U;
+        QTest::newRow("pf = 512") << quint16{512U} << 0x00000000U;
+        QTest::newRow("pf = 65535") << quint16{65535U} << 0x01ff0000U;
     }
 
     void testPduFormat()
@@ -30,26 +32,9 @@ private slots:
         QFETCH(quint32, frameId);
 
         auto frame{J1939Frame{quint8{0U}, pduFormat, quint8{0U}, quint8{0U}}};
-        QCOMPARE(frame.pduFormat(), pduFormat);
+        QCOMPARE(frame.pduFormat(), (pduFormat % 512));
         QCOMPARE(frame.frameId(), frameId);
         QVERIFY(frame.isValid());
-    }
-
-    void testInvalidPduFormat_data()
-    {
-        QTest::addColumn<quint16>("pduFormat");
-
-        QTest::newRow("pf = 512") << quint16{512U};
-        QTest::newRow("pf = 65535") << quint16{65535U};
-    }
-
-    void testInvalidPduFormat()
-    {
-        QFETCH(quint16, pduFormat);
-
-        auto frame{J1939Frame{quint8{0U}, pduFormat, quint8{0U}, quint8{0U}}};
-        QVERIFY(!frame.isValid());
-        QCOMPARE(frame.frameId(), 0U);
     }
 
     void testPduSpecific_data()
