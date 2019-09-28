@@ -8,6 +8,7 @@ constexpr quint32 INVALID_FRAME_ID{0xE0000000};
 
 constexpr quint32 MASK_PRIORITY{0x1C000000U};
 constexpr quint32 SHIFT_PRIORITY{26U};
+constexpr quint8 MAX_PRIORITY{7U};
 
 constexpr quint32 MASK_PDU_FORMAT{0x01FF0000U};
 constexpr quint32 SHIFT_PDU_FORMAT{16U};
@@ -22,17 +23,21 @@ constexpr quint32 SHIFT_PDU_SPECIFIC{8U};
 constexpr quint32 MASK_SOURCE_ADDRESS{0x000000FFU};
 
 
+bool isJ1939Compliant(quint8 priority, quint16 pduFormat)
+{
+    return pduFormat <= MAX_PDU_FORMAT && priority <= MAX_PRIORITY;
+}
+
 quint32 toJ1939FrameId(quint8 priority, quint16 pduFormat, quint8 pduSpecific, quint8 sourceAddress)
 {
+    if (!isJ1939Compliant(priority, pduFormat))
+    {
+        return INVALID_FRAME_ID;
+    }
     return (quint32{priority} << SHIFT_PRIORITY) |
             (quint32{pduFormat} << SHIFT_PDU_FORMAT) |
             (quint32{pduSpecific} << SHIFT_PDU_SPECIFIC) |
             (quint32{sourceAddress});
-}
-
-bool isJ1939Compliant(quint16 pduFormat)
-{
-    return pduFormat <= MAX_PDU_FORMAT;
 }
 
 } // end namespace
@@ -40,10 +45,6 @@ bool isJ1939Compliant(quint16 pduFormat)
 J1939Frame::J1939Frame(quint8 priority, quint16 pduFormat, quint8 pduSpecific, quint8 sourceAddress)
     : QCanBusFrame{toJ1939FrameId(priority, pduFormat, pduSpecific, sourceAddress), {}}
 {
-    if (!isJ1939Compliant(pduFormat))
-    {
-        setFrameId(INVALID_FRAME_ID);
-    }
 }
 
 quint8 J1939Frame::priority() const
