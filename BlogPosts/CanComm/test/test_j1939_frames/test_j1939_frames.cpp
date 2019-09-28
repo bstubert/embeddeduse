@@ -1,5 +1,6 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
+#include <QByteArray>
 #include <QtDebug>
 #include <QtTest>
 
@@ -33,7 +34,7 @@ private slots:
         QFETCH(bool, isValid);
         QFETCH(quint32, frameId);
 
-        auto frame{J1939Frame{quint8{0U}, pduFormat, quint8{0U}, quint8{0U}}};
+        auto frame{J1939Frame{quint8{0U}, pduFormat, quint8{0U}, quint8{0U}, {}}};
         QCOMPARE(frame.isValid(), isValid);
         if (isValid)
         {
@@ -58,7 +59,7 @@ private slots:
         QFETCH(quint8, pduSpecific);
         QFETCH(quint32, frameId);
 
-        auto frame{J1939Frame{quint8{0U}, quint8{0U}, pduSpecific, quint8{0U}}};
+        auto frame{J1939Frame{quint8{0U}, quint8{0U}, pduSpecific, quint8{0U}, {}}};
         QCOMPARE(frame.pduSpecific(), pduSpecific);
         QCOMPARE(frame.frameId(), frameId);
         QVERIFY(frame.isValid());
@@ -80,7 +81,7 @@ private slots:
         QFETCH(quint8, sourceAddress);
         QFETCH(quint32, frameId);
 
-        auto frame{J1939Frame{quint8{0U}, quint8{0U}, quint8{0U}, sourceAddress}};
+        auto frame{J1939Frame{quint8{0U}, quint8{0U}, quint8{0U}, sourceAddress, {}}};
         QCOMPARE(frame.sourceAddress(), sourceAddress);
         QCOMPARE(frame.frameId(), frameId);
         QVERIFY(frame.isValid());
@@ -104,7 +105,7 @@ private slots:
         QFETCH(quint8, priority);
         QFETCH(quint32, frameId);
 
-        auto frame{J1939Frame{priority, quint8{0U}, quint8{0U}, quint8{0U}}};
+        auto frame{J1939Frame{priority, quint8{0U}, quint8{0U}, quint8{0U}, {}}};
         QCOMPARE(frame.priority(), priority);
         QCOMPARE(frame.frameId(), frameId);
         QVERIFY(frame.isValid());
@@ -130,8 +131,15 @@ private slots:
         QFETCH(quint16, pduFormat);
         QFETCH(bool, isPeerToPeer);
 
-        auto frame{J1939Frame{6U, pduFormat, 0x28U, 0x02U}};
+        auto frame{J1939Frame{6U, pduFormat, 0x28U, 0x02U, {}}};
         QCOMPARE(frame.isPeerToPeer(), isPeerToPeer);
+    }
+
+    void testPayload()
+    {
+        auto payload{QByteArray{8, 1}};
+        auto frame{J1939Frame{6U, 0xE0U, 0x28U, 0x02U, payload}};
+        QCOMPARE(frame.payload(), payload);
     }
 };
 

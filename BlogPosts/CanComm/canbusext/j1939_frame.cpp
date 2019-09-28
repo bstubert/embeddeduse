@@ -1,5 +1,7 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
+#include <QByteArray>
+
 #include "j1939_frame.h"
 
 namespace
@@ -42,8 +44,9 @@ quint32 toJ1939FrameId(quint8 priority, quint16 pduFormat, quint8 pduSpecific, q
 
 } // end namespace
 
-J1939Frame::J1939Frame(quint8 priority, quint16 pduFormat, quint8 pduSpecific, quint8 sourceAddress)
-    : QCanBusFrame{toJ1939FrameId(priority, pduFormat, pduSpecific, sourceAddress), {}}
+J1939Frame::J1939Frame(quint8 priority, quint16 pduFormat, quint8 pduSpecific, quint8 sourceAddress,
+                       const QByteArray &payload)
+    : QCanBusFrame{toJ1939FrameId(priority, pduFormat, pduSpecific, sourceAddress), payload}
 {
 }
 
