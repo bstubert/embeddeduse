@@ -72,3 +72,8 @@ bool J1939Frame::isPeerToPeer() const
     return (pduFormat() & SHIFTED_MASK_PDU_FORMAT_1) <= LAST_PDU_FORMAT_1;
 }
 
+quint8 J1939Frame::destinationAddress() const
+{
+    return pduSpecific();
+}
+
