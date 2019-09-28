@@ -109,6 +109,30 @@ private slots:
         QCOMPARE(frame.frameId(), frameId);
         QVERIFY(frame.isValid());
     }
+
+    void testPeerToPeer_data()
+    {
+        QTest::addColumn<quint16>("pduFormat");
+        QTest::addColumn<bool>("isPeerToPeer");
+
+        QTest::newRow("pf = 0") << quint16{0x00U} << true;
+        QTest::newRow("pf = 239") << quint16{0xefU} << true;
+        QTest::newRow("pf = 240") << quint16{0xf0U} << false;
+        QTest::newRow("pf = 255") << quint16{0xffU} << false;
+        QTest::newRow("pf = 256") << quint16{0x100U} << true;
+        QTest::newRow("pf = 495") << quint16{0x1efU} << true;
+        QTest::newRow("pf = 496") << quint16{0x1f0U} << true;
+        QTest::newRow("pf = 511") << quint16{0x1ffU} << false;
+    }
+
+    void testPeerToPeer()
+    {
+        QFETCH(quint16, pduFormat);
+        QFETCH(bool, isPeerToPeer);
+
+        auto frame{J1939Frame{6U, pduFormat, 0x28U, 0x02U}};
+        QCOMPARE(frame.isPeerToPeer(), isPeerToPeer);
+    }
 };
 
 QTEST_GUILESS_MAIN(TestJ1939Frames)

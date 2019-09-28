@@ -15,4 +15,5 @@ public:
     quint16 pduFormat() const;
     quint8 pduSpecific() const;
     quint8 sourceAddress() const;
+    bool isPeerToPeer() const;
 };
