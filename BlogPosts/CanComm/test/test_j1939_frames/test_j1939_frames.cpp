@@ -4,6 +4,7 @@
 #include <QtDebug>
 #include <QtTest>
 
+#include "j1939_broadcast_frames.h"
 #include "j1939_frame.h"
 
 
@@ -135,11 +136,19 @@ private slots:
         QCOMPARE(frame.isPeerToPeer(), isPeerToPeer);
     }
 
-    void testPayload()
+    void testSimplePayload()
     {
         auto payload{QByteArray{8, 1}};
         auto frame{J1939Frame{6U, 0xE0U, 0x28U, 0x02U, payload}};
         QCOMPARE(frame.payload(), payload);
+    }
+
+    // TODO: Try some encodings where the values are out-of-range for 4-bit fields.
+    void testPayloadEncoding()
+    {
+        auto eec1{EEC1Frame{EEC1Frame::Payload{4U, 10U, 80U, 56U, 5489U, 13U, 3U, 0U, 30U}}};
+        QCOMPARE(eec1.frameId(), 0x0cf00400U);
+        QCOMPARE(eec1.payload().toHex(), QByteArray("a4503871150d031e"));
     }
 };
 

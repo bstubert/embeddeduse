@@ -12,6 +12,7 @@ find_package(Qt5SerialBus)
 add_library(
     ${PROJECT_NAME} SHARED
     canbusext.h
+    j1939_broadcast_frames.cpp
     j1939_frame.cpp
 )
 
