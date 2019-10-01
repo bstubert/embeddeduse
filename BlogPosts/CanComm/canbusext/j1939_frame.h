@@ -4,6 +4,7 @@
 
 #include <QCanBusFrame>
 #include <QtGlobal>
+#include <QVector>
 
 class QByteArray;
 

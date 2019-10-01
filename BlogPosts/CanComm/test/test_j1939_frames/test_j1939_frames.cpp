@@ -143,10 +143,12 @@ private slots:
         QCOMPARE(frame.payload(), payload);
     }
 
-    // TODO: Try some encodings where the values are out-of-range for 4-bit fields.
+    // TODO:
+    // * Try negative numbers for fields.
+    // * Try some encodings where the values are out-of-range for 4-bit fields.
     void testPayloadEncoding()
     {
-        auto eec1{EEC1Frame{EEC1Frame::Payload{4U, 10U, 80U, 56U, 5489U, 13U, 3U, 0U, 30U}}};
+        auto eec1{EEC1Frame{{4U, 10U, 80U, 56U, 5489U, 13U, 3U, 0U, 30U}}};
         QCOMPARE(eec1.frameId(), 0x0cf00400U);
         QCOMPARE(eec1.payload().toHex(), QByteArray("a4503871150d031e"));
     }

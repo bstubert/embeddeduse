@@ -32,27 +32,3 @@ private:
 };
 
 
-//struct EEC1Payload
-//{
-//    static constexpr int c_parameterCount{8};
-
-//    // Define QVector<QPair<quint8, quin8> with startBit and bitMask for every parameter
-//    // in payload of EEC1.
-
-//    // Define enum with parameter names as symbolic constants; the constant values run from 0
-//    // to c_parameterCount - 1.
-
-//    QByteArray toPayload(const QVector<quint64> &parameterValues) const
-//    {
-//        auto number{quint64{0U}};
-//        for (int i = 0; i < qMin(c_parameterCount, parameterValues.size()); ++i)
-//        {
-////            number |= ((parameterValues[i] << startBit) & bitMask);
-//        }
-//        QByteArray payload{c_parameterCount, 0xff};
-//        qToLittleEndian(number, payload.data());
-//        return payload;
-//    }
-
-//    QVector<quint64> fromPayload(const QByteArray &payload);
-//};
