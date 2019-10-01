@@ -26,9 +26,6 @@ public:
     };
 
     explicit EEC1Frame(Payload payload);
-
-private:
-    QByteArray encode(Payload payload) const;
 };
 
 

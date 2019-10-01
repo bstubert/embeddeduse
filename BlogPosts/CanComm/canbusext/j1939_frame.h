@@ -2,7 +2,9 @@
 
 #pragma once
 
+#include <QByteArray>
 #include <QCanBusFrame>
+#include <QtEndian>
 #include <QtGlobal>
 #include <QVector>
 
@@ -20,4 +22,13 @@ public:
     quint8 sourceAddress() const;
     bool isPeerToPeer() const;
     quint8 destinationAddress() const;
+
+protected:
+    template <class Payload>
+    static QByteArray encode(Payload payload)
+    {
+        QByteArray result(8, 0x00);
+        qToLittleEndian(payload, result.data());
+        return result;
+    }
 };
