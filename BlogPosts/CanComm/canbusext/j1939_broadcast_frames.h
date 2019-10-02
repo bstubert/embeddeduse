@@ -25,7 +25,9 @@ public:
         quint64 engineDemandPercentTorque : 8;
     };
 
-    explicit EEC1Frame(Payload payload);
+    explicit EEC1Frame(Payload payload)
+        : J1939Frame{3U, 240U, 4U, 0U, encode(std::move(payload))}
+    {}
 };
 
 
