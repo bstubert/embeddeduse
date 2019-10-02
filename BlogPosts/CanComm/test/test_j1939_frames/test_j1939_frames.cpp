@@ -143,8 +143,6 @@ private slots:
         QCOMPARE(frame.payload(), payload);
     }
 
-    // TODO:
-    // * Try negative numbers for fields.
     void testEncodePayload()
     {
         auto eec1{EEC1Frame{{4U, 10U, 80U, 56U, 5489U, 13U, 3U, 0U, 30U}}};
@@ -160,6 +158,13 @@ private slots:
         auto eec1{EEC1Frame{{4U, 51U, 80U, 56U, 5489U, 13U, 3U, 0U, 349U}}};
         QCOMPARE(eec1.frameId(), 0x0cf00400U);
         QCOMPARE(eec1.payload().toHex(), QByteArray("34503871150d035d"));
+    }
+
+    void testEncodePayloadWithNegativeValues()
+    {
+        auto vehicleSpeed{A03VehicleSpeed{{quint16(-948), 1347U, quint16(-5439), 4390U}}};
+        QCOMPARE(vehicleSpeed.frameId(), 0x18FF3203U);
+        QCOMPARE(vehicleSpeed.payload().toHex(), QByteArray("4cfc4305c1ea2611"));
     }
 };
 
