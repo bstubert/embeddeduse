@@ -32,7 +32,6 @@ public:
 
 class A03VehicleSpeed : public J1939Frame
 {
-public:
     struct Payload
     {
         quint64 targetVehicleSpeed : 16;    // range: [-7000; 7000], 0.01 km/h
@@ -41,8 +40,12 @@ public:
         quint64 engineSpeed_T2 : 16;        // range: [0; 8191], 0.125 rpm
     };
 
-    explicit A03VehicleSpeed(Payload payload)
-        : J1939Frame{6U, 255U, 50U, 3U, encode(std::move(payload))}
+public:
+    explicit A03VehicleSpeed(qint16 targetVehicleSpeed, qint16 actualVehicleSpeed,
+                             qint16 targetVehicleSpdRamp, quint16 engineSpeed_T2)
+        : J1939Frame{6U, 255U, 50U, 3U,
+                     encode(Payload{quint16(targetVehicleSpeed), quint16(actualVehicleSpeed),
+                                    quint16(targetVehicleSpdRamp), engineSpeed_T2})}
     {}
 };
 
