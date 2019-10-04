@@ -8,6 +8,7 @@
 
 #include "canbusext.h"
 #include "canbusrouter.h"
+#include "j1939_frame.h"
 
 CanBusRouter::CanBusRouter(int canId, const QString &plugin, const QString &interface,
                            QObject *parent)
@@ -100,7 +101,7 @@ void CanBusRouter::setRawFilters(const QList<QCanBusDevice::Filter> &filters)
     m_device->setConfigurationParameter(QCanBusDevice::RawFilterKey, v);
 }
 
-void CanBusRouter::writeFrame(const QCanBusFrame &frame)
+void CanBusRouter::writeFrame(const J1939Frame &frame)
 {
     if (m_device == nullptr)
     {

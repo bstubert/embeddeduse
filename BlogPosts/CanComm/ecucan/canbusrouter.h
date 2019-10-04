@@ -3,7 +3,6 @@
 #pragma once
 
 #include <QCanBusDevice>
-#include <QCanBusFrame>
 #include <QObject>
 #include <QSet>
 #include <QString>
@@ -12,6 +11,7 @@
 #include "can_frame_cache.h"
 
 class QCanBusFrame;
+class J1939Frame;
 
 class CanBusRouter : public QObject
 {
@@ -38,7 +38,7 @@ signals:
     void framesReceived(const QSet<int> &ecuIdColl);
 
 public slots:
-    void writeFrame(const QCanBusFrame &frame);
+    void writeFrame(const J1939Frame &frame);
 
 protected:
     QCanBusDevice *m_device{nullptr};
