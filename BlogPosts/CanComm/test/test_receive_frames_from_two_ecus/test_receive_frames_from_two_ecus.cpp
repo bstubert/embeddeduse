@@ -5,6 +5,7 @@
 #include <QSignalSpy>
 #include <QtTest>
 
+#include "j1939_frame.h"
 #include "mockcanbusrouter.h"
 
 class TestReceiveFramesFromTwoEcus : public QObject
@@ -14,10 +15,10 @@ class TestReceiveFramesFromTwoEcus : public QObject
     MockCanBusRouter *m_router{nullptr};
     QSignalSpy *m_receivedSpy{nullptr};
 
-    const QCanBusFrame c_ecu2_1{QCanBusFrame{0x18FF0602, QByteArray::fromHex("0A0000000A000000")}};
-    const QCanBusFrame c_ecu2_2{QCanBusFrame{0x18FF0602, QByteArray::fromHex("0B0000000B000000")}};
-    const QCanBusFrame c_ecu3_1{QCanBusFrame{0x18FF3503, QByteArray::fromHex("0100000001000000")}};
-    const QCanBusFrame c_ecu3_2{QCanBusFrame{0x18FF3503, QByteArray::fromHex("0200000002000000")}};
+    const J1939Frame c_ecu2_1{6U, 0xffU, 0x06U, 0x02U, QByteArray::fromHex("0A0000000A000000")};
+    const J1939Frame c_ecu2_2{6U, 0xffU, 0x06U, 0x02U, QByteArray::fromHex("0B0000000B000000")};
+    const J1939Frame c_ecu3_1{6U, 0xffU, 0x35U, 0x03U, QByteArray::fromHex("0100000001000000")};
+    const J1939Frame c_ecu3_2{6U, 0xffU, 0x35U, 0x03U, QByteArray::fromHex("0200000002000000")};
 
     QSet<int> receivedEcuIds(int spyIndex) const
     {
@@ -52,10 +53,10 @@ private slots:
         QCOMPARE(receivedEcuIds(0), (QSet<int>{2, 3}));
 
         auto fromEcu2 = m_router->takeReceivedFrames(2);
-        QCOMPARE(fromEcu2, (QVector<QCanBusFrame>{c_ecu2_1, c_ecu2_2}));
+        QCOMPARE(fromEcu2, (QVector<J1939Frame>{c_ecu2_1, c_ecu2_2}));
 
         auto fromEcu3 = m_router->takeReceivedFrames(3);
-        QCOMPARE(fromEcu3, (QVector<QCanBusFrame>{c_ecu3_1}));
+        QCOMPARE(fromEcu3, (QVector<J1939Frame>{c_ecu3_1}));
     }
 
     void testDontRetrieveOldFramesAgain()
@@ -82,10 +83,10 @@ private slots:
         QCOMPARE(receivedEcuIds(1), (QSet<int>{2, 3}));
 
         auto fromEcu2 = m_router->takeReceivedFrames(2);
-        QCOMPARE(fromEcu2, (QVector<QCanBusFrame>{c_ecu2_2}));
+        QCOMPARE(fromEcu2, (QVector<J1939Frame>{c_ecu2_2}));
 
         auto fromEcu3 = m_router->takeReceivedFrames(3);
-        QCOMPARE(fromEcu3, (QVector<QCanBusFrame>{c_ecu3_2, c_ecu3_1}));
+        QCOMPARE(fromEcu3, (QVector<J1939Frame>{c_ecu3_2, c_ecu3_1}));
     }
 };
 

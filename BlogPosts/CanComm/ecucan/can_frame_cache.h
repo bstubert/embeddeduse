@@ -9,6 +9,8 @@
 #include <QTimer>
 #include <QVector>
 
+#include "j1939_frame.h"
+
 class QTimer;
 
 class CanFrameCache : public QObject
@@ -19,7 +21,7 @@ class CanFrameCache : public QObject
 public:
     explicit CanFrameCache(QObject *parent = nullptr);
     QSet<int> enqueueIncomingFrames(const QVector<QCanBusFrame> & frameColl);
-    QVector<QCanBusFrame> takeIncomingFrames(int ecuId);
+    QVector<J1939Frame> takeIncomingFrames(int ecuId);
 
     QCanBusFrame enqueueOutgoingFrame(const QCanBusFrame &frame);
     QCanBusFrame dequeueOutgoingFrame();
@@ -33,6 +35,6 @@ private:
 
     const QCanBusFrame c_invalidFrame{QCanBusFrame::InvalidFrame};
     QTimer m_receiptTimer;
-    QMap<int, QVector<QCanBusFrame>> m_incomingCache;
+    QMap<int, QVector<J1939Frame>> m_incomingCache;
     QVector<QCanBusFrame> m_outgoingCache;
 };

@@ -17,14 +17,14 @@ QSet<int> CanFrameCache::enqueueIncomingFrames(const QVector<QCanBusFrame> &fram
     auto ecuIdColl = QSet<int>{};
     for (const auto &frame : frameColl)
     {
-        auto id = sourceEcuId(frame);
-        ecuIdColl.insert(id);
-        m_incomingCache[id].append(frame);
+        auto jframe{J1939Frame{frame}};
+        ecuIdColl.insert(jframe.sourceAddress());
+        m_incomingCache[jframe.sourceAddress()].append(jframe);
     }
     return ecuIdColl;
 }
 
-QVector<QCanBusFrame> CanFrameCache::takeIncomingFrames(int ecuId)
+QVector<J1939Frame> CanFrameCache::takeIncomingFrames(int ecuId)
 {
     return m_incomingCache.take(ecuId);
 }

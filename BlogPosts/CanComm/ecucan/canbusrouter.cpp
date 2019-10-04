@@ -52,7 +52,7 @@ QCanBusDevice::CanBusDeviceState CanBusRouter::state() const
     return m_state;
 }
 
-QVector<QCanBusFrame> CanBusRouter::takeReceivedFrames(int ecuId)
+QVector<J1939Frame> CanBusRouter::takeReceivedFrames(int ecuId)
 {
     if (m_device == nullptr)
     {

@@ -24,7 +24,7 @@ public:
     QCanBusDevice::CanBusError error() const;
     QString errorString() const;
     QCanBusDevice::CanBusDeviceState state() const;
-    QVector<QCanBusFrame> takeReceivedFrames(int sourceEcuId);
+    QVector<J1939Frame> takeReceivedFrames(int sourceEcuId);
 
     bool isReceiveOwnFrameEnabled() const;
     void setReceiveOwnFrameEnabled(bool enabled);

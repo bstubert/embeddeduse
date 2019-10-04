@@ -177,7 +177,6 @@ private slots:
         QVERIFY(!j1939Frame.isPeerToPeer());
     }
 
-
     void testConvertCanToJ1939FrameByAssignment()
     {
         auto canFrame{QCanBusFrame{0x18FF3203U, QByteArray::fromHex("4cfc4305c1ea2611")}};
@@ -189,7 +188,6 @@ private slots:
         QCOMPARE(j1939Frame.priority(), quint8{6U});
         QVERIFY(!j1939Frame.isPeerToPeer());
     }
-
 };
 
 QTEST_GUILESS_MAIN(TestJ1939Frames)
