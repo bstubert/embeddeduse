@@ -18,6 +18,7 @@
 #include <QtTest>
 
 #include "canbusext.h"
+#include "j1939_frame.h"
 #include "mockcanutils.h"
 #include "mockcanbusrouter.h"
 
@@ -50,13 +51,13 @@ private slots:
     void testRsp2ConfErrorReq1();
 
 private:    
-    const QCanBusFrame c_frame1{0x18ef0201U, QByteArray::fromHex("018A010000000000")};
-    const QCanBusFrame c_frame2{0x18ef0301U, QByteArray::fromHex("01B5010000000000")};
+    const J1939Frame c_frame1{6U, 0xefU, 0x02U, 0x01U, QByteArray::fromHex("018A010000000000")};
+    const J1939Frame c_frame2{6U, 0xefU, 0x03U, 0x01U, QByteArray::fromHex("01B5010000000000")};
 
-    const QCanBusFrame c_request1{0x18ef0201U, QByteArray::fromHex("018A010000000000")};
-    const QCanBusFrame c_response1{0x18ef0102U, QByteArray::fromHex("018A014433221100")};
-    const QCanBusFrame c_request2{0x18ef0201U, QByteArray::fromHex("0157000000000000")};
-    const QCanBusFrame c_response2{0x18ef0102U, QByteArray::fromHex("015700AABBCCDD00")};
+    const J1939Frame c_request1{6U, 0xefU, 0x02U, 0x01U, QByteArray::fromHex("018A010000000000")};
+    const J1939Frame c_response1{6U, 0xefU, 0x01U, 0x02U, QByteArray::fromHex("018A014433221100")};
+    const J1939Frame c_request2{6U, 0xefU, 0x02U, 0x01U, QByteArray::fromHex("0157000000000000")};
+    const J1939Frame c_response2{6U, 0xefU, 0x01U, 0x02U, QByteArray::fromHex("015700AABBCCDD00")};
 
     MockCanBusRouter *m_router;
     QSignalSpy *m_writtenSpy;
