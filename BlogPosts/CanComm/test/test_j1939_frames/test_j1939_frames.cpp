@@ -166,7 +166,7 @@ private slots:
         QCOMPARE(vehicleSpeed.payload().toHex(), QByteArray("4cfc4305c1ea2611"));
     }
 
-    void testConvertCanToJ1939Frame()
+    void testConvertCanToJ1939FrameByConstructor()
     {
         auto canFrame{QCanBusFrame{0x18FF3203U, QByteArray::fromHex("4cfc4305c1ea2611")}};
         auto j1939Frame{J1939Frame{canFrame}};
@@ -176,6 +176,20 @@ private slots:
         QCOMPARE(j1939Frame.priority(), quint8{6U});
         QVERIFY(!j1939Frame.isPeerToPeer());
     }
+
+
+    void testConvertCanToJ1939FrameByAssignment()
+    {
+        auto canFrame{QCanBusFrame{0x18FF3203U, QByteArray::fromHex("4cfc4305c1ea2611")}};
+        auto j1939Frame{J1939Frame{6U, 0xE0U, 0x28U, 0x02U, {}}};
+        j1939Frame = canFrame;
+        QCOMPARE(j1939Frame.sourceAddress(), quint8{3U});
+        QCOMPARE(j1939Frame.pduFormat(), quint16{0xffU});
+        QCOMPARE(j1939Frame.pduSpecific(), quint16{0x32U});
+        QCOMPARE(j1939Frame.priority(), quint8{6U});
+        QVERIFY(!j1939Frame.isPeerToPeer());
+    }
+
 };
 
 QTEST_GUILESS_MAIN(TestJ1939Frames)
