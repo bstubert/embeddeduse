@@ -15,6 +15,7 @@ class J1939Frame : public QCanBusFrame
 public:
     explicit J1939Frame(quint8 priority, quint16 pduFormat, quint8 pduSpecific,
                         quint8 sourceAddress, const QByteArray &payload);
+    explicit J1939Frame(const QCanBusFrame &frame);
 
     quint8 priority() const;
     quint16 pduFormat() const;

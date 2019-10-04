@@ -50,6 +50,11 @@ J1939Frame::J1939Frame(quint8 priority, quint16 pduFormat, quint8 pduSpecific, q
 {
 }
 
+J1939Frame::J1939Frame(const QCanBusFrame &frame)
+    : QCanBusFrame(frame.frameId(), frame.payload())
+{
+}
+
 quint8 J1939Frame::priority() const
 {
     return static_cast<quint8>((frameId() & MASK_PRIORITY) >> SHIFT_PRIORITY);
