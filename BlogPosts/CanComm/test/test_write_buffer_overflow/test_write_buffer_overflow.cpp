@@ -33,13 +33,14 @@ class TestWriteBufferOverflow : public QObject
 
     static const int c_writeErrorInterval{4};
 
-    QByteArray encodedReadParameter(int pid, int value = 0) const
+    QVector<QCanBusFrame> toCanBusFrames(const QVector<J1939Frame> &jframes) const
     {
-        QByteArray payload(8, 0x00);
-        qToLittleEndian(static_cast<quint8>(1), payload.data());
-        qToLittleEndian(static_cast<quint16>(pid), payload.data() + 1);
-        qToLittleEndian(static_cast<qint32>(value), payload.data() + 3);
-        return payload;
+        auto cframes{QVector<QCanBusFrame>{}};
+        for (auto jframe : jframes)
+        {
+            cframes.append(jframe);
+        }
+        return cframes;
     }
 
     std::pair<QVector<J1939Frame>, QVector<J1939Frame>>
@@ -85,7 +86,7 @@ private slots:
         auto requestColl = QVector<J1939Frame>{};
         auto responseColl = QVector<J1939Frame>{};
         std::tie(requestColl, responseColl) = createReadParameterRequests(2 * c_writeErrorInterval, 32);
-        m_router->expectWriteFrames(requestColl);
+        m_router->expectWriteFrames(toCanBusFrames(requestColl));
 
         for (const auto &request : requestColl)
         {

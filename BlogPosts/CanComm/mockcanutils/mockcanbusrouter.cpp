@@ -27,7 +27,7 @@ void MockCanBusRouter::expectWriteFrame(const QCanBusFrame &frame)
     ::setExpectedCanFrames(m_device, frames);
 }
 
-void MockCanBusRouter::expectWriteFrames(const QVector<J1939Frame> &frames)
+void MockCanBusRouter::expectWriteFrames(const QVector<QCanBusFrame> &frames)
 {
     auto expectedFrames = ::expectedCanFrames(m_device);
     for (const auto &frame : frames)
