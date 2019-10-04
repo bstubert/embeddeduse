@@ -7,6 +7,7 @@
 
 #include "canbusrouter.h"
 #include "ecuproxy.h"
+#include "j1939_broadcast_frames.h"
 
 EcuProxy::EcuProxy(int ecuId, CanBusRouter *router, QObject *parent)
     : EcuBase{ecuId, router, parent}
@@ -42,7 +43,7 @@ bool EcuProxy::isReadParameter(const QCanBusFrame &frame) const
 void EcuProxy::sendReadParameter(quint16 pid, quint32 value)
 {
     emitReadParameterMessage(QStringLiteral("Trm/Send"), pid, value);
-    m_router->writeFrame(QCanBusFrame(0x18ef0201U, encodedReadParameter(pid, value)));
+    m_router->writeFrame(ReadParameterRequest(static_cast<quint8>(ecuId()), 0x01U, pid, value));
 }
 
 void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)

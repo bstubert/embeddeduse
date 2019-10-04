@@ -1,5 +1,6 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
+#include "j1939_frame.h"
 #include "mockcanbusrouter.h"
 
 MockCanBusRouter::MockCanBusRouter(int canId, const QString &interface, QObject *parent)
@@ -26,7 +27,7 @@ void MockCanBusRouter::expectWriteFrame(const QCanBusFrame &frame)
     ::setExpectedCanFrames(m_device, frames);
 }
 
-void MockCanBusRouter::expectWriteFrames(const QVector<QCanBusFrame> &frames)
+void MockCanBusRouter::expectWriteFrames(const QVector<J1939Frame> &frames)
 {
     auto expectedFrames = ::expectedCanFrames(m_device);
     for (const auto &frame : frames)

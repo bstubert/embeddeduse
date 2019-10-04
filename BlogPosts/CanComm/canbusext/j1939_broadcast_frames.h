@@ -56,4 +56,39 @@ public:
     {}
 };
 
+class ReadParameterRequest : public J1939Frame
+{
+    struct Payload
+    {
+        quint64 commandId : 8;
+        quint64 parameterId : 16;
+        quint64 parameterValue : 32;
+        quint64 dummy0 : 8;
+    };
 
+public:
+    explicit ReadParameterRequest(quint8 destinationAddress, quint8 sourceAddress,
+                                  quint16 parameterId, quint32 parameterValue)
+        : J1939Frame{6U, 239U, destinationAddress, sourceAddress,
+                     encode(Payload{quint8{1U}, parameterId, parameterValue, quint8{0U}})}
+    {}
+};
+
+
+class ReadParameterResponse : public J1939Frame
+{
+    struct Payload
+    {
+        quint64 commandId : 8;
+        quint64 parameterId : 16;
+        quint64 parameterValue : 32;
+        quint64 dummy0 : 8;
+    };
+
+public:
+    explicit ReadParameterResponse(quint8 destinationAddress, quint8 sourceAddress,
+                                   quint16 parameterId, quint32 parameterValue)
+        : J1939Frame{6U, 239U, destinationAddress, sourceAddress,
+                     encode(Payload{quint8{1U}, parameterId, parameterValue, quint8{0U}})}
+    {}
+};

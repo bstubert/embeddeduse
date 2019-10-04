@@ -7,7 +7,6 @@
 #include <QCanBus>
 #include <QCanBusDevice>
 #include <QCanBusDeviceInfo>
-#include <QCanBusFrame>
 #include <QCoreApplication>
 #include <QList>
 #include <QObject>

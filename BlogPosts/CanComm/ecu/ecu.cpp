@@ -7,6 +7,7 @@
 
 #include "canbusrouter.h"
 #include "ecu.h"
+#include "j1939_broadcast_frames.h"
 
 Ecu::Ecu(int ecuId, CanBusRouter *router, QObject *parent)
     : EcuBase{ecuId, router, parent}
@@ -39,7 +40,7 @@ bool Ecu::isReadParameter(const QCanBusFrame &frame) const
 void Ecu::sendReadParameter(quint16 pid, quint32 value)
 {
     emitReadParameterMessage(QStringLiteral("Ecu/Send"), pid, value);
-    m_router->writeFrame(QCanBusFrame(0x18ef0102U, encodedReadParameter(pid, value)));
+    m_router->writeFrame(ReadParameterResponse(0x01U, static_cast<quint8>(ecuId()), pid, value));
 }
 
 void Ecu::receiveReadParameter(const QCanBusFrame &frame)
@@ -55,23 +56,29 @@ void Ecu::sendUnsolicitedFrames()
 {
     if (ecuId() == 3) {
         emitSendUnsolicitedMessage(3, "Send", 1);
-        m_router->writeFrame(QCanBusFrame{0x18FF3503, QByteArray::fromHex("0100000001000000")});
+        m_router->writeFrame(J1939Frame{6U, 0xffU, 0x35U, 0x03U,
+                                        QByteArray::fromHex("0100000001000000")});
 
         emitSendUnsolicitedMessage(3, "Send", 2);
-        m_router->writeFrame(QCanBusFrame{0x18FF3503, QByteArray::fromHex("0200000002000000")});
+        m_router->writeFrame(J1939Frame{6U, 0xffU, 0x35U, 0x03U,
+                                          QByteArray::fromHex("0200000002000000")});
 
         emitSendUnsolicitedMessage(3, "Send", 3);
-        m_router->writeFrame(QCanBusFrame{0x18FF3503, QByteArray::fromHex("030000000C000000")});
+        m_router->writeFrame(J1939Frame{6U, 0xffU, 0x35U, 0x03U,
+                                        QByteArray::fromHex("030000000C000000")});
     }
     else if (ecuId() == 2) {
         emitSendUnsolicitedMessage(2, "Send", 10);
-        m_router->writeFrame(QCanBusFrame{0x18FF0602, QByteArray::fromHex("0A0000000A000000")});
+        m_router->writeFrame(J1939Frame{6U, 0xffU, 0x06U, 0x02U,
+                                        QByteArray::fromHex("0A0000000A000000")});
 
         emitSendUnsolicitedMessage(2, "Send", 11);
-        m_router->writeFrame(QCanBusFrame{0x18FF0602, QByteArray::fromHex("0B0000000B000000")});
+        m_router->writeFrame(J1939Frame{6U, 0xffU, 0x06U, 0x02U,
+                                        QByteArray::fromHex("0B0000000B000000")});
 
         emitSendUnsolicitedMessage(2, "Send", 12);
-        m_router->writeFrame(QCanBusFrame{0x18FF0602, QByteArray::fromHex("0C0000000C000000")});
+        m_router->writeFrame(J1939Frame{6U, 0xffU, 0x06U, 0x02U,
+                                        QByteArray::fromHex("0C0000000C000000")});
     }
 }
 

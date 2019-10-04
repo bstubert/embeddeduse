@@ -21,6 +21,7 @@
 #include <QVector>
 
 #include "canbusext.h"
+#include "j1939_broadcast_frames.h"
 #include "mockcanbusrouter.h"
 #include "mockcanutils.h"
 
@@ -32,9 +33,6 @@ class TestWriteBufferOverflow : public QObject
 
     static const int c_writeErrorInterval{4};
 
-    const QCanBusFrame c_out1{QCanBusFrame{0x18ef0201U, QByteArray::fromHex("018A010000000000")}};
-    const QCanBusFrame c_in1{QCanBusFrame{0x18ef0102U, QByteArray::fromHex("018A0103A4000000")}};
-
     QByteArray encodedReadParameter(int pid, int value = 0) const
     {
         QByteArray payload(8, 0x00);
@@ -44,16 +42,17 @@ class TestWriteBufferOverflow : public QObject
         return payload;
     }
 
-    std::pair<QVector<QCanBusFrame>, QVector<QCanBusFrame>>
-    createReadParameterRequests(int count, int startPid)
+    std::pair<QVector<J1939Frame>, QVector<J1939Frame>>
+    createReadParameterRequests(quint16 count, quint16 startPid)
     {
-        auto requestColl = QVector<QCanBusFrame>{};
-        auto responseColl = QVector<QCanBusFrame>{};
-        for (int i = 0; i < count; ++i)
+        auto requestColl = QVector<J1939Frame>{};
+        auto responseColl = QVector<J1939Frame>{};
+        for (quint16 i = 0; i < count; ++i)
         {
-            requestColl.append(QCanBusFrame{0x18ef0201U, encodedReadParameter(startPid + i)});
-            auto value = static_cast<int>(QRandomGenerator::global()->generate());
-            responseColl.append(QCanBusFrame{0x18ef0102U, encodedReadParameter(startPid + i, value)});
+            auto pid{quint16(startPid + i)};
+            requestColl.append(ReadParameterRequest{0x02U, 0x01U, pid, 0U});
+            auto value = static_cast<quint32>(QRandomGenerator::global()->generate());
+            responseColl.append(ReadParameterResponse{0x01U, 0x02U, pid, value});
         }
         return std::make_pair(requestColl, responseColl);
     }
@@ -83,8 +82,8 @@ private slots:
     {
         m_router->setReceiveOwnFrameEnabled(false);
 
-        auto requestColl = QVector<QCanBusFrame>{};
-        auto responseColl = QVector<QCanBusFrame>{};
+        auto requestColl = QVector<J1939Frame>{};
+        auto responseColl = QVector<J1939Frame>{};
         std::tie(requestColl, responseColl) = createReadParameterRequests(2 * c_writeErrorInterval, 32);
         m_router->expectWriteFrames(requestColl);
 
@@ -101,8 +100,8 @@ private slots:
 
     void testAvoidWriteBufferOverflow()
     {
-        auto requestColl = QVector<QCanBusFrame>{};
-        auto responseColl = QVector<QCanBusFrame>{};
+        auto requestColl = QVector<J1939Frame>{};
+        auto responseColl = QVector<J1939Frame>{};
         std::tie(requestColl, responseColl) = createReadParameterRequests(c_writeErrorInterval, 32);
         for (int i = 0; i < requestColl.count(); ++i)
         {
@@ -123,8 +122,8 @@ private slots:
 
     void testRecoverFromLostOwnFrame()
     {
-        auto requestColl = QVector<QCanBusFrame>{};
-        auto responseColl = QVector<QCanBusFrame>{};
+        auto requestColl = QVector<J1939Frame>{};
+        auto responseColl = QVector<J1939Frame>{};
         std::tie(requestColl, responseColl) = createReadParameterRequests(3, 32);
         for (int i = 0; i < requestColl.count(); ++i)
         {
