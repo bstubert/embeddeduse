@@ -11,7 +11,6 @@
 
 class EEC1Frame : public J1939Frame
 {
-public:
     struct Payload
     {
         quint64 engineTorqueMode : 4;
@@ -25,8 +24,16 @@ public:
         quint64 engineDemandPercentTorque : 8;
     };
 
-    explicit EEC1Frame(Payload payload)
-        : J1939Frame{3U, 240U, 4U, 0U, encode(std::move(payload))}
+public:
+    explicit EEC1Frame(quint8 engineTorqueMode, quint8 actualEnginePercenTorque,
+                       quint8 driversDemandEnginePercentTorque, quint8 actualEnginePercentTorque,
+                       quint16 engineSpeed, quint8 sourceAddressEngineController,
+                       quint8 engineStarterMode, quint8 engineDemandPercentTorque)
+        : J1939Frame{3U, 240U, 4U, 0U,
+                     encode(Payload{engineTorqueMode, actualEnginePercenTorque,
+                            driversDemandEnginePercentTorque, actualEnginePercentTorque,
+                            engineSpeed, sourceAddressEngineController,
+                            engineStarterMode, quint8{0U}, engineDemandPercentTorque})}
     {}
 };
 

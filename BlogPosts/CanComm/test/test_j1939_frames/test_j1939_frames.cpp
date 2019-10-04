@@ -145,17 +145,16 @@ private slots:
 
     void testEncodePayload()
     {
-        auto eec1{EEC1Frame{{4U, 10U, 80U, 56U, 5489U, 13U, 3U, 0U, 30U}}};
+        auto eec1{EEC1Frame{4U, 10U, 80U, 56U, 5489U, 13U, 3U, 30U}};
         QCOMPARE(eec1.frameId(), 0x0cf00400U);
         QCOMPARE(eec1.payload().toHex(), QByteArray("a4503871150d031e"));
     }
 
     // The second payload argument 0x33 (51) cannot be represented by 4 bits. It is truncated to
-    // 4 bits, which yields 0x03. Similarly, the last argument 0x15d (349) is to big for 8 bits.
-    // It is truncated to 0x5d.
+    // 4 bits, which yields 0x03.
     void testEncodePayloadWithOutOfRangeValues()
     {
-        auto eec1{EEC1Frame{{4U, 51U, 80U, 56U, 5489U, 13U, 3U, 0U, 349U}}};
+        auto eec1{EEC1Frame{4U, 51U, 80U, 56U, 5489U, 13U, 3U, 93U}};
         QCOMPARE(eec1.frameId(), 0x0cf00400U);
         QCOMPARE(eec1.payload().toHex(), QByteArray("34503871150d035d"));
     }
@@ -166,16 +165,6 @@ private slots:
         QCOMPARE(vehicleSpeed.frameId(), 0x18FF3203U);
         QCOMPARE(vehicleSpeed.payload().toHex(), QByteArray("4cfc4305c1ea2611"));
     }
-
-
-    // 2 ** 16 - 54396 = 11140 = 0x2b84
-//    void testEncodePayloadWithNegativeOutOfRangeValues()
-//    {
-//        auto vehicleSpeed{A03VehicleSpeed{-54396, 1347, -5439, 4390}};
-//        QCOMPARE(vehicleSpeed.frameId(), 0x18FF3203U);
-//        QCOMPARE(vehicleSpeed.payload().toHex(), QByteArray("842b4305c1ea2611"));
-//    }
-
 };
 
 QTEST_GUILESS_MAIN(TestJ1939Frames)
