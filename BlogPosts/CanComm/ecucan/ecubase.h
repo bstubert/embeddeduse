@@ -8,7 +8,7 @@
 #include <QSet>
 
 class QByteArray;
-class QCanBusFrame;
+class J1939Frame;
 
 class CanBusRouter;
 
@@ -22,10 +22,10 @@ public:
     bool isLogging() const;
     void setLogging(bool enabled);
 
-    virtual bool isReadParameter(const QCanBusFrame &frame) const;
+    virtual bool isReadParameter(const J1939Frame &frame) const;
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U);
-    virtual void receiveReadParameter(const QCanBusFrame &frame);
-    virtual void receiveUnsolicitedFrame(const QCanBusFrame &frame);
+    virtual void receiveReadParameter(const J1939Frame &frame);
+    virtual void receiveUnsolicitedFrame(const J1939Frame &frame);
 
 signals:
     void logMessage(const QString &msg);
@@ -36,7 +36,7 @@ public slots:
 
 protected:
     QByteArray encodedReadParameter(quint16 pid, quint32 value) const;
-    std::tuple<quint16, quint32> decodedReadParameter(const QCanBusFrame &frame) const;
+    std::tuple<quint16, quint32> decodedReadParameter(const J1939Frame &frame) const;
     int sourceEcuId(quint32 frameId) const;
     void emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value);
     void emitSendUnsolicitedMessage(int ecuId, const QString &direction, int value);

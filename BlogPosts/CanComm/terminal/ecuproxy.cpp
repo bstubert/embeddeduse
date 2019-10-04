@@ -1,13 +1,13 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
 #include <tuple>
-#include <QCanBusFrame>
 #include <QString>
 #include <QtEndian>
 
 #include "canbusrouter.h"
 #include "ecuproxy.h"
 #include "j1939_broadcast_frames.h"
+#include "j1939_frame.h"
 
 EcuProxy::EcuProxy(int ecuId, CanBusRouter *router, QObject *parent)
     : EcuBase{ecuId, router, parent}
@@ -35,7 +35,7 @@ void EcuProxy::onFramesReceived(const QSet<int> &ecuIdColl)
     }
 }
 
-bool EcuProxy::isReadParameter(const QCanBusFrame &frame) const
+bool EcuProxy::isReadParameter(const J1939Frame &frame) const
 {
     return frame.frameId() == 0x18ef0102U && frame.payload()[0] == char(1);
 }
@@ -46,7 +46,7 @@ void EcuProxy::sendReadParameter(quint16 pid, quint32 value)
     m_router->writeFrame(ReadParameterRequest(static_cast<quint8>(ecuId()), 0x01U, pid, value));
 }
 
-void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)
+void EcuProxy::receiveReadParameter(const J1939Frame &frame)
 {
     quint16 pid = 0U;
     quint32 value = 0U;
@@ -54,7 +54,7 @@ void EcuProxy::receiveReadParameter(const QCanBusFrame &frame)
     emitReadParameterMessage(QStringLiteral("Trm/Recv"), pid, value);
 }
 
-void EcuProxy::receiveUnsolicitedFrame(const QCanBusFrame &frame)
+void EcuProxy::receiveUnsolicitedFrame(const J1939Frame &frame)
 {
     auto sourceId = sourceEcuId(frame.frameId());
     auto value = qFromLittleEndian<qint32>(frame.payload().data());

@@ -1,13 +1,13 @@
 // Copyright (C) 2019, Burkhard Stubert (DBA Embedded Use)
 
 #include <tuple>
-#include <QCanBusFrame>
 #include <QRandomGenerator>
 #include <QString>
 
 #include "canbusrouter.h"
 #include "ecu.h"
 #include "j1939_broadcast_frames.h"
+#include "j1939_frame.h"
 
 Ecu::Ecu(int ecuId, CanBusRouter *router, QObject *parent)
     : EcuBase{ecuId, router, parent}
@@ -32,7 +32,7 @@ void Ecu::onFramesReceived(const QSet<int> &ecuIdColl)
     }
 }
 
-bool Ecu::isReadParameter(const QCanBusFrame &frame) const
+bool Ecu::isReadParameter(const J1939Frame &frame) const
 {
     return frame.frameId() == 0x18ef0201U && frame.payload()[0] == char(1);
 }
@@ -43,7 +43,7 @@ void Ecu::sendReadParameter(quint16 pid, quint32 value)
     m_router->writeFrame(ReadParameterResponse(0x01U, static_cast<quint8>(ecuId()), pid, value));
 }
 
-void Ecu::receiveReadParameter(const QCanBusFrame &frame)
+void Ecu::receiveReadParameter(const J1939Frame &frame)
 {
     quint16 pid = 0U;
     quint32 value = 0U;

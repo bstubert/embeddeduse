@@ -4,9 +4,8 @@
 
 #include "ecubase.h"
 
-class QCanBusFrame;
-
 class CanBusRouter;
+class J1939Frame;
 
 class EcuProxy : public EcuBase
 {
@@ -16,8 +15,8 @@ public:
     virtual ~EcuProxy() override;
 
     virtual void onFramesReceived(const QSet<int> &ecuIdColl) override;
-    virtual bool isReadParameter(const QCanBusFrame &frame) const override;
+    virtual bool isReadParameter(const J1939Frame &frame) const override;
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U) override;
-    virtual void receiveReadParameter(const QCanBusFrame &frame) override;
-    virtual void receiveUnsolicitedFrame(const QCanBusFrame &frame) override;
+    virtual void receiveReadParameter(const J1939Frame &frame) override;
+    virtual void receiveUnsolicitedFrame(const J1939Frame &frame) override;
 };

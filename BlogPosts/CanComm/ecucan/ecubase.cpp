@@ -3,7 +3,6 @@
 #include <tuple>
 #include <QByteArray>
 #include <QCanBusDevice>
-#include <QCanBusFrame>
 #include <QDateTime>
 #include <QLatin1Char>
 #include <QtDebug>
@@ -38,7 +37,7 @@ void EcuBase::setLogging(bool enabled)
     m_logging = enabled;
 }
 
-bool EcuBase::isReadParameter(const QCanBusFrame &frame) const
+bool EcuBase::isReadParameter(const J1939Frame &frame) const
 {
     Q_UNUSED(frame)
     return false;
@@ -50,12 +49,12 @@ void EcuBase::sendReadParameter(quint16 pid, quint32 value)
     Q_UNUSED(value)
 }
 
-void EcuBase::receiveReadParameter(const QCanBusFrame &frame)
+void EcuBase::receiveReadParameter(const J1939Frame &frame)
 {
     Q_UNUSED(frame)
 }
 
-void EcuBase::receiveUnsolicitedFrame(const QCanBusFrame &frame)
+void EcuBase::receiveUnsolicitedFrame(const J1939Frame &frame)
 {
     Q_UNUSED(frame)
 }
@@ -79,7 +78,7 @@ QByteArray EcuBase::encodedReadParameter(quint16 pid, quint32 value) const
     return payload;
 }
 
-std::tuple<quint16, quint32> EcuBase::decodedReadParameter(const QCanBusFrame &frame) const
+std::tuple<quint16, quint32> EcuBase::decodedReadParameter(const J1939Frame &frame) const
 {
     const auto &payload = frame.payload();
     quint16 pid = qFromLittleEndian<qint16>(payload.data() + 1);
