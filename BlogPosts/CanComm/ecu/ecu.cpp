@@ -56,29 +56,23 @@ void Ecu::sendUnsolicitedFrames()
 {
     if (ecuId() == 3) {
         emitSendUnsolicitedMessage(3, "Send", 1);
-        m_router->writeFrame(J1939Frame{6U, 0xffU, 0x35U, 0x03U,
-                                        QByteArray::fromHex("0100000001000000")});
+        m_router->writeFrame(A03VehicleSpeed{750, 344, 1340, 3499});
 
         emitSendUnsolicitedMessage(3, "Send", 2);
-        m_router->writeFrame(J1939Frame{6U, 0xffU, 0x35U, 0x03U,
-                                          QByteArray::fromHex("0200000002000000")});
+        m_router->writeFrame(A03VehicleSpeed{750, 407, 1340, 3499});
 
         emitSendUnsolicitedMessage(3, "Send", 3);
-        m_router->writeFrame(J1939Frame{6U, 0xffU, 0x35U, 0x03U,
-                                        QByteArray::fromHex("030000000C000000")});
+        m_router->writeFrame(A03VehicleSpeed{750, 489, 1340, 3499});
     }
     else if (ecuId() == 2) {
         emitSendUnsolicitedMessage(2, "Send", 10);
-        m_router->writeFrame(J1939Frame{6U, 0xffU, 0x06U, 0x02U,
-                                        QByteArray::fromHex("0A0000000A000000")});
+        m_router->writeFrame(A02AxleTilt{389, -813, 1034});
 
         emitSendUnsolicitedMessage(2, "Send", 11);
-        m_router->writeFrame(J1939Frame{6U, 0xffU, 0x06U, 0x02U,
-                                        QByteArray::fromHex("0B0000000B000000")});
+        m_router->writeFrame(A02AxleTilt{443, -978, 981});
 
         emitSendUnsolicitedMessage(2, "Send", 12);
-        m_router->writeFrame(J1939Frame{6U, 0xffU, 0x06U, 0x02U,
-                                        QByteArray::fromHex("0C0000000C000000")});
+        m_router->writeFrame(A02AxleTilt{508, -1088, 855});
     }
 }
 

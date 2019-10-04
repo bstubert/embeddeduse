@@ -37,6 +37,24 @@ public:
     {}
 };
 
+class A02AxleTilt : public J1939Frame
+{
+    struct Payload
+    {
+        quint64 tiltAxle1 : 16;
+        quint64 tiltAxle2 : 16;
+        quint64 tiltAxle3 : 16;
+        quint64 dummy0 : 16;
+    };
+
+public:
+    explicit A02AxleTilt(qint16 tiltAxle1, qint16 tiltAxle2, qint16 tiltAxle3)
+        : J1939Frame{6U, 255U, 16U, 3U,
+                     encode(Payload{quint16(tiltAxle1), quint16(tiltAxle2),
+                                    quint16(tiltAxle3), quint16{0U}})}
+    {}
+};
+
 class A03VehicleSpeed : public J1939Frame
 {
     struct Payload
