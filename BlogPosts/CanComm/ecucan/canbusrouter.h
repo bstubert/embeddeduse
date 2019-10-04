@@ -55,9 +55,7 @@ private:
     void writeQueuedFrame(const QCanBusFrame &frame);
     void processOwnFrames();
 
-#if (QT_VERSION < QT_VERSION_CHECK(5, 12, 0))
     QVector<QCanBusFrame> readAllFrames();
-#endif
 
     int m_canId{-1};
     QCanBusDevice::CanBusError m_error{QCanBusDevice::CanBusError::NoError};

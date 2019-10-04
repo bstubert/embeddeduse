@@ -132,11 +132,7 @@ void CanBusRouter::onFramesReceived()
     {
         return;
     }
-#if (QT_VERSION < QT_VERSION_CHECK(5, 12, 0))
-    auto ecuIdColl = m_receivedFrameCache.updateFrames(readAllFrames());
-#else
-    auto ecuIdColl = m_frameCache.enqueueIncomingFrames(m_device->readAllFrames());
-#endif
+    auto ecuIdColl = m_frameCache.enqueueIncomingFrames(readAllFrames());
     processOwnFrames();
     emit framesReceived(ecuIdColl);
 }
@@ -202,9 +198,9 @@ void CanBusRouter::processOwnFrames()
     }
 }
 
-#if (QT_VERSION < QT_VERSION_CHECK(5, 12, 0))
 QVector<QCanBusFrame> CanBusRouter::readAllFrames()
 {
+#if (QT_VERSION < QT_VERSION_CHECK(5, 12, 0))
     auto frameColl = QVector<QCanBusFrame>{};
     auto count = m_device->framesAvailable();
     for (int i = 0; i < count; ++i)
@@ -212,5 +208,7 @@ QVector<QCanBusFrame> CanBusRouter::readAllFrames()
         frameColl.append(m_device->readFrame());
     }
     return frameColl;
-}
+#else
+    return m_device->readAllFrames();
 #endif
+}
