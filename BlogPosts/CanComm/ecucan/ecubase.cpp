@@ -69,15 +69,6 @@ void EcuBase::onFramesReceived(const QSet<int> &ecuIdColl)
     Q_UNUSED(ecuIdColl)
 }
 
-QByteArray EcuBase::encodedReadParameter(quint16 pid, quint32 value) const
-{
-    QByteArray payload(8, 0x00);
-    qToLittleEndian(quint8(1), payload.data());
-    qToLittleEndian(pid, payload.data() + 1);
-    qToLittleEndian(value, payload.data() + 3);
-    return payload;
-}
-
 std::tuple<quint16, quint32> EcuBase::decodedReadParameter(const J1939Frame &frame) const
 {
     const auto &payload = frame.payload();
