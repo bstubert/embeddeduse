@@ -147,7 +147,7 @@ private slots:
     {
         auto eec1{EEC1Frame{4U, 10U, 80U, 56U, 5489U, 13U, 3U, 30U}};
         QCOMPARE(eec1.frameId(), 0x0cf00400U);
-        QCOMPARE(eec1.payload().toHex(), QByteArray("a4503871150d031e"));
+        QCOMPARE(eec1.payload(), QByteArray::fromHex("a4503871150d031e"));
     }
 
     // The second payload argument 0x33 (51) cannot be represented by 4 bits. It is truncated to
@@ -156,14 +156,14 @@ private slots:
     {
         auto eec1{EEC1Frame{4U, 51U, 80U, 56U, 5489U, 13U, 3U, 93U}};
         QCOMPARE(eec1.frameId(), 0x0cf00400U);
-        QCOMPARE(eec1.payload().toHex(), QByteArray("34503871150d035d"));
+        QCOMPARE(eec1.payload(), QByteArray::fromHex("34503871150d035d"));
     }
 
     void testEncodePayloadWithNegativeValues()
     {
         auto vehicleSpeed{A03VehicleSpeed{-948, 1347, -5439, 4390U}};
         QCOMPARE(vehicleSpeed.frameId(), 0x18FF3203U);
-        QCOMPARE(vehicleSpeed.payload().toHex(), QByteArray("4cfc4305c1ea2611"));
+        QCOMPARE(vehicleSpeed.payload(), QByteArray::fromHex("4cfc4305c1ea2611"));
     }
 
     void testConvertCanToJ1939FrameByConstructor()
@@ -189,15 +189,17 @@ private slots:
         QVERIFY(!j1939Frame.isPeerToPeer());
     }
 
-//    void testDecodePayload()
-//    {
-//        auto vehicleSpeed{J1939Frame{6U, 255U, 50U, 3U, QByteArray("4cfc4305c1ea2611")}};
-//        if (vehicleSpeed.parameterGroupNumber() == 0xff32U)
-//        {
-//            auto payload = vehicleSpeed.decode<A03VehicleSpeed::Payload>();
-//            QCOMPARE(qint16(payload.actualVehicleSpeed), qint16(1347));
-//        }
-//    }
+    void testDecodePayload()
+    {
+        auto vehicleSpeed{J1939Frame{6U, 255U, 50U, 3U, QByteArray::fromHex("4cfc4305c1ea2611")}};
+        QCOMPARE(vehicleSpeed.parameterGroupNumber(), 0xff32U);
+
+        auto payload{vehicleSpeed.decode<A03VehicleSpeed::Payload>()};
+        QCOMPARE(payload.targetVehicleSpeed, -948);
+        QCOMPARE(payload.actualVehicleSpeed, 1347);
+        QCOMPARE(payload.targetVehicleSpdRamp, -5439);
+        QCOMPARE(payload.engineSpeed_T2, 4390U);
+    }
 };
 
 QTEST_GUILESS_MAIN(TestJ1939Frames)

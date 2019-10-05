@@ -33,6 +33,7 @@ public:
     Payload decode()
     {
         auto decoded{Payload{}};
+        qFromLittleEndian<qint64>(payload().data(), 1, &decoded);
         return decoded;
     }
 
