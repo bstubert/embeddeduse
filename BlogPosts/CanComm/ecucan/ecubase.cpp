@@ -69,19 +69,6 @@ void EcuBase::onFramesReceived(const QSet<int> &ecuIdColl)
     Q_UNUSED(ecuIdColl)
 }
 
-std::tuple<quint16, quint32> EcuBase::decodedReadParameter(const J1939Frame &frame) const
-{
-    const auto &payload = frame.payload();
-    quint16 pid = qFromLittleEndian<qint16>(payload.data() + 1);
-    quint32 value = qFromLittleEndian<qint32>(payload.data() + 3);
-    return std::make_tuple(pid, value);
-}
-
-int EcuBase::sourceEcuId(quint32 frameId) const
-{
-    return static_cast<int>(frameId & 0x000000FF);
-}
-
 void EcuBase::emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value)
 {
     if (isLogging()) {

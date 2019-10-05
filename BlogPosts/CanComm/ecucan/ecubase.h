@@ -35,8 +35,6 @@ public slots:
     virtual void onFramesReceived(const QSet<int> &ecuIdColl);
 
 protected:
-    std::tuple<quint16, quint32> decodedReadParameter(const J1939Frame &frame) const;
-    int sourceEcuId(quint32 frameId) const;
     void emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value);
     void emitInfoUnsolicitedMessage(const QString &info);
 

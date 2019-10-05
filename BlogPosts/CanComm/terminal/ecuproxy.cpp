@@ -48,10 +48,9 @@ void EcuProxy::sendReadParameter(quint16 pid, quint32 value)
 
 void EcuProxy::receiveReadParameter(const J1939Frame &frame)
 {
-    quint16 pid = 0U;
-    quint32 value = 0U;
-    std::tie(pid, value) = decodedReadParameter(frame);
-    emitReadParameterMessage(QStringLiteral("Trm/Recv"), pid, value);
+    auto payload{frame.decode<ReadParameterResponse::Payload>()};
+    emitReadParameterMessage(QStringLiteral("Trm/Recv"),  quint16(payload.parameterId),
+                             quint32(payload.parameterValue));
 }
 
 void EcuProxy::receiveUnsolicitedFrame(const J1939Frame &frame)

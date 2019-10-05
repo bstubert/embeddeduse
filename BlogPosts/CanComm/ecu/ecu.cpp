@@ -45,11 +45,10 @@ void Ecu::sendReadParameter(quint16 pid, quint32 value)
 
 void Ecu::receiveReadParameter(const J1939Frame &frame)
 {
-    quint16 pid = 0U;
-    quint32 value = 0U;
-    std::tie(pid, value) = decodedReadParameter(frame);
-    emitReadParameterMessage(QStringLiteral("Ecu/Recv"), pid, value);
-    sendReadParameter(pid, QRandomGenerator::global()->generate());
+    auto payload{frame.decode<ReadParameterRequest::Payload>()};
+    emitReadParameterMessage(QStringLiteral("Ecu/Recv"),  quint16(payload.parameterId),
+                             quint32(payload.parameterValue));
+    sendReadParameter(quint16(payload.parameterId), QRandomGenerator::global()->generate());
 }
 
 void Ecu::sendUnsolicitedFrames()
