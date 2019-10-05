@@ -49,7 +49,7 @@ public:
     };
 
     explicit A02AxleTilt(qint16 tiltAxle1, qint16 tiltAxle2, qint16 tiltAxle3)
-        : J1939Frame{6U, 255U, 16U, 3U,
+        : J1939Frame{6U, 255U, 16U, 2U,
                      encode(Payload{tiltAxle1, tiltAxle2, tiltAxle3, 0U})}
     {}
 };
