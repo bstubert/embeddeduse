@@ -4,6 +4,7 @@
 #include <QString>
 #include <QtDebug>
 
+#include "body_controller_proxy.h"
 #include "canbusrouter.h"
 #include "ecuproxy.h"
 #include "terminalmodel.h"
@@ -38,11 +39,11 @@ QCanBusDevice::Filter createEcuFilter(int ecuId)
 TerminalModel::TerminalModel(QObject *parent)
     : QObject{parent}
     , m_router{new CanBusRouter{1, "socketcan", "can0", this}}
-    , m_a2Proxy{new EcuProxy{2, m_router, this}}
-    , m_a3Proxy{new TransmissionProxy{m_router, this}}
+    , m_bodyController{new BodyControllerProxy{m_router, this}}
+    , m_transmission{new TransmissionProxy{m_router, this}}
 {
-    connectProxy(m_a2Proxy);
-    connectProxy(m_a3Proxy);
+    connectProxy(m_bodyController);
+    connectProxy(m_transmission);
 
     setLoggingOn(true);
     setTxBufferOn(false);
@@ -71,13 +72,13 @@ void TerminalModel::setFilterOn(bool isOn)
 
 bool TerminalModel::isLoggingOn() const
 {
-    return m_a2Proxy->isLogging();
+    return m_bodyController->isLogging();
 }
 
 void TerminalModel::setLoggingOn(bool isOn)
 {
-    m_a2Proxy->setLogging(isOn);
-    m_a3Proxy->setLogging(isOn);
+    m_bodyController->setLogging(isOn);
+    m_transmission->setLogging(isOn);
     emit loggingOnChanged();
 }
 
@@ -97,7 +98,7 @@ void TerminalModel::setTxBufferOn(bool isOn)
 void TerminalModel::simulateTxBufferOverflow(int count)
 {
     for (quint16 i = 1; i <= count; ++i) {
-        m_a2Proxy->sendReadParameter(i);
+        m_bodyController->sendReadParameter(i);
     }
 }
 

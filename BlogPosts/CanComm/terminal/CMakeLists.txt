@@ -14,6 +14,7 @@ find_package(Qt5SerialBus)
 
 add_executable(
   ${PROJECT_NAME}
+  body_controller_proxy.cpp
   ecuproxy.cpp
   main.cpp
   terminalmodel.cpp

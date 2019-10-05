@@ -6,6 +6,7 @@
 
 class QString;
 
+class BodyControllerProxy;
 class CanBusRouter;
 class EcuProxy;
 class TransmissionProxy;
@@ -47,6 +48,6 @@ private:
     void connectProxy(EcuProxy *proxy);
 
     CanBusRouter *m_router;
-    EcuProxy *m_a2Proxy;
-    TransmissionProxy *m_a3Proxy;
+    BodyControllerProxy *m_bodyController;
+    TransmissionProxy *m_transmission;
 };
