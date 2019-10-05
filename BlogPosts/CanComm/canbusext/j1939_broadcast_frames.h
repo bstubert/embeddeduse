@@ -11,20 +11,20 @@
 
 class EEC1Frame : public J1939Frame
 {
+public:
     struct Payload
     {
-        quint64 engineTorqueMode : 4;
-        quint64 actualEnginePercenTorque : 4;
-        quint64 driversDemandEnginePercentTorque : 8;
-        quint64 actualEnginePercentTorque : 8;
-        quint64 engineSpeed : 16;
-        quint64 sourceAddressEngineController : 8;
-        quint64 engineStarterMode : 4;
-        quint64 dummy0 : 4;
-        quint64 engineDemandPercentTorque : 8;
+        qint64 engineTorqueMode : 4;
+        qint64 actualEnginePercenTorque : 4;
+        qint64 driversDemandEnginePercentTorque : 8;
+        qint64 actualEnginePercentTorque : 8;
+        qint64 engineSpeed : 16;
+        qint64 sourceAddressEngineController : 8;
+        qint64 engineStarterMode : 4;
+        qint64 dummy0 : 4;
+        qint64 engineDemandPercentTorque : 8;
     };
 
-public:
     explicit EEC1Frame(quint8 engineTorqueMode, quint8 actualEnginePercenTorque,
                        quint8 driversDemandEnginePercentTorque, quint8 actualEnginePercentTorque,
                        quint16 engineSpeed, quint8 sourceAddressEngineController,
@@ -33,80 +33,79 @@ public:
                      encode(Payload{engineTorqueMode, actualEnginePercenTorque,
                             driversDemandEnginePercentTorque, actualEnginePercentTorque,
                             engineSpeed, sourceAddressEngineController,
-                            engineStarterMode, quint8{0U}, engineDemandPercentTorque})}
+                            engineStarterMode, 0, engineDemandPercentTorque})}
     {}
 };
 
 class A02AxleTilt : public J1939Frame
 {
+public:
     struct Payload
     {
-        quint64 tiltAxle1 : 16;
-        quint64 tiltAxle2 : 16;
-        quint64 tiltAxle3 : 16;
-        quint64 dummy0 : 16;
+        qint64 tiltAxle1 : 16;
+        qint64 tiltAxle2 : 16;
+        qint64 tiltAxle3 : 16;
+        qint64 dummy0 : 16;
     };
 
-public:
     explicit A02AxleTilt(qint16 tiltAxle1, qint16 tiltAxle2, qint16 tiltAxle3)
         : J1939Frame{6U, 255U, 16U, 3U,
-                     encode(Payload{quint16(tiltAxle1), quint16(tiltAxle2),
-                                    quint16(tiltAxle3), quint16{0U}})}
+                     encode(Payload{tiltAxle1, tiltAxle2, tiltAxle3, 0U})}
     {}
 };
 
 class A03VehicleSpeed : public J1939Frame
 {
+public:
     struct Payload
     {
-        quint64 targetVehicleSpeed : 16;    // range: [-7000; 7000], 0.01 km/h
-        quint64 actualVehicleSpeed : 16;    // range: [-7000; 7000], 0.01 km/h
-        quint64 targetVehicleSpdRamp : 16;  // range: [-7000; 7000], 0.1 km/h
-        quint64 engineSpeed_T2 : 16;        // range: [0; 8191], 0.125 rpm
+        qint64 targetVehicleSpeed : 16;    // range: [-7000; 7000], 0.01 km/h
+        qint64 actualVehicleSpeed : 16;    // range: [-7000; 7000], 0.01 km/h
+        qint64 targetVehicleSpdRamp : 16;  // range: [-7000; 7000], 0.1 km/h
+        qint64 engineSpeed_T2 : 16;        // range: [0; 8191], 0.125 rpm
     };
 
-public:
     explicit A03VehicleSpeed(qint16 targetVehicleSpeed, qint16 actualVehicleSpeed,
                              qint16 targetVehicleSpdRamp, quint16 engineSpeed_T2)
         : J1939Frame{6U, 255U, 50U, 3U,
-                     encode(Payload{quint16(targetVehicleSpeed), quint16(actualVehicleSpeed),
-                                    quint16(targetVehicleSpdRamp), engineSpeed_T2})}
+                     encode(Payload{targetVehicleSpeed, actualVehicleSpeed,
+                                    targetVehicleSpdRamp, engineSpeed_T2})}
     {}
 };
 
 class ReadParameterRequest : public J1939Frame
 {
+public:
     struct Payload
     {
-        quint64 commandId : 8;
-        quint64 parameterId : 16;
-        quint64 parameterValue : 32;
-        quint64 dummy0 : 8;
+        qint64 commandId : 8;
+        qint64 parameterId : 16;
+        qint64 parameterValue : 32;
+        qint64 dummy0 : 8;
     };
 
-public:
     explicit ReadParameterRequest(quint8 destinationAddress, quint8 sourceAddress,
                                   quint16 parameterId, quint32 parameterValue)
         : J1939Frame{6U, 239U, destinationAddress, sourceAddress,
-                     encode(Payload{quint8{1U}, parameterId, parameterValue, quint8{0U}})}
+                     encode(Payload{1, parameterId, parameterValue, 0})}
     {}
 };
 
 
 class ReadParameterResponse : public J1939Frame
 {
+public:
     struct Payload
     {
-        quint64 commandId : 8;
-        quint64 parameterId : 16;
-        quint64 parameterValue : 32;
-        quint64 dummy0 : 8;
+        qint64 commandId : 8;
+        qint64 parameterId : 16;
+        qint64 parameterValue : 32;
+        qint64 dummy0 : 8;
     };
 
-public:
     explicit ReadParameterResponse(quint8 destinationAddress, quint8 sourceAddress,
                                    quint16 parameterId, quint32 parameterValue)
         : J1939Frame{6U, 239U, destinationAddress, sourceAddress,
-                     encode(Payload{quint8{1U}, parameterId, parameterValue, quint8{0U}})}
+                     encode(Payload{1, parameterId, parameterValue, 0})}
     {}
 };

@@ -188,6 +188,16 @@ private slots:
         QCOMPARE(j1939Frame.priority(), quint8{6U});
         QVERIFY(!j1939Frame.isPeerToPeer());
     }
+
+//    void testDecodePayload()
+//    {
+//        auto vehicleSpeed{J1939Frame{6U, 255U, 50U, 3U, QByteArray("4cfc4305c1ea2611")}};
+//        if (vehicleSpeed.parameterGroupNumber() == 0xff32U)
+//        {
+//            auto payload = vehicleSpeed.decode<A03VehicleSpeed::Payload>();
+//            QCOMPARE(qint16(payload.actualVehicleSpeed), qint16(1347));
+//        }
+//    }
 };
 
 QTEST_GUILESS_MAIN(TestJ1939Frames)

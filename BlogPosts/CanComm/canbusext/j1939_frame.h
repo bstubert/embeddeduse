@@ -22,11 +22,19 @@ public:
     J1939Frame &operator=(const QCanBusFrame &frame);
 
     quint8 priority() const;
+    quint32 parameterGroupNumber() const;
     quint16 pduFormat() const;
     quint8 pduSpecific() const;
     quint8 sourceAddress() const;
     bool isPeerToPeer() const;
     quint8 destinationAddress() const;
+
+    template <class Payload>
+    Payload decode()
+    {
+        auto decoded{Payload{}};
+        return decoded;
+    }
 
 protected:
     template <class Payload>

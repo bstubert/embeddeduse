@@ -67,6 +67,11 @@ quint8 J1939Frame::priority() const
     return static_cast<quint8>((frameId() & MASK_PRIORITY) >> SHIFT_PRIORITY);
 }
 
+quint32 J1939Frame::parameterGroupNumber() const
+{
+    return (quint32(pduFormat()) << SHIFT_PDU_SPECIFIC) | quint32(pduSpecific());
+}
+
 quint16 J1939Frame::pduFormat() const
 {
     return static_cast<quint16>((frameId() & MASK_PDU_FORMAT) >> SHIFT_PDU_FORMAT);
