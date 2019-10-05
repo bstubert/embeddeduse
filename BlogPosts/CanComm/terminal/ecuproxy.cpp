@@ -56,8 +56,18 @@ void EcuProxy::receiveReadParameter(const J1939Frame &frame)
 
 void EcuProxy::receiveUnsolicitedFrame(const J1939Frame &frame)
 {
-    auto sourceId = sourceEcuId(frame.frameId());
-    auto value = qFromLittleEndian<qint32>(frame.payload().data());
-    auto info = QString{"Recv in Proxy %1"}.arg(ecuId());
-    emitSendUnsolicitedMessage(sourceId, info, value);
+    if (frame.parameterGroupNumber() == 0xff32U)
+    {
+        auto payload{frame.decode<A03VehicleSpeed::Payload>()};
+        emitInfoUnsolicitedMessage(QString{"Recv in Proxy %1: A03VehicleSpeed(%2, %3)"}
+                                   .arg(ecuId()).arg(payload.targetVehicleSpeed)
+                                   .arg(payload.actualVehicleSpeed));
+    }
+    else if (frame.parameterGroupNumber() == 0xff10U)
+    {
+        auto payload{frame.decode<A02AxleTilt::Payload>()};
+        emitInfoUnsolicitedMessage(QString{"Recv in Proxy %1: A02AxleTilt(%2, %3, %4)"}
+                                   .arg(ecuId()).arg(payload.tiltAxle1)
+                                   .arg(payload.tiltAxle2).arg(payload.tiltAxle2));
+    }
 }

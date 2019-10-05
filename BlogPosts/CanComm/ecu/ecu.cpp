@@ -55,23 +55,23 @@ void Ecu::receiveReadParameter(const J1939Frame &frame)
 void Ecu::sendUnsolicitedFrames()
 {
     if (ecuId() == 3) {
-        emitSendUnsolicitedMessage(3, "Send", 1);
+        emitInfoUnsolicitedMessage(QString{"Sent from ECU 3: A03VehicleSpeed(750, 344)"});
         m_router->writeFrame(A03VehicleSpeed{750, 344, 1340, 3499});
 
-        emitSendUnsolicitedMessage(3, "Send", 2);
+        emitInfoUnsolicitedMessage(QString{"Sent from ECU 3: A03VehicleSpeed(750, 407)"});
         m_router->writeFrame(A03VehicleSpeed{750, 407, 1340, 3499});
 
-        emitSendUnsolicitedMessage(3, "Send", 3);
+        emitInfoUnsolicitedMessage(QString{"Sent from ECU 3: A03VehicleSpeed(750, 489)"});
         m_router->writeFrame(A03VehicleSpeed{750, 489, 1340, 3499});
     }
     else if (ecuId() == 2) {
-        emitSendUnsolicitedMessage(2, "Send", 10);
+        emitInfoUnsolicitedMessage(QString{"Sent from ECU 2: A02AxleTilt(389, -813, 1034)"});
         m_router->writeFrame(A02AxleTilt{389, -813, 1034});
 
-        emitSendUnsolicitedMessage(2, "Send", 11);
+        emitInfoUnsolicitedMessage(QString{"Sent from ECU 2: A02AxleTilt(443, -978, 981)"});
         m_router->writeFrame(A02AxleTilt{443, -978, 981});
 
-        emitSendUnsolicitedMessage(2, "Send", 12);
+        emitInfoUnsolicitedMessage(QString{"Sent from ECU 2: A02AxleTilt(508, -1088, 855)"});
         m_router->writeFrame(A02AxleTilt{508, -1088, 855});
     }
 }

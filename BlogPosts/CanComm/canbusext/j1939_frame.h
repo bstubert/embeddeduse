@@ -13,7 +13,8 @@ class QByteArray;
 class J1939Frame : public QCanBusFrame
 {
 public:
-    explicit J1939Frame(quint8 priority, quint16 pduFormat, quint8 pduSpecific,
+    J1939Frame();
+    J1939Frame(quint8 priority, quint16 pduFormat, quint8 pduSpecific,
                         quint8 sourceAddress, const QByteArray &payload);
     J1939Frame(const J1939Frame &frame) = default;
     J1939Frame &operator=(const J1939Frame &frame) = default;
@@ -30,7 +31,7 @@ public:
     quint8 destinationAddress() const;
 
     template <class Payload>
-    Payload decode()
+    Payload decode() const
     {
         auto decoded{Payload{}};
         qFromLittleEndian<qint64>(payload().data(), 1, &decoded);

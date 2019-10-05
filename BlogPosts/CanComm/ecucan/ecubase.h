@@ -38,7 +38,7 @@ protected:
     std::tuple<quint16, quint32> decodedReadParameter(const J1939Frame &frame) const;
     int sourceEcuId(quint32 frameId) const;
     void emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value);
-    void emitSendUnsolicitedMessage(int ecuId, const QString &direction, int value);
+    void emitInfoUnsolicitedMessage(const QString &info);
 
     CanBusRouter *m_router{nullptr};
     int m_ecuId{-1};

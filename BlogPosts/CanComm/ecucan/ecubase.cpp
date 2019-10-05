@@ -91,9 +91,9 @@ void EcuBase::emitReadParameterMessage(const QString &prefix, quint16 pid, quint
     }
 }
 
-void EcuBase::emitSendUnsolicitedMessage(int ecuId, const QString &direction, int value)
+void EcuBase::emitInfoUnsolicitedMessage(const QString &info)
 {
     if (isLogging()) {
-        emit logMessage(QString("Ecu %1/%2: unsolicited %3").arg(ecuId).arg(direction).arg(value));
+        emit logMessage(info);
     }
 }

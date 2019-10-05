@@ -10,7 +10,7 @@ find_package(Qt5Core)
 find_package(Qt5SerialBus)
 
 add_library(
-    ${PROJECT_NAME} SHARED
+    ${PROJECT_NAME} STATIC
     canbusext.h
     j1939_broadcast_frames.h
     j1939_frame.cpp
