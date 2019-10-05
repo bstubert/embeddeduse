@@ -8,6 +8,7 @@ class QString;
 
 class CanBusRouter;
 class EcuProxy;
+class TransmissionProxy;
 
 class TerminalModel : public QObject
 {
@@ -43,9 +44,9 @@ signals:
     void loggingOnChanged();
 
 private:
-    EcuProxy *createEcuProxy(int ecuId);
+    void connectProxy(EcuProxy *proxy);
 
     CanBusRouter *m_router;
     EcuProxy *m_a2Proxy;
-    EcuProxy *m_a3Proxy;
+    TransmissionProxy *m_a3Proxy;
 };

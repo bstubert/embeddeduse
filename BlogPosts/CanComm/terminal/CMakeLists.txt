@@ -14,11 +14,11 @@ find_package(Qt5SerialBus)
 
 add_executable(
   ${PROJECT_NAME}
+  ecuproxy.cpp
   main.cpp
   terminalmodel.cpp
-  terminalmodel.h
-  ecuproxy.cpp
-  ecuproxy.h
+  transmission_proxy.cpp
+
   main.qml
   qml.qrc
 )

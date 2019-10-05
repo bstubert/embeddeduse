@@ -7,6 +7,7 @@
 #include "canbusrouter.h"
 #include "ecuproxy.h"
 #include "terminalmodel.h"
+#include "transmission_proxy.h"
 
 namespace
 {
@@ -37,9 +38,12 @@ QCanBusDevice::Filter createEcuFilter(int ecuId)
 TerminalModel::TerminalModel(QObject *parent)
     : QObject{parent}
     , m_router{new CanBusRouter{1, "socketcan", "can0", this}}
-    , m_a2Proxy{createEcuProxy(2)}
-    , m_a3Proxy{createEcuProxy(3)}
+    , m_a2Proxy{new EcuProxy{2, m_router, this}}
+    , m_a3Proxy{new TransmissionProxy{m_router, this}}
 {
+    connectProxy(m_a2Proxy);
+    connectProxy(m_a3Proxy);
+
     setLoggingOn(true);
     setTxBufferOn(false);
 }
@@ -97,14 +101,12 @@ void TerminalModel::simulateTxBufferOverflow(int count)
     }
 }
 
-EcuProxy *TerminalModel::createEcuProxy(int ecuId)
+void TerminalModel::connectProxy(EcuProxy *proxy)
 {
-    auto ecuProxy = new EcuProxy{ecuId, m_router, this};
     connect(m_router, &CanBusRouter::errorOccurred,
-            ecuProxy, &EcuProxy::onErrorOccurred);
+            proxy, &EcuProxy::onErrorOccurred);
     connect(m_router, &CanBusRouter::framesReceived,
-            ecuProxy, &EcuProxy::onFramesReceived);
-    connect(ecuProxy, &EcuProxy::logMessage,
+            proxy, &EcuProxy::onFramesReceived);
+    connect(proxy, &EcuProxy::logMessage,
             this, &TerminalModel::logMessage);
-    return ecuProxy;
 }

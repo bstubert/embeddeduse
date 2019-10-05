@@ -55,14 +55,7 @@ void EcuProxy::receiveReadParameter(const J1939Frame &frame)
 
 void EcuProxy::receiveUnsolicitedFrame(const J1939Frame &frame)
 {
-    if (frame.parameterGroupNumber() == 0xff32U)
-    {
-        auto payload{frame.decode<A03VehicleSpeed::Payload>()};
-        emitInfoUnsolicitedMessage(QString{"Recv in Proxy %1: A03VehicleSpeed(%2, %3)"}
-                                   .arg(ecuId()).arg(payload.targetVehicleSpeed)
-                                   .arg(payload.actualVehicleSpeed));
-    }
-    else if (frame.parameterGroupNumber() == 0xff10U)
+    if (frame.parameterGroupNumber() == 0xff10U)
     {
         auto payload{frame.decode<A02AxleTilt::Payload>()};
         emitInfoUnsolicitedMessage(QString{"Recv in Proxy %1: A02AxleTilt(%2, %3, %4)"}
