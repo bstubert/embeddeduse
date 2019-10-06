@@ -28,6 +28,7 @@ public:
     quint8 pduSpecific() const;
     quint8 sourceAddress() const;
     bool isPeerToPeer() const;
+    bool isProprietary() const;
     quint8 destinationAddress() const;
 
     template <class Payload>

@@ -15,6 +15,8 @@ constexpr quint8 MAX_PRIORITY{7U};
 constexpr quint32 MASK_PDU_FORMAT{0x01FF0000U};
 constexpr quint32 SHIFT_PDU_FORMAT{16U};
 constexpr quint16 MAX_PDU_FORMAT{511U};
+constexpr quint16 PGN_PROPRIETARY_PEER_TO_PEER{0xefU};
+constexpr quint16 PGN_PROPRIETARY_BROADCAST{0xffU};
 
 constexpr quint32 SHIFTED_MASK_PDU_FORMAT_1{0x00FFU};
 constexpr quint16 LAST_PDU_FORMAT_1{239U};
@@ -95,6 +97,12 @@ quint8 J1939Frame::sourceAddress() const
 bool J1939Frame::isPeerToPeer() const
 {
     return (pduFormat() & SHIFTED_MASK_PDU_FORMAT_1) <= LAST_PDU_FORMAT_1;
+}
+
+bool J1939Frame::isProprietary() const
+{
+    auto pf = pduFormat() & SHIFTED_MASK_PDU_FORMAT_1;
+    return pf == PGN_PROPRIETARY_PEER_TO_PEER || pf == PGN_PROPRIETARY_BROADCAST;
 }
 
 quint8 J1939Frame::destinationAddress() const

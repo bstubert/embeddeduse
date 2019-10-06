@@ -136,6 +136,33 @@ private slots:
         QCOMPARE(frame.isPeerToPeer(), isPeerToPeer);
     }
 
+    void testProprietaryFrame_data()
+    {
+        QTest::addColumn<quint16>("pduFormat");
+        QTest::addColumn<bool>("isProprietary");
+
+        QTest::newRow("proprietary/peer-to-peer/low") << quint16(0xefU) << true;
+        QTest::newRow("standard/peer-to-peer/low") << quint16(0xeaU) << false;
+
+        QTest::newRow("proprietary/peer-to-peer/high") << quint16(0x1efU) << true;
+        QTest::newRow("standard/peer-to-peer/high") << quint16(0x1eaU) << false;
+
+        QTest::newRow("proprietary/broadcast/low") << quint16(0xffU) << true;
+        QTest::newRow("standard/broadcast/low") << quint16(0xf0U) << false;
+
+        QTest::newRow("proprietary/broadcast/high") << quint16(0x1ffU) << true;
+        QTest::newRow("standard/broadcast/high") << quint16(0x195U) << false;
+    }
+
+    void testProprietaryFrame()
+    {
+        QFETCH(quint16, pduFormat);
+        QFETCH(bool, isProprietary);
+
+        auto frame{J1939Frame{6U, pduFormat, 42U, 2U, {}}};
+        QCOMPARE(frame.isProprietary(), isProprietary);
+    }
+
     void testSimplePayload()
     {
         auto payload{QByteArray{8, 1}};
