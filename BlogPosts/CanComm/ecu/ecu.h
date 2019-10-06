@@ -2,25 +2,40 @@
 
 #pragma once
 
-#include "ecubase.h"
+#include <QObject>
 
 class CanBusRouter;
 class J1939Frame;
 
-class Ecu : public EcuBase
+class Ecu : public QObject
 {
     Q_OBJECT
+
 public:
     explicit Ecu(int ecuId, CanBusRouter *router, QObject *parent = nullptr);
     virtual ~Ecu() override;
 
-    virtual void onFramesReceived(const QSet<int> &ecuIdColl) override;
-    virtual bool isReadParameter(const J1939Frame &frame) const override;
-    virtual void sendReadParameter(quint16 pid, quint32 value = 0U) override;
-    virtual void receiveReadParameter(const J1939Frame &frame) override;
+    int ecuId() const;
+    bool isLogging() const;
+    void setLogging(bool enabled);
+
+    bool isReadParameter(const J1939Frame &frame) const;
+    void sendReadParameter(quint16 pid, quint32 value = 0U);
+    void receiveReadParameter(const J1939Frame &frame);
 
     void sendUnsolicitedFrames();
 
+public slots:
+    void onFramesReceived(const QSet<int> &ecuIdColl);
+    void onErrorOccurred();
+
 signals:
-    void parameterRead(quint16 pid, quint32 value);
+    void logMessage(const QString &msg);
+
+private:
+    void emitLogMessage(const QString &info);
+
+    CanBusRouter *m_router{nullptr};
+    int m_ecuId{-1};
+    bool m_logging{true};
 };
