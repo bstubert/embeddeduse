@@ -30,6 +30,7 @@ public:
     bool isPeerToPeer() const;
     bool isProprietary() const;
     quint8 destinationAddress() const;
+    quint8 groupFunction() const;
 
     template <class Payload>
     Payload decode() const

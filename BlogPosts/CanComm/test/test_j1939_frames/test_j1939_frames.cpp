@@ -163,6 +163,24 @@ private slots:
         QCOMPARE(frame.isProprietary(), isProprietary);
     }
 
+    void testGroupFunction_data()
+    {
+        QTest::addColumn<QByteArray>("payload");
+        QTest::addColumn<quint8>("groupFunction");
+
+        QTest::newRow("gf = 0x1a") << QByteArray::fromHex("1a0203") << quint8(0x1aU);
+        QTest::newRow("empty payload") << QByteArray{} << quint8(0xffU);
+    }
+
+    void testGroupFunction()
+    {
+        QFETCH(QByteArray, payload);
+        QFETCH(quint8, groupFunction);
+
+        auto frame{J1939Frame{6U, 0xefU, 40U, 2U, payload}};
+        QCOMPARE(frame.groupFunction(), groupFunction);
+    }
+
     void testSimplePayload()
     {
         auto payload{QByteArray{8, 1}};

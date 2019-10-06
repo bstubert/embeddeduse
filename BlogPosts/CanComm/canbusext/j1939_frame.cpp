@@ -110,3 +110,12 @@ quint8 J1939Frame::destinationAddress() const
     return pduSpecific();
 }
 
+quint8 J1939Frame::groupFunction() const
+{
+    if (payload().isEmpty())
+    {
+        return quint8(0xffU);
+    }
+    return quint8(0x1aU);
+}
+

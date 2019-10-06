@@ -2,8 +2,10 @@
 
 #include <tuple>
 #include <QString>
+#include <QtDebug>
 #include <QtEndian>
 
+#include "canbusext.h"
 #include "canbusrouter.h"
 #include "ecuproxy.h"
 #include "j1939_broadcast_frames.h"
@@ -26,18 +28,21 @@ void EcuProxy::onFramesReceived(const QSet<int> &ecuIdColl)
     }
     for (const auto &frame : m_router->takeReceivedFrames(ecuId()))
     {
-        if (isReadParameter(frame)) {
-            receiveReadParameter(frame);
+        if (frame.isPeerToPeer())
+        {
+            if (frame.isProprietary())
+            {
+                receiveProprietaryPeerToPeerFrame(frame);
+            }
+            else
+            {
+                qWarning() << "WARNING: Standard J1939 peer-to-peer frames not yet supported!";
+            }
         }
         else {
             receiveUnsolicitedFrame(frame);
         }
     }
-}
-
-bool EcuProxy::isReadParameter(const J1939Frame &frame) const
-{
-    return frame.frameId() == 0x18ef0102U && frame.payload()[0] == char(1);
 }
 
 void EcuProxy::sendReadParameter(quint16 pid, quint32 value)
@@ -46,9 +51,19 @@ void EcuProxy::sendReadParameter(quint16 pid, quint32 value)
     m_router->writeFrame(ReadParameterRequest(static_cast<quint8>(ecuId()), 0x01U, pid, value));
 }
 
-void EcuProxy::receiveReadParameter(const J1939Frame &frame)
+void EcuProxy::receiveProprietaryPeerToPeerFrame(const J1939Frame &frame)
 {
-    auto payload{frame.decode<ReadParameterResponse::Payload>()};
-    emitReadParameterMessage(QStringLiteral("Trm/Recv"),  quint16(payload.parameterId),
-                             quint32(payload.parameterValue));
+    switch (frame.groupFunction())
+    {
+    case 1U:
+    {
+        auto payload{frame.decode<ReadParameterResponse::Payload>()};
+        emitReadParameterMessage(QStringLiteral("Trm/Recv"),  quint16(payload.parameterId),
+                                 quint32(payload.parameterValue));
+        break;
+    }
+    default:
+        qWarning() << "WARNING: Unknown proprietary peer-to-peer J1939 frame: " << frame;
+        break;
+    }
 }
