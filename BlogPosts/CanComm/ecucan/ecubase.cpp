@@ -101,18 +101,10 @@ void EcuBase::onErrorOccurred()
     emit logMessage(QString("ERROR: %1.").arg(m_router->errorString()));
 }
 
-void EcuBase::emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value)
+void EcuBase::emitLogMessage(const QString &info)
 {
-    if (isLogging()) {
-        emit logMessage(QString("%1: Read(0x%2, 0x%3)").arg(prefix)
-                        .arg(quint16(pid), 4, 16, QLatin1Char('0'))
-                        .arg(quint32(value), 8, 16, QLatin1Char('0')));
-    }
-}
-
-void EcuBase::emitInfoUnsolicitedMessage(const QString &info)
-{
-    if (isLogging()) {
+    if (isLogging())
+    {
         emit logMessage(info);
     }
 }

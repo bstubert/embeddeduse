@@ -17,9 +17,9 @@ void BodyControllerProxy::receiveProprietaryBroadcastFrame(const J1939Frame &fra
     if (frame.parameterGroupNumber() == 0xff10U)
     {
         auto payload{frame.decode<A02AxleTilt::Payload>()};
-        emitInfoUnsolicitedMessage(QString{"Recv in Proxy %1: A02AxleTilt(%2, %3, %4)"}
-                                   .arg(ecuId()).arg(payload.tiltAxle1)
-                                   .arg(payload.tiltAxle2).arg(payload.tiltAxle2));
+        emitLogMessage(QString{"Recv in Proxy %1: A02AxleTilt(%2, %3, %4)"}
+                       .arg(ecuId()).arg(payload.tiltAxle1)
+                       .arg(payload.tiltAxle2).arg(payload.tiltAxle2));
     }
 }
 

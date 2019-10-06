@@ -38,8 +38,7 @@ public:
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U);
 
 protected:
-    void emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value);
-    void emitInfoUnsolicitedMessage(const QString &info);
+    void emitLogMessage(const QString &info);
 
     CanBusRouter *m_router{nullptr};
     int m_ecuId{-1};

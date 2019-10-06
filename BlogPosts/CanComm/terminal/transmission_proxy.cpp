@@ -17,8 +17,8 @@ void TransmissionProxy::receiveProprietaryBroadcastFrame(const J1939Frame &frame
     if (frame.parameterGroupNumber() == 0xff32U)
     {
         auto payload{frame.decode<A03VehicleSpeed::Payload>()};
-        emitInfoUnsolicitedMessage(QString{"Recv in Proxy %1: A03VehicleSpeed(%2, %3)"}
-                                   .arg(ecuId()).arg(payload.targetVehicleSpeed)
-                                   .arg(payload.actualVehicleSpeed));
+        emitLogMessage(QString{"Recv in Proxy %1: A03VehicleSpeed(%2, %3)"}
+                       .arg(ecuId()).arg(payload.targetVehicleSpeed)
+                       .arg(payload.actualVehicleSpeed));
     }
 }

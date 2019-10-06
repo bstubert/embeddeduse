@@ -22,7 +22,9 @@ EcuProxy::~EcuProxy()
 
 void EcuProxy::sendReadParameter(quint16 pid, quint32 value)
 {
-    emitReadParameterMessage(QStringLiteral("Trm/Send"), pid, value);
+    emitLogMessage(QString("Trm/Send: Read(0x%2, 0x%3)")
+                   .arg(pid, 4, 16, QLatin1Char('0'))
+                   .arg(value, 8, 16, QLatin1Char('0')));
     m_router->writeFrame(ReadParameterRequest(static_cast<quint8>(ecuId()), 0x01U, pid, value));
 }
 
@@ -33,8 +35,9 @@ void EcuProxy::receiveProprietaryPeerToPeerFrame(const J1939Frame &frame)
     case 1U:
     {
         auto payload{frame.decode<ReadParameterResponse::Payload>()};
-        emitReadParameterMessage(QStringLiteral("Trm/Recv"),  quint16(payload.parameterId),
-                                 quint32(payload.parameterValue));
+        emitLogMessage(QString("Trm/Recv: Read(0x%2, 0x%3)")
+                       .arg(quint16(payload.parameterId), 4, 16, QLatin1Char('0'))
+                       .arg(quint32(payload.parameterValue), 8, 16, QLatin1Char('0')));
         break;
     }
     default:
