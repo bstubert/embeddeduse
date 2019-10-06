@@ -17,5 +17,5 @@ public:
     virtual void onFramesReceived(const QSet<int> &ecuIdColl) override;
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U) override;
 
-    void receiveProprietaryPeerToPeerFrame(const J1939Frame &frame);
+    virtual void receiveProprietaryPeerToPeerFrame(const J1939Frame &frame) override;
 };

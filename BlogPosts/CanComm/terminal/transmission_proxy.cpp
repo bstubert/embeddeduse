@@ -12,7 +12,7 @@ TransmissionProxy::~TransmissionProxy()
 {
 }
 
-void TransmissionProxy::receiveUnsolicitedFrame(const J1939Frame &frame)
+void TransmissionProxy::receiveProprietaryBroadcastFrame(const J1939Frame &frame)
 {
     if (frame.parameterGroupNumber() == 0xff32U)
     {

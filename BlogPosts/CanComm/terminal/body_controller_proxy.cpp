@@ -12,7 +12,7 @@ BodyControllerProxy::~BodyControllerProxy()
 {
 }
 
-void BodyControllerProxy::receiveUnsolicitedFrame(const J1939Frame &frame)
+void BodyControllerProxy::receiveProprietaryBroadcastFrame(const J1939Frame &frame)
 {
     if (frame.parameterGroupNumber() == 0xff10U)
     {

@@ -36,11 +36,18 @@ void EcuProxy::onFramesReceived(const QSet<int> &ecuIdColl)
             }
             else
             {
-                qWarning() << "WARNING: Standard J1939 peer-to-peer frames not yet supported!";
+                receiveStandardPeerToPeerFrame(frame);
             }
         }
         else {
-            receiveUnsolicitedFrame(frame);
+            if (frame.isProprietary())
+            {
+                receiveProprietaryBroadcastFrame(frame);
+            }
+            else
+            {
+                receiveStandardBroadcastFrame(frame);
+            }
         }
     }
 }
@@ -53,7 +60,7 @@ void EcuProxy::sendReadParameter(quint16 pid, quint32 value)
 
 void EcuProxy::receiveProprietaryPeerToPeerFrame(const J1939Frame &frame)
 {
-    switch (frame.groupFunction())
+    switch (quint8(frame.groupFunction()))
     {
     case 1U:
     {

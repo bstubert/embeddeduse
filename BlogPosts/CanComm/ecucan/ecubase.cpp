@@ -8,6 +8,7 @@
 #include <QtDebug>
 #include <QtEndian>
 
+#include "canbusext.h"
 #include "canbusrouter.h"
 #include "ecubase.h"
 
@@ -35,6 +36,26 @@ bool EcuBase::isLogging() const
 void EcuBase::setLogging(bool enabled)
 {
     m_logging = enabled;
+}
+
+void EcuBase::receiveProprietaryPeerToPeerFrame(const J1939Frame &frame)
+{
+    qWarning() << "WARNING: Proprietary J1939 peer-to-peer frames not yet supported: " << frame;
+}
+
+void EcuBase::receiveStandardPeerToPeerFrame(const J1939Frame &frame)
+{
+    qWarning() << "WARNING: Standard J1939 peer-to-peer frames not yet supported: " << frame;
+}
+
+void EcuBase::receiveProprietaryBroadcastFrame(const J1939Frame &frame)
+{
+    qWarning() << "WARNING: Proprietary J1939 broadcast frames not yet supported: " << frame;
+}
+
+void EcuBase::receiveStandardBroadcastFrame(const J1939Frame &frame)
+{
+    qWarning() << "WARNING: Standard J1939 broadcast frames not yet supported: " << frame;
 }
 
 bool EcuBase::isReadParameter(const J1939Frame &frame) const

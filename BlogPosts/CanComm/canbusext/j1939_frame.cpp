@@ -116,6 +116,6 @@ quint8 J1939Frame::groupFunction() const
     {
         return quint8(0xffU);
     }
-    return quint8(0x1aU);
+    return quint8(payload()[0]);
 }
 

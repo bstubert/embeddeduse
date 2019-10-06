@@ -22,6 +22,11 @@ public:
     bool isLogging() const;
     void setLogging(bool enabled);
 
+    virtual void receiveProprietaryPeerToPeerFrame(const J1939Frame &frame);
+    virtual void receiveStandardPeerToPeerFrame(const J1939Frame &frame);
+    virtual void receiveProprietaryBroadcastFrame(const J1939Frame &frame);
+    virtual void receiveStandardBroadcastFrame(const J1939Frame &frame);
+
     virtual bool isReadParameter(const J1939Frame &frame) const;
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U);
     virtual void receiveReadParameter(const J1939Frame &frame);

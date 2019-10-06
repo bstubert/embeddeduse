@@ -10,5 +10,5 @@ public:
     BodyControllerProxy(CanBusRouter *router, QObject *parent = nullptr);
     virtual ~BodyControllerProxy() override;
 
-    virtual void receiveUnsolicitedFrame(const J1939Frame &frame) override;
+    virtual void receiveProprietaryBroadcastFrame(const J1939Frame &frame) override;
 };

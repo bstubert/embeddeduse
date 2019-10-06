@@ -169,6 +169,7 @@ private slots:
         QTest::addColumn<quint8>("groupFunction");
 
         QTest::newRow("gf = 0x1a") << QByteArray::fromHex("1a0203") << quint8(0x1aU);
+        QTest::newRow("gf = 0x01") << QByteArray::fromHex("010203") << quint8(0x01U);
         QTest::newRow("empty payload") << QByteArray{} << quint8(0xffU);
     }
 

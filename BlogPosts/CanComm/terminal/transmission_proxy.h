@@ -10,5 +10,5 @@ public:
     TransmissionProxy(CanBusRouter *router, QObject *parent = nullptr);
     virtual ~TransmissionProxy() override;
 
-    virtual void receiveUnsolicitedFrame(const J1939Frame &frame) override;
+    virtual void receiveProprietaryBroadcastFrame(const J1939Frame &frame) override;
 };
