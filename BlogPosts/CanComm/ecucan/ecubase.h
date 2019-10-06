@@ -15,6 +15,14 @@ class CanBusRouter;
 class EcuBase : public QObject
 {
     Q_OBJECT
+
+signals:
+    void logMessage(const QString &msg);
+
+public slots:
+    void onErrorOccurred();
+    virtual void onFramesReceived(const QSet<int> &ecuIdColl);
+
 public:
     explicit EcuBase(int ecuId, CanBusRouter *router, QObject *parent = nullptr);
     virtual ~EcuBase();
@@ -27,17 +35,7 @@ public:
     virtual void receiveProprietaryBroadcastFrame(const J1939Frame &frame);
     virtual void receiveStandardBroadcastFrame(const J1939Frame &frame);
 
-    virtual bool isReadParameter(const J1939Frame &frame) const;
     virtual void sendReadParameter(quint16 pid, quint32 value = 0U);
-    virtual void receiveReadParameter(const J1939Frame &frame);
-    virtual void receiveUnsolicitedFrame(const J1939Frame &frame);
-
-signals:
-    void logMessage(const QString &msg);
-
-public slots:
-    void onErrorOccurred();
-    virtual void onFramesReceived(const QSet<int> &ecuIdColl);
 
 protected:
     void emitReadParameterMessage(const QString &prefix, quint16 pid, quint32 value);

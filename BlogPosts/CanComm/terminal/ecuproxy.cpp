@@ -20,38 +20,6 @@ EcuProxy::~EcuProxy()
 {
 }
 
-void EcuProxy::onFramesReceived(const QSet<int> &ecuIdColl)
-{
-    if (!ecuIdColl.contains(ecuId()))
-    {
-        return;
-    }
-    for (const auto &frame : m_router->takeReceivedFrames(ecuId()))
-    {
-        if (frame.isPeerToPeer())
-        {
-            if (frame.isProprietary())
-            {
-                receiveProprietaryPeerToPeerFrame(frame);
-            }
-            else
-            {
-                receiveStandardPeerToPeerFrame(frame);
-            }
-        }
-        else {
-            if (frame.isProprietary())
-            {
-                receiveProprietaryBroadcastFrame(frame);
-            }
-            else
-            {
-                receiveStandardBroadcastFrame(frame);
-            }
-        }
-    }
-}
-
 void EcuProxy::sendReadParameter(quint16 pid, quint32 value)
 {
     emitReadParameterMessage(QStringLiteral("Trm/Send"), pid, value);
