@@ -21,7 +21,11 @@ add_executable(
     qml.qrc
 )
 
+set(asan_options -fsanitize=address -O1 -fno-omit-frame-pointer)
+
+target_compile_options(${PROJECT_NAME} PUBLIC ${asan_options})
+
 target_link_libraries(${PROJECT_NAME}
-    Qt5::Gui Qt5::Qml Qt5::Quick
+    Qt5::Gui Qt5::Qml Qt5::Quick ${asan_options}
 )
 
