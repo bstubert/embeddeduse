@@ -1,0 +1,76 @@
+11:50:37: Starting /public/Projects/embeddeduse/BlogPosts/build-OwnershipTransferFromCppToQml-Desktop_Qt_5_14_0_Asan-Debug/OwnershipTransferFromCppToQml ...
+QML debugging is enabled. Only use this in a safe environment.
+qml: ### Creating CustomerInfo.qml
+qml: @@@ Destroying CustomerInfo.qml
+qml: ### Creating CustomerInfo.qml
+qml: @@@ Destroying CustomerInfo.qml
+qml: ### Creating CustomerInfo.qml
+qml: @@@ Destroying CustomerInfo.qml
+qml: ### Creating CustomerInfo.qml
+qml: @@@ Destroying CustomerInfo.qml
+############## Deleting C++ customer object
+############## Deleting C++ customer object
+=================================================================
+==30934==ERROR: AddressSanitizer: heap-use-after-free on address 0x603000072eb0 at pc 0x000000406f43 bp 0x7fffa4f52f10 sp 0x7fffa4f52f00
+READ of size 8 at 0x603000072eb0 thread T0
+    #0 0x406f42 in void qDeleteAll<Customer* const*>(Customer* const*, Customer* const*) /usr/local/Qt-5.14.0-Asan/include/QtCore/qalgorithms.h:320
+    #1 0x4059e9 in void qDeleteAll<QVector<Customer*> >(QVector<Customer*> const&) /usr/local/Qt-5.14.0-Asan/include/QtCore/qalgorithms.h:328
+    #2 0x405276 in CustomerManager::~CustomerManager() ../OwnershipTransferFromCppToQml/CustomerManager.h:25
+    #3 0x402f58 in main ../OwnershipTransferFromCppToQml/main.cpp:16
+    #4 0x7f79ed24982f in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x2082f)
+    #5 0x402998 in _start (/public/Projects/embeddeduse/BlogPosts/build-OwnershipTransferFromCppToQml-Desktop_Qt_5_14_0_Asan-Debug/OwnershipTransferFromCppToQml+0x402998)
+
+0x603000072eb0 is located 0 bytes inside of 32-byte region [0x603000072eb0,0x603000072ed0)
+freed by thread T0 here:
+    #0 0x7f79f1abf310 in operator delete(void*) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe1310)
+    #1 0x404a0f in Customer::~Customer() ../OwnershipTransferFromCppToQml/Customer.h:34
+    #2 0x7f79ef4b2e77 in QV4::QObjectWrapper::destroyObject(bool) /public/Qt/qt-everywhere-src-5.14.0/qtdeclarative/src/qml/jsruntime/qv4qobjectwrapper.cpp:1178
+    #3 0x7f79eef1b0ba in QV4::MemoryManager::sweep(bool, void (*)(char const*)) /public/Qt/qt-everywhere-src-5.14.0/qtdeclarative/src/qml/memory/qv4mm.cpp:931
+    #4 0x7f79eef1c2b4 in QV4::MemoryManager::~MemoryManager() /public/Qt/qt-everywhere-src-5.14.0/qtdeclarative/src/qml/memory/qv4mm.cpp:1183
+    #5 0x7f79ef1910d2 in QV4::ExecutionEngine::~ExecutionEngine() /public/Qt/qt-everywhere-src-5.14.0/qtdeclarative/src/qml/jsruntime/qv4engine.cpp:725
+    #6 0x7f79ef0fe97b in QJSEngine::~QJSEngine() /public/Qt/qt-everywhere-src-5.14.0/qtdeclarative/src/qml/jsapi/qjsengine.cpp:375
+    #7 0x7f79ef923719 in QQmlEngine::~QQmlEngine() /public/Qt/qt-everywhere-src-5.14.0/qtdeclarative/src/qml/qml/qqmlengine.cpp:1032
+    #8 0x7f79efb28473 in QQmlApplicationEngine::~QQmlApplicationEngine() /public/Qt/qt-everywhere-src-5.14.0/qtdeclarative/src/qml/qml/qqmlapplicationengine.cpp:244
+    #9 0x402f4c in main ../OwnershipTransferFromCppToQml/main.cpp:18
+    #10 0x7f79ed24982f in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x2082f)
+
+previously allocated by thread T0 here:
+    #0 0x7f79f1abe498 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0498)
+    #1 0x404c37 in CustomerManager::CustomerManager(QObject*) (/public/Projects/embeddeduse/BlogPosts/build-OwnershipTransferFromCppToQml-Desktop_Qt_5_14_0_Asan-Debug/OwnershipTransferFromCppToQml+0x404c37)
+    #2 0x402d15 in main ../OwnershipTransferFromCppToQml/main.cpp:16
+    #3 0x7f79ed24982f in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x2082f)
+
+SUMMARY: AddressSanitizer: heap-use-after-free /usr/local/Qt-5.14.0-Asan/include/QtCore/qalgorithms.h:320 in void qDeleteAll<Customer* const*>(Customer* const*, Customer* const*)
+Shadow bytes around the buggy address:
+  0x0c0680006580: fa fa 00 00 00 fa fa fa 00 00 00 fa fa fa 00 00
+  0x0c0680006590: 00 01 fa fa fd fd fd fd fa fa 00 00 00 fa fa fa
+  0x0c06800065a0: 00 00 00 fa fa fa 00 00 00 fa fa fa 00 00 00 00
+  0x0c06800065b0: fa fa 00 00 00 fa fa fa fd fd fd fa fa fa 00 00
+  0x0c06800065c0: 05 fa fa fa 00 00 00 fa fa fa 00 00 00 00 fa fa
+=>0x0c06800065d0: fd fd fd fd fa fa[fd]fd fd fd fa fa fd fd fd fd
+  0x0c06800065e0: fa fa 00 00 00 00 fa fa fd fd fd fd fa fa fd fd
+  0x0c06800065f0: fd fd fa fa fd fd fd fd fa fa fd fd fd fd fa fa
+  0x0c0680006600: 00 00 00 fa fa fa 00 00 00 fa fa fa 00 00 00 fa
+  0x0c0680006610: fa fa 00 00 00 fa fa fa 00 00 04 fa fa fa fd fd
+  0x0c0680006620: fd fa fa fa fd fd fd fa fa fa fd fd fd fd fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==30934==ABORTING
+11:50:51: /public/Projects/embeddeduse/BlogPosts/build-OwnershipTransferFromCppToQml-Desktop_Qt_5_14_0_Asan-Debug/OwnershipTransferFromCppToQml exited with code 1
