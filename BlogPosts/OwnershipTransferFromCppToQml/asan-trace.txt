@@ -1,5 +1,3 @@
-=======================================
-
 Stack trace with normal Qt library (no Asan instrumentation)
 
 12:44:15: Starting /public/Projects/embeddeduse/BlogPosts/build-OwnershipTransferFromCppToQml-Desktop_Qt_5_13_1_GCC_64bit-Debug/OwnershipTransferFromCppToQml ...
