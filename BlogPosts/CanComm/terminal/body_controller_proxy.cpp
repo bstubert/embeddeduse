@@ -14,12 +14,17 @@ BodyControllerProxy::~BodyControllerProxy()
 
 void BodyControllerProxy::receiveProprietaryBroadcastFrame(const J1939Frame &frame)
 {
-    if (frame.parameterGroupNumber() == 0xff10U)
+    switch (frame.parameterGroupNumber())
     {
+    case A02AxleTilt::PGN: {
         auto payload{frame.decode<A02AxleTilt::Payload>()};
         emitLogMessage(QString{"Recv in Proxy %1: A02AxleTilt(%2, %3, %4)"}
                        .arg(ecuId()).arg(payload.tiltAxle1)
-                       .arg(payload.tiltAxle2).arg(payload.tiltAxle2));
+                       .arg(payload.tiltAxle2).arg(payload.tiltAxle3));
+        break;
+    }
+    default:
+        break;
     }
 }
 

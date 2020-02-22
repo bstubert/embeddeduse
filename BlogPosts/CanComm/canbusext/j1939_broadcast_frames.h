@@ -9,9 +9,10 @@
 
 #include "j1939_frame.h"
 
-class EEC1Frame : public J1939Frame
+struct EEC1Frame : public J1939Frame
 {
-public:
+    static constexpr quint32 PGN{0xF004U};
+
     struct Payload
     {
         qint64 engineTorqueMode : 4;
@@ -37,9 +38,10 @@ public:
     {}
 };
 
-class A02AxleTilt : public J1939Frame
+struct A02AxleTilt : public J1939Frame
 {
-public:
+    static constexpr quint32 PGN{0xFF10U};
+
     struct Payload
     {
         qint64 tiltAxle1 : 16;
@@ -54,9 +56,10 @@ public:
     {}
 };
 
-class A03VehicleSpeed : public J1939Frame
+struct A03VehicleSpeed : public J1939Frame
 {
-public:
+    static constexpr quint32 PGN{0xFF32U};
+
     struct Payload
     {
         qint64 targetVehicleSpeed : 16;    // range: [-7000; 7000], 0.01 km/h
@@ -73,9 +76,10 @@ public:
     {}
 };
 
-class ReadParameterRequest : public J1939Frame
+struct ReadParameterRequest : public J1939Frame
 {
-public:
+    static constexpr quint32 PGN{0xEF00U};
+
     struct Payload
     {
         qint64 commandId : 8;
@@ -92,9 +96,10 @@ public:
 };
 
 
-class ReadParameterResponse : public J1939Frame
+struct ReadParameterResponse : public J1939Frame
 {
-public:
+    static constexpr quint32 PGN{0xEF00U};
+
     struct Payload
     {
         qint64 commandId : 8;

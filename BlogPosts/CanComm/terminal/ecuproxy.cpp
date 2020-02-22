@@ -30,7 +30,7 @@ void EcuProxy::sendReadParameter(quint16 pid, quint32 value)
 
 void EcuProxy::receiveProprietaryPeerToPeerFrame(const J1939Frame &frame)
 {
-    switch (quint8(frame.groupFunction()))
+    switch (frame.groupFunction())
     {
     case 1U:
     {
