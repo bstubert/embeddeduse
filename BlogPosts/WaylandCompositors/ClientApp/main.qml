@@ -8,6 +8,7 @@ ApplicationWindow {
     height: 720
 
     Rectangle {
+        id: background
         anchors.fill: parent
         color: backgroundColor
 
@@ -24,7 +25,7 @@ ApplicationWindow {
             text: "Darker"
             onReleased: {
                 console.log("@ Darker button released")
-                parent.color = Qt.darker(parent.color, 1.5)
+                background.color = Qt.darker(background.color, 1.5)
             }
         }
 
@@ -41,7 +42,7 @@ ApplicationWindow {
             text: "Lighter"
             onReleased: {
                 console.log("@ Lighter button released")
-                parent.color = Qt.lighter(parent.color, 1.5)
+                background.color = Qt.lighter(background.color, 1.5)
             }
         }
     }
