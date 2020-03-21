@@ -30,7 +30,7 @@ target_link_libraries(${PROJECT_NAME}
     Qt5::Gui Qt5::Qml Qt5::Quick
 )
 
-set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/../staging/kea)
+set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/kea)
 
 install(TARGETS ${PROJECT_NAME} RUNTIME
     DESTINATION bin)
