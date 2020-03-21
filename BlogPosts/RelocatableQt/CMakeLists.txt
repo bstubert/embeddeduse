@@ -13,10 +13,12 @@ find_package(Qt5Gui)
 find_package(Qt5Qml)
 find_package(Qt5Quick)
 
+set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/final)
+
 set(CMAKE_SKIP_BUILD_RPATH true)
 set(CMAKE_BUILD_WITH_INSTALL_RPATH false)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH false)
-set(CMAKE_INSTALL_RPATH /home/user/kea/qt/lib)
+set(CMAKE_INSTALL_RPATH $ORIGIN $ORIGIN/../qt/lib)
 
 add_executable(
     ${PROJECT_NAME}
@@ -29,8 +31,6 @@ add_executable(
 target_link_libraries(${PROJECT_NAME}
     Qt5::Gui Qt5::Qml Qt5::Quick
 )
-
-set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/final)
 
 install(TARGETS ${PROJECT_NAME} RUNTIME
     DESTINATION bin)
