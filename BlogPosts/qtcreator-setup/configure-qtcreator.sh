@@ -107,38 +107,44 @@ BASEID="byos.${NAME}.${QT_VERSION}"
 CMAKE_BASE_DIR="${OECORE_NATIVE_SYSROOT}/usr/share/cmake"
 CMAKE_TOOLCHAIN_FILE="${CMAKE_BASE_DIR}/OEToolchainConfig.cmake"
 CMAKE_TOOLCHAIN_DIR="${CMAKE_BASE_DIR}/OEToolchainConfig.cmake.d"
+CREATOR_CONFIG_DIR="$HOME/.config/QtProject/qtcreator"
 
 echo "NAME = ${NAME}"
 echo "BASEID = ${BASEID}"
 echo "ABI = ${ABI}"
 
-# exit 0
-
 echo "Removing CMake toolchain files"
 rm -f "${CMAKE_TOOLCHAIN_DIR}/*.cmake"
 
 echo "Removing toolchain/C"
-${SDKTOOL} rmTC --id ProjectExplorer.ToolChain.Gcc:${BASEID}.gcc || true
+${SDKTOOL} rmTC --id ProjectExplorer.ToolChain.Gcc:${BASEID}.gcc 2>/dev/null || true
+${SDKTOOL} --sdkpath=${CREATOR_CONFIG_DIR} rmTC --id ProjectExplorer.ToolChain.Gcc:${BASEID}.gcc 2>/dev/null || true
 
 echo "Removing toolchain/C++"
-${SDKTOOL} rmTC --id ProjectExplorer.ToolChain.Gcc:${BASEID}.g++ || true
+${SDKTOOL} rmTC --id ProjectExplorer.ToolChain.Gcc:${BASEID}.g++ 2>/dev/null || true
+${SDKTOOL} --sdkpath=${CREATOR_CONFIG_DIR} rmTC --id ProjectExplorer.ToolChain.Gcc:${BASEID}.g++ 2>/dev/null || true
 
 echo "Removing debugger"
-${SDKTOOL} rmDebugger --id ${BASEID}.gdb || true
+${SDKTOOL} rmDebugger --id ${BASEID}.gdb 2>/dev/null || true
+${SDKTOOL} --sdkpath=${CREATOR_CONFIG_DIR} rmDebugger --id ${BASEID}.gdb 2>/dev/null || true
 
 echo "Removing Qt"
-${SDKTOOL} rmQt --id ${BASEID}.qt || true
+${SDKTOOL} rmQt --id ${BASEID}.qt 2>/dev/null || true
+${SDKTOOL} --sdkpath=${CREATOR_CONFIG_DIR} rmQt --id ${BASEID}.qt 2>/dev/null || true
 
 echo "Removing CMake"
-${SDKTOOL} rmCMake --id ${BASEID}.cmake || true
+${SDKTOOL} rmCMake --id ${BASEID}.cmake 2>/dev/null || true
+${SDKTOOL} --sdkpath=${CREATOR_CONFIG_DIR} rmCMake --id ${BASEID}.cmake 2>/dev/null || true
 
 if [ -n "${DEVICE_HOSTNAME}" ]; then
     echo "Removing Device"
-    ${SDKTOOL} rmDev --id ${BASEID}.dev || true
+    ${SDKTOOL} rmDev --id ${BASEID}.dev 2>/dev/null || true
+    ${SDKTOOL} --sdkpath=${CREATOR_CONFIG_DIR} rmDev --id ${BASEID}.dev 2>/dev/null || true
 fi
 
 echo "Removing kit"
-${SDKTOOL} rmKit --id ${BASEID}.kit || true
+${SDKTOOL} rmKit --id ${BASEID}.kit 2>/dev/null || true
+${SDKTOOL} --sdkpath=${CREATOR_CONFIG_DIR} rmKit --id ${BASEID}.kit 2>/dev/null || true
 
 if [ -n "${REMOVEONLY}" ]; then
     echo "Kit removed: ${NAME}"
