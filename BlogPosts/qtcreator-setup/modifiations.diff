@@ -1,0 +1,232 @@
+33c33,34
+< ABI="arm-linux-poky-elf-64bit"
+---
+> ABI="arm-linux-poky-elf-32bit"
+> CONFIG=""
+37,42c38
+<     echo "Usage: $0 --env-setup <file-path>" \
+<          " --creator-base <dir-path>" \
+<          " --name <basename>" \
+<          " [--abi <flavour>]" \
+<          " [--remove]" \
+<          " [--device <hostname>] "
+---
+>     echo "Usage: $0 --config <environment-setup-file> [--remove] [--qtcreator <path>] [--name <basename>]"
+47c43,46
+<     "--creator-base")
+---
+>     "--remove")
+>       REMOVEONLY=1
+>       ;;
+>     "--qtcreator")
+51c50
+<     "--env-setup")
+---
+>     "--config")
+59,69d57
+<     "--abi")
+<       shift
+<       ABI=$1
+<       ;;
+<     "--remove")
+<       REMOVEONLY=1
+<       ;;
+<     "--device")
+<       shift
+<       DEVICE_HOSTNAME=$1
+<       ;;
+79d66
+<    echo "ERROR: Environment setup file not found!"
+84c71,75
+< SDKTOOL="${QTCREATOR}/libexec/qtcreator/sdktool"
+---
+> if [ -z "${QTCREATOR}" ]; then
+>     SDKTOOL="${HOME}/Qt/Tools/QtCreator/libexec/qtcreator/sdktool"
+> else
+>     SDKTOOL="${QTCREATOR}/libexec/qtcreator/sdktool"
+> fi
+86c77
+<     echo "ERROR: Cannot find 'sdktool' from QtCreator!"
+---
+>     echo "Cannot find 'sdktool' from QtCreator"
+91,93c82,87
+< if [ -z "${NAME}" ]; then
+<     echo "ERROR: Name of kit missing!"
+<     printUsage
+---
+> source $CONFIG
+> 
+> MKSPEC="devices/linux-oe-generic-g++"
+> MKSPECPATH=$(find ${OECORE_TARGET_SYSROOT} -name $(basename ${MKSPEC}) 2>/dev/null || true)
+> if [ ! -d "${MKSPECPATH}" ]; then
+>     echo "Error: could not find mkspec ${MKSPEC} from the toolchain"
+97,101c91
+< if [ -n "${DEVICE_HOSTNAME}" ]; then
+<     echo "Include device: ${DEVICE_HOSTNAME}" 
+< else
+<     echo "Exclude device"
+< fi
+---
+> MACHINE=$(grep '^MACHINE' ${MKSPECPATH}/../../qdevice.pri | cut -d'=' -f2 | tr -d ' ')
+103c93
+< source $CONFIG
+---
+> RELEASE=$(qmake -query QT_VERSION)
+105,125c95,96
+< QT_VERSION=$(qmake -query QT_VERSION)
+< BASEID="byos.${NAME}.${QT_VERSION}"
+< CMAKE_BASE_DIR="${OECORE_NATIVE_SYSROOT}/usr/share/cmake"
+< CMAKE_TOOLCHAIN_FILE="${CMAKE_BASE_DIR}/OEToolchainConfig.cmake"
+< CMAKE_TOOLCHAIN_DIR="${CMAKE_BASE_DIR}/OEToolchainConfig.cmake.d"
+< CREATOR_CONFIG_DIR="$HOME/.config/QtProject/qtcreator"
+< 
+< echo "NAME = ${NAME}"
+< echo "BASEID = ${BASEID}"
+< echo "ABI = ${ABI}"
+< 
+< echo "Removing CMake toolchain files"
+< rm -f "${CMAKE_TOOLCHAIN_DIR}/*.cmake"
+< 
+< echo "Removing toolchain/C"
+< ${SDKTOOL} rmTC --id ProjectExplorer.ToolChain.Gcc:${BASEID}.gcc 2>/dev/null || true
+< ${SDKTOOL} --sdkpath=${CREATOR_CONFIG_DIR} rmTC --id ProjectExplorer.ToolChain.Gcc:${BASEID}.gcc 2>/dev/null || true
+< 
+< echo "Removing toolchain/C++"
+< ${SDKTOOL} rmTC --id ProjectExplorer.ToolChain.Gcc:${BASEID}.g++ 2>/dev/null || true
+< ${SDKTOOL} --sdkpath=${CREATOR_CONFIG_DIR} rmTC --id ProjectExplorer.ToolChain.Gcc:${BASEID}.g++ 2>/dev/null || true
+---
+> NAME=${NAME:-"Custom Qt ${RELEASE} ${MACHINE}"}
+> BASEID="byos.${RELEASE}.${MACHINE}"
+127c98,101
+< echo "Removing debugger"
+---
+> ${SDKTOOL} rmKit --id ${BASEID}.kit 2>/dev/null || true
+> ${SDKTOOL} rmQt --id ${BASEID}.qt || true
+> ${SDKTOOL} rmTC --id ProjectExplorer.ToolChain.Gcc:${BASEID}.gcc || true
+> ${SDKTOOL} rmTC --id ProjectExplorer.ToolChain.Gcc:${BASEID}.g++ || true
+129,135d102
+< ${SDKTOOL} --sdkpath=${CREATOR_CONFIG_DIR} rmDebugger --id ${BASEID}.gdb 2>/dev/null || true
+< 
+< echo "Removing Qt"
+< ${SDKTOOL} rmQt --id ${BASEID}.qt 2>/dev/null || true
+< ${SDKTOOL} --sdkpath=${CREATOR_CONFIG_DIR} rmQt --id ${BASEID}.qt 2>/dev/null || true
+< 
+< echo "Removing CMake"
+137,147d103
+< ${SDKTOOL} --sdkpath=${CREATOR_CONFIG_DIR} rmCMake --id ${BASEID}.cmake 2>/dev/null || true
+< 
+< if [ -n "${DEVICE_HOSTNAME}" ]; then
+<     echo "Removing Device"
+<     ${SDKTOOL} rmDev --id ${BASEID}.dev 2>/dev/null || true
+<     ${SDKTOOL} --sdkpath=${CREATOR_CONFIG_DIR} rmDev --id ${BASEID}.dev 2>/dev/null || true
+< fi
+< 
+< echo "Removing kit"
+< ${SDKTOOL} rmKit --id ${BASEID}.kit 2>/dev/null || true
+< ${SDKTOOL} --sdkpath=${CREATOR_CONFIG_DIR} rmKit --id ${BASEID}.kit 2>/dev/null || true
+153a110,112
+> ${SDKTOOL} addAbiFlavor \
+>     --flavor poky \
+>     --oses linux || true
+155,189c114
+< 
+< echo "Generating ${CMAKE_TOOLCHAIN_DIR}/OEQt5Toolchain.cmake"
+< cat << EOF > ${CMAKE_TOOLCHAIN_DIR}/OEQt5Toolchain.cmake
+< set( OE_QMAKE_PATH_EXTERNAL_HOST_BINS "${OE_QMAKE_PATH_HOST_BINS}" )
+< EOF
+< 
+< 
+< echo "Generating ${CMAKE_TOOLCHAIN_DIR}/$NAME.cmake"
+< cat << EOF > ${CMAKE_TOOLCHAIN_DIR}/$NAME.cmake
+< set( CMAKE_SYSTEM_NAME "Linux" )
+< set( CMAKE_C_FLAGS "${CFLAGS}" CACHE STRING "" FORCE )
+< set( CMAKE_CXX_FLAGS "${CXXFLAGS}"  CACHE STRING "" FORCE )
+< set( CMAKE_ASM_FLAGS "${CFLAGS}" CACHE STRING "" FORCE )
+< set( CMAKE_LDFLAGS_FLAGS "${CXXFLAGS}" CACHE STRING "" FORCE )
+< set( CMAKE_SYSROOT "${OECORE_TARGET_SYSROOT}" )
+< 
+< set( CMAKE_FIND_ROOT_PATH "${OECORE_TARGET_SYSROOT}" )
+< set( CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER )
+< set( CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY )
+< set( CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY )
+< set( CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY )
+< 
+< set(CMAKE_FIND_LIBRARY_CUSTOM_LIB_SUFFIX "${OE_CMAKE_FIND_LIBRARY_CUSTOM_LIB_SUFFIX}")
+< 
+< set(CMAKE_SYSTEM_PROCESSOR "$OECORE_TARGET_ARCH")
+< EOF
+< 
+< 
+< 
+< echo "Adding ABI flavour"
+< ${SDKTOOL} addAbiFlavor --flavor poky --oses linux || true
+< 
+< echo "Adding toolchain/C"
+< ${SDKTOOL} \
+<     addTC \
+---
+> ${SDKTOOL} addTC \
+196,198c121
+< echo "Adding toolchain/C++"
+< ${SDKTOOL} \
+<     addTC \
+---
+> ${SDKTOOL} addTC \
+205,207c128
+< echo "Adding debugger"
+< ${SDKTOOL} \
+<     addDebugger \
+---
+> ${SDKTOOL} addDebugger \
+214,216c135
+< echo "Adding Qt"
+< ${SDKTOOL} \
+<     addQt \
+---
+> ${SDKTOOL} addQt \
+222,224c141
+< echo "Adding CMake"
+< ${SDKTOOL} \
+<     addCMake \
+---
+> ${SDKTOOL} addCMake \
+229,249c146
+< if [ -n "${DEVICE_HOSTNAME}" ]; then
+<     echo "Adding device"
+<     ${SDKTOOL} \
+<         addDev \
+<     --id "${BASEID}.dev" \
+<     --name "Device ${NAME}" \
+<     --type 0 \
+<     --authentication 1 \
+<     --freePorts "10000-10100" \
+<     --host "${DEVICE_HOSTNAME}" \
+<     --keyFile "${HOME}/.ssh/qtc_id" \
+<     --origin 0 \
+<     --osType "GenericLinuxOsType" \
+<     --sshPort 22 \
+<     --timeout 10 \
+<     --uname "root"
+< fi
+< 
+< echo "Adding kit"
+< ${SDKTOOL} \
+<     addKit \
+---
+> ${SDKTOOL} addKit \
+252,253d148
+<     --devicetype "GenericLinuxOsType" \
+<     --device "${BASEID}.dev" \
+256c151,152
+<     --sysroot "${OECORE_TARGET_SYSROOT}" \
+---
+>     --sysroot "${SDKTARGETSYSROOT}" \
+>     --devicetype "QdbLinuxOsType" \
+258a155,156
+>     --icon ":/boot2qt/images/B2Qt_QtC_icon.png" \
+>     --mkspec "${MKSPEC}" \
+260,261c158
+<     --cmake-generator "Unix Makefiles:::" \
+<     --cmake-config "CMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_TOOLCHAIN_FILE}" \
+---
+>     --cmake-config "CMAKE_TOOLCHAIN_FILE:FILEPATH=${OECORE_NATIVE_SYSROOT}/usr/share/cmake/OEToolchainConfig.cmake" \
