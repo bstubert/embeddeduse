@@ -2,13 +2,12 @@
 
 #include "ClimateModel.h"
 
-ClimateModel::ClimateModel(QObject *parent)
-    : QObject{parent}
+ClimateModel::ClimateModel()
 {
 }
 
 void ClimateModel::setTemperature(int temperature)
 {
     m_temperature = temperature;
-    emit temperatureChanged(m_temperature);
+    temperatureChanged(m_temperature);
 }

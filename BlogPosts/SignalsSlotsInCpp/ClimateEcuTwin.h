@@ -2,15 +2,9 @@
 
 #pragma once
 
-#include <QObject>
-
-class ClimateEcuTwin : public QObject
+class ClimateEcuTwin
 {
-    Q_OBJECT
-
 public:
-    ClimateEcuTwin(QObject *parent = nullptr);
-
-public slots:
+    ClimateEcuTwin();
     void setTemperature(int temperature);
 };

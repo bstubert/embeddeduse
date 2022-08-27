@@ -2,18 +2,15 @@
 
 #pragma once
 
-#include <QObject>
+#include <functional>
 
-class ClimateModel : public QObject
+class ClimateModel
 {
-    Q_OBJECT
-
 public:
-    ClimateModel(QObject *parent = nullptr);
+    ClimateModel();
     void setTemperature(int temperature);
 
-signals:
-    void temperatureChanged(int temperature);
+    std::function<void(int)> temperatureChanged;
 
 private:
     int m_temperature{18};

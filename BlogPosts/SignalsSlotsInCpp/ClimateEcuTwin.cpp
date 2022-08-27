@@ -4,8 +4,7 @@
 
 #include "ClimateEcuTwin.h"
 
-ClimateEcuTwin::ClimateEcuTwin(QObject *parent)
-    : QObject{parent}
+ClimateEcuTwin::ClimateEcuTwin()
 {
 }
 
