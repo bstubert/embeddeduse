@@ -2,15 +2,19 @@
 
 #pragma once
 
-class ClimateEcuTwin;
+#include <QObject>
 
-class ClimateModel
+class ClimateModel : public QObject
 {
+    Q_OBJECT
+
 public:
-    ClimateModel(ClimateEcuTwin *twin);
+    ClimateModel(QObject *parent = nullptr);
     void setTemperature(int temperature);
 
+signals:
+    void temperatureChanged(int temperature);
+
 private:
-    ClimateEcuTwin *m_twin{nullptr};
     int m_temperature{18};
 };
