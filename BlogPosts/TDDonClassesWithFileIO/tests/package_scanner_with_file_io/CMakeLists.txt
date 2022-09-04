@@ -13,6 +13,7 @@ add_executable(
     test_package_scanner_with_file_io.cpp
     ../../sources/package_scanner.cpp
     ../../sources/package_info.cpp
+    ../../sources/text_file.cpp
 )
 
 add_test(

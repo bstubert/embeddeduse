@@ -1,11 +1,10 @@
 // Copyright (C) 2022, Burkhard Stubert (DBA Embedded Use)
 
-#include <QFile>
-#include <QtDebug>
-#include <QTextStream>
+#include <QStringList>
 
 #include "package_info.h"
 #include "package_scanner.h"
+#include "text_file.h"
 
 PackageScanner::PackageScanner()
 {
@@ -17,20 +16,13 @@ PackageScanner::~PackageScanner()
 
 PackageInfo PackageScanner::readRecipeInfo(QString packageName)
 {
-    QFile recipeInfo{QString{"files/%1/recipeinfo"}.arg(packageName)};
-    if (!recipeInfo.open(QFile::ReadOnly))
-    {
-        qWarning().noquote().nospace()
-                << "Cannot read file \'" << recipeInfo.fileName() << "\'.";
-        return {};
-    }
+    TextFile recipeInfo{QString{"files/%1/recipeinfo"}.arg(packageName)};
     QString licStr;
     QString version;
     QString revision;
-    QTextStream is{&recipeInfo};
-    while (!is.atEnd())
+    while (!recipeInfo.isAtEnd())
     {
-        auto line = is.readLine();
+        auto line = recipeInfo.readLine();
         if (line.startsWith("LICENSE"))
         {
             licStr = line.split(':')[1].trimmed();
