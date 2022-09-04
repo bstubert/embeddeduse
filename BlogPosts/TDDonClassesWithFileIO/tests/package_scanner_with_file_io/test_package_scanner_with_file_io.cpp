@@ -1,7 +1,10 @@
 // Copyright (C) 2022, Burkhard Stubert (DBA Embedded Use)
 
-#include <QCoreApplication>
+#include <QString>
 #include <QtTest>
+
+#include "package_info.h"
+#include "package_scanner.h"
 
 class TestPackageScannerWithFileIO : public QObject
 {
@@ -13,7 +16,12 @@ private slots:
 
 void TestPackageScannerWithFileIO::testReadRecipeInfo()
 {
-    QVERIFY(true);
+    PackageScanner scanner;
+    auto package = scanner.readRecipeInfo("libffi");
+    QCOMPARE(package.name(), "libffi");
+    QCOMPARE(package.licenseString(), "MIT");
+    QCOMPARE(package.version(), "3.2.1");
+    QCOMPARE(package.revision(), "r0");
 }
 
 QTEST_GUILESS_MAIN(TestPackageScannerWithFileIO)
