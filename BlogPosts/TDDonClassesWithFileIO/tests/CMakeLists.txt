@@ -7,4 +7,5 @@ include(CTest)
 
 if(BUILD_TESTING)
     add_subdirectory(package_scanner_with_file_io)
+    add_subdirectory(package_scanner_without_file_io)
 endif()
