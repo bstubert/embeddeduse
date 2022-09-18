@@ -24,6 +24,10 @@ struct TextFile::Impl
                     u"PV: 3.2.1"_qs}}},
         {u"files/cannot-open/recipeinfo"_qs,
             {false, {}}},
+        {u"files/missing-license/recipeinfo"_qs,
+            {true, {u"LICENSE: "_qs,
+                    u"PR: r4"_qs,
+                    u"PV: 6.3.2"_qs}}},
     };
 
     bool m_isOpen{false};

@@ -13,6 +13,7 @@ class TestPackageScannerWithoutFileIO : public QObject
 private slots:
     void testReadRecipeInfo();
     void testCannotOpenRecipeInfo();
+    void testLicenseMissingInRecipeInfo();
 };
 
 void TestPackageScannerWithoutFileIO::testReadRecipeInfo()
@@ -31,6 +32,15 @@ void TestPackageScannerWithoutFileIO::testCannotOpenRecipeInfo()
     PackageScanner scanner;
     auto package = scanner.readRecipeInfo(u"cannot-open"_qs);
     QVERIFY(!package.isValid());
+}
+
+void TestPackageScannerWithoutFileIO::testLicenseMissingInRecipeInfo()
+{
+    PackageScanner scanner;
+    auto package = scanner.readRecipeInfo(u"missing-license"_qs);
+    QVERIFY(package.isValid());
+    QCOMPARE(package.name(), u"missing-license"_qs);
+    QVERIFY(package.licenseString().isEmpty());
 }
 
 QTEST_GUILESS_MAIN(TestPackageScannerWithoutFileIO)
