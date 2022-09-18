@@ -2,25 +2,40 @@
 
 #include <stdexcept>
 
+#include <QHash>
 #include <QStringList>
 
 #include "text_file.h"
+
+struct TextFileData
+{
+    bool m_isOpen{false};
+    QStringList m_lines;
+};
 
 struct TextFile::Impl
 {
     Impl(QString filePath);
     ~Impl();
-    bool m_isOpen{true};
-    QStringList m_lines{
-        "LICENSE: MIT",
-        "PR: r0",
-        "PV: 3.2.1"
+    QHash<QString, TextFileData> m_fileSystem{
+        {u"files/libffi/recipeinfo"_qs,
+            {true, {u"LICENSE: MIT"_qs,
+                    u"PR: r0"_qs,
+                    u"PV: 3.2.1"_qs}}},
+        {u"files/cannot-open/recipeinfo"_qs,
+            {false, {}}},
     };
+
+    bool m_isOpen{false};
+    QStringList m_lines;
     int m_currentLine{0};
 };
 
 TextFile::Impl::Impl(QString filePath)
 {
+    auto textFileData = m_fileSystem.value(filePath);
+    m_isOpen = textFileData.m_isOpen;
+    m_lines = textFileData.m_lines;
     if (!m_isOpen)
     {
         throw std::runtime_error(QString{"Cannot read file \'%1\'."}.arg(filePath).toStdString());

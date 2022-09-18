@@ -12,16 +12,25 @@ class TestPackageScannerWithoutFileIO : public QObject
 
 private slots:
     void testReadRecipeInfo();
+    void testCannotOpenRecipeInfo();
 };
 
 void TestPackageScannerWithoutFileIO::testReadRecipeInfo()
 {
     PackageScanner scanner;
-    auto package = scanner.readRecipeInfo("libffi");
-    QCOMPARE(package.name(), "libffi");
-    QCOMPARE(package.licenseString(), "MIT");
-    QCOMPARE(package.version(), "3.2.1");
-    QCOMPARE(package.revision(), "r0");
+    auto package = scanner.readRecipeInfo(u"libffi"_qs);
+    QVERIFY(package.isValid());
+    QCOMPARE(package.name(), u"libffi"_qs);
+    QCOMPARE(package.licenseString(), u"MIT"_qs);
+    QCOMPARE(package.version(), u"3.2.1"_qs);
+    QCOMPARE(package.revision(), u"r0"_qs);
+}
+
+void TestPackageScannerWithoutFileIO::testCannotOpenRecipeInfo()
+{
+    PackageScanner scanner;
+    auto package = scanner.readRecipeInfo(u"cannot-open"_qs);
+    QVERIFY(!package.isValid());
 }
 
 QTEST_GUILESS_MAIN(TestPackageScannerWithoutFileIO)
