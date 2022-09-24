@@ -19,7 +19,8 @@ add_test(
     COMMAND ${PROJECT_NAME}
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE ../../sources)
+target_include_directories(${PROJECT_NAME}
+    PRIVATE ../../sources ../doubles ./)
 
 target_link_libraries(
     ${PROJECT_NAME}

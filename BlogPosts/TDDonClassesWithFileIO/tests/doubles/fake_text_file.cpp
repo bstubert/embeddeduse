@@ -5,30 +5,14 @@
 #include <QHash>
 #include <QStringList>
 
+#include "file_system_double.h"
 #include "text_file.h"
-
-struct TextFileData
-{
-    bool m_isOpen{false};
-    QStringList m_lines;
-};
 
 struct TextFile::Impl
 {
     Impl(QString filePath);
     ~Impl();
-    QHash<QString, TextFileData> m_fileSystem{
-        {u"files/libffi/recipeinfo"_qs,
-            {true, {u"LICENSE: MIT"_qs,
-                    u"PR: r0"_qs,
-                    u"PV: 3.2.1"_qs}}},
-        {u"files/cannot-open/recipeinfo"_qs,
-            {false, {}}},
-        {u"files/missing-license/recipeinfo"_qs,
-            {true, {u"LICENSE: "_qs,
-                    u"PR: r4"_qs,
-                    u"PV: 6.3.2"_qs}}},
-    };
+    QHash<QString, TextFileData> m_fileSystem = fileSystemDouble();
 
     bool m_isOpen{false};
     QStringList m_lines;
