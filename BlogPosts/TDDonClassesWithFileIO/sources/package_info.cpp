@@ -14,17 +14,11 @@ PackageInfo::PackageInfo()
 
 PackageInfo::PackageInfo(QString name, QString licenseString,
                          QString version, QString revision)
-    : m_isValid{true}
-    , m_name{std::move(name)}
+    : m_name{std::move(name)}
     , m_licenseString{std::move(licenseString)}
     , m_version{std::move(version)}
     , m_revision{std::move(revision)}
 {
-}
-
-bool PackageInfo::isValid() const
-{
-    return m_isValid;
 }
 
 QString PackageInfo::name() const

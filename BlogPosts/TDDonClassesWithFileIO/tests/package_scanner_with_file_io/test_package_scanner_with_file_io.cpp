@@ -5,6 +5,7 @@
 
 #include "package_info.h"
 #include "package_scanner.h"
+#include "text_file.h"
 
 class TestPackageScannerWithFileIO : public QObject
 {
@@ -17,11 +18,12 @@ private slots:
 void TestPackageScannerWithFileIO::testReadRecipeInfo()
 {
     PackageScanner scanner;
-    auto package = scanner.readRecipeInfo("libffi");
-    QCOMPARE(package.name(), "libffi");
-    QCOMPARE(package.licenseString(), "MIT");
-    QCOMPARE(package.version(), "3.2.1");
-    QCOMPARE(package.revision(), "r0");
+    TextFile recipeInfo{u"files/libffi/recipeinfo"_qs};
+    auto package = scanner.readRecipeInfo(u"libffi"_qs, recipeInfo);
+    QCOMPARE(package.name(), u"libffi"_qs);
+    QCOMPARE(package.licenseString(), u"MIT"_qs);
+    QCOMPARE(package.version(), u"3.2.1"_qs);
+    QCOMPARE(package.revision(), u"r0"_qs);
 }
 
 QTEST_GUILESS_MAIN(TestPackageScannerWithFileIO)
