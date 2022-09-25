@@ -11,7 +11,7 @@
 class FakeTextFile : public AbstractTextFile
 {
 public:
-    explicit FakeTextFile(QString filePath);
+    explicit FakeTextFile(QString filePath, bool isOpen, QStringList lines);
     ~FakeTextFile() override;
     FakeTextFile(const FakeTextFile &file) = delete;
     FakeTextFile &operator=(const FakeTextFile &file) = delete;

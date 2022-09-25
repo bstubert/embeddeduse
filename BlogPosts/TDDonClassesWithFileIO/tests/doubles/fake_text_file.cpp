@@ -5,38 +5,22 @@
 #include <QHash>
 #include <QStringList>
 
-#include "file_system_double.h"
 #include "fake_text_file.h"
 
 struct FakeTextFile::Impl
 {
-    Impl(QString filePath);
-    ~Impl();
-    QHash<QString, TextFileData> m_fileSystem = fileSystemDouble();
-
     bool m_isOpen{false};
     QStringList m_lines;
     int m_currentLine{0};
 };
 
-FakeTextFile::Impl::Impl(QString filePath)
+FakeTextFile::FakeTextFile(QString filePath, bool isOpen, QStringList lines)
+    : m_impl{new Impl{isOpen, lines, 0}}
 {
-    auto textFileData = m_fileSystem.value(filePath);
-    m_isOpen = textFileData.m_isOpen;
-    m_lines = textFileData.m_lines;
-    if (!m_isOpen)
+    if (!m_impl->m_isOpen)
     {
         throw std::runtime_error(QString{"Cannot read file \'%1\'."}.arg(filePath).toStdString());
     }
-}
-
-FakeTextFile::Impl::~Impl()
-{
-}
-
-FakeTextFile::FakeTextFile(QString filePath)
-    : m_impl{new Impl{filePath}}
-{
 }
 
 FakeTextFile::~FakeTextFile()
