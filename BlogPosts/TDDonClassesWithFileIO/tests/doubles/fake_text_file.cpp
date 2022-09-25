@@ -6,9 +6,9 @@
 #include <QStringList>
 
 #include "file_system_double.h"
-#include "text_file.h"
+#include "fake_text_file.h"
 
-struct TextFile::Impl
+struct FakeTextFile::Impl
 {
     Impl(QString filePath);
     ~Impl();
@@ -19,7 +19,7 @@ struct TextFile::Impl
     int m_currentLine{0};
 };
 
-TextFile::Impl::Impl(QString filePath)
+FakeTextFile::Impl::Impl(QString filePath)
 {
     auto textFileData = m_fileSystem.value(filePath);
     m_isOpen = textFileData.m_isOpen;
@@ -30,25 +30,25 @@ TextFile::Impl::Impl(QString filePath)
     }
 }
 
-TextFile::Impl::~Impl()
+FakeTextFile::Impl::~Impl()
 {
 }
 
-TextFile::TextFile(QString filePath)
+FakeTextFile::FakeTextFile(QString filePath)
     : m_impl{new Impl{filePath}}
 {
 }
 
-TextFile::~TextFile()
+FakeTextFile::~FakeTextFile()
 {
 }
 
-bool TextFile::isAtEnd() const
+bool FakeTextFile::isAtEnd() const
 {
     return m_impl->m_currentLine == m_impl->m_lines.count();
 }
 
-QString TextFile::readLine()
+QString FakeTextFile::readLine()
 {
     auto line = m_impl->m_lines[m_impl->m_currentLine];
     ++m_impl->m_currentLine;

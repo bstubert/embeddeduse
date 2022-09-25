@@ -7,7 +7,7 @@
 
 #include "package_info.h"
 #include "package_scanner.h"
-#include "text_file.h"
+#include "fake_text_file.h"
 
 class TestPackageScannerWithoutFileIO : public QObject
 {
@@ -22,7 +22,7 @@ private slots:
 void TestPackageScannerWithoutFileIO::testReadRecipeInfo()
 {
     PackageScanner scanner;
-    TextFile recipeInfo{u"files/libffi/recipeinfo"_qs};
+    FakeTextFile recipeInfo{u"files/libffi/recipeinfo"_qs};
     auto package = scanner.readRecipeInfo(u"libffi"_qs, recipeInfo);
     QCOMPARE(package.name(), u"libffi"_qs);
     QCOMPARE(package.licenseString(), u"MIT"_qs);
@@ -34,7 +34,7 @@ void TestPackageScannerWithoutFileIO::testCannotOpenRecipeInfo()
 {
     PackageScanner scanner;
     QVERIFY_EXCEPTION_THROWN(
-        TextFile recipeInfo{u"files/cannot-open/recipeinfo"_qs};
+        FakeTextFile recipeInfo{u"files/cannot-open/recipeinfo"_qs};
         auto package = scanner.readRecipeInfo(u"cannot-open"_qs, recipeInfo),
         std::runtime_error
     );
@@ -43,7 +43,7 @@ void TestPackageScannerWithoutFileIO::testCannotOpenRecipeInfo()
 void TestPackageScannerWithoutFileIO::testLicenseMissingInRecipeInfo()
 {
     PackageScanner scanner;
-    TextFile recipeInfo{u"files/missing-license/recipeinfo"_qs};
+    FakeTextFile recipeInfo{u"files/missing-license/recipeinfo"_qs};
     auto package = scanner.readRecipeInfo(u"missing-license"_qs, recipeInfo);
     QCOMPARE(package.name(), u"missing-license"_qs);
     QVERIFY(package.licenseString().isEmpty());
