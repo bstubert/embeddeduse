@@ -5,7 +5,7 @@
 #include <QString>
 
 class PackageInfo;
-class TextFile;
+class AbstractTextFile;
 
 class PackageScanner
 {
@@ -13,5 +13,5 @@ public:
     PackageScanner();
     ~PackageScanner();
 
-    PackageInfo readRecipeInfo(QString packageName, TextFile &recipeInfo);
+    PackageInfo readRecipeInfo(QString packageName, AbstractTextFile &recipeInfo);
 };

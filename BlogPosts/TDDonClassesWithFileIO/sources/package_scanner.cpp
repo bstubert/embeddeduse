@@ -4,7 +4,7 @@
 
 #include "package_info.h"
 #include "package_scanner.h"
-#include "text_file.h"
+#include "abstract_text_file.h"
 
 PackageScanner::PackageScanner()
 {
@@ -14,7 +14,7 @@ PackageScanner::~PackageScanner()
 {
 }
 
-PackageInfo PackageScanner::readRecipeInfo(QString packageName, TextFile &recipeInfo)
+PackageInfo PackageScanner::readRecipeInfo(QString packageName, AbstractTextFile &recipeInfo)
 {
     QString licStr;
     QString version;
