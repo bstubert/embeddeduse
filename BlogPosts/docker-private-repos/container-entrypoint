@@ -1,0 +1,19 @@
+#!/bin/bash
+
+USER_ID=${USER_ID:-1001}
+GROUP_ID=${GROUP_ID:-1001}
+
+if ! grep -q "^builder:" /etc/group >/dev/null 2>&1; then
+    groupadd -o --gid $GROUP_ID builder
+fi
+if ! id builder >/dev/null 2>&1; then
+    useradd -o --uid $USER_ID --gid $GROUP_ID --create-home \
+        --home-dir /home/builder builder >/dev/null 2>&1
+fi
+
+chown -R builder:builder /home/builder
+cd /home/builder
+
+exec gosu builder ssh-keygen -R github.com
+exec gosu builder ssh-keyscan -H github.com >> /home/builder/.ssh/known_hosts
+exec gosu builder $@
