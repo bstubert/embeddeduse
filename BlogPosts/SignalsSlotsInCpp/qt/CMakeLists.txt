@@ -18,7 +18,7 @@ add_executable(${PROJECT_NAME}
   main.cpp
   ClimateModel.cpp
   ClimateEcuTwin.cpp
-)
+        IoTClient.cpp IoTClient.h)
 target_link_libraries(${PROJECT_NAME} Qt${QT_VERSION_MAJOR}::Core)
 
 install(TARGETS ${PROJECT_NAME}
