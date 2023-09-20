@@ -4,11 +4,12 @@
 
 #include "ClimateEcuTwin.h"
 
-ClimateEcuTwin::ClimateEcuTwin()
+ClimateEcuTwin::ClimateEcuTwin(QObject *parent)
+    : QObject{parent}
 {
 }
 
 void ClimateEcuTwin::setTemperature(int temperature)
 {
-    std::cout << "With C++: Send temperature " << temperature << " to Climate ECU." << std::endl;
+    std::cout << "With Qt: Send temperature " << temperature << " to Climate ECU." << std::endl;
 }
