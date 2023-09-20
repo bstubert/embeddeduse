@@ -8,6 +8,8 @@ ClimateModel::ClimateModel()
 
 void ClimateModel::setTemperature(int temperature)
 {
+    if (m_temperature == temperature)
+        return;
     m_temperature = temperature;
     temperatureChanged(m_temperature);
 }

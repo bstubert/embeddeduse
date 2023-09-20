@@ -9,6 +9,8 @@ ClimateModel::ClimateModel(QObject *parent)
 
 void ClimateModel::setTemperature(int temperature)
 {
+    if (m_temperature == temperature)
+        return;
     m_temperature = temperature;
     emit temperatureChanged(m_temperature);
 }
