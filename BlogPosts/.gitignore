@@ -1,3 +1,4 @@
 *.txt.user
 build-*
+cmake-build-*
 run
