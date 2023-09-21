@@ -9,8 +9,8 @@ ClimateModel::ClimateModel(QObject *parent)
 
 void ClimateModel::setInsideTemperature(int temperature)
 {
-    if (m_temperature == temperature)
+    if (m_insideTemperature == temperature)
         return;
-    m_temperature = temperature;
-    emit temperatureChanged(m_temperature);
+    m_insideTemperature = temperature;
+    emit temperatureChanged(m_insideTemperature);
 }

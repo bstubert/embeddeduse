@@ -10,5 +10,6 @@ IoTClient::IoTClient()
 
 void IoTClient::setInsideTemperature(int temperature)
 {
-    std::cout << "With tightly coupled C++: Send temperature " << temperature << " to IoT cloud." << std::endl;
+    std::cout << "With tightly coupled C++: Send outside temperature " << temperature << " to IoT cloud."
+        << std::endl;
 }

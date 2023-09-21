@@ -8,8 +8,8 @@ ClimateModel::ClimateModel()
 
 void ClimateModel::setInsideTemperature(int temperature)
 {
-    if (m_temperature == temperature)
+    if (m_insideTemperature == temperature)
         return;
-    m_temperature = temperature;
-    temperatureChanged(m_temperature);
+    m_insideTemperature = temperature;
+    temperatureChanged(m_insideTemperature);
 }

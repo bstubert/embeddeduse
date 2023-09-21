@@ -1,21 +1,36 @@
 // Copyright (C) Burkhard Stubert (DBA EmbeddedUse)
 
+#include <iostream>
+
 #include "ClimateModel.h"
 #include "ClimateEcuTwin.h"
 #include "IoTClient.h"
 
-ClimateModel::ClimateModel(ClimateEcuTwin &twin, IoTClient &client)
-    : m_twin{twin}
-    , m_client{client}
+ClimateModel::ClimateModel()
 {
+}
+
+void ClimateModel::setObservers(ClimateEcuTwin *twin, IoTClient *client)
+{
+    m_twin = twin;
+    m_client = client;
 }
 
 void ClimateModel::setInsideTemperature(int temperature)
 {
-    if (m_temperature == temperature)
+    if (m_insideTemperature == temperature)
         return;
-    m_temperature = temperature;
-    m_twin.setInsideTemperature(m_temperature);
-    m_client.setInsideTemperature(m_temperature);
+    m_insideTemperature = temperature;
+    m_twin->setInsideTemperature(m_insideTemperature);
+    m_client->setInsideTemperature(m_insideTemperature);
+}
+
+void ClimateModel::setOutsideTemperature(int temperature)
+{
+    if (m_outsideTemperature == temperature)
+        return;
+    m_outsideTemperature = temperature;
+    std::cout << "With tightly coupled C++: Received outside temperature " << temperature << " from Climate ECU."
+        << std::endl;
 }
 

@@ -8,6 +8,12 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
 {
     ClimateEcuTwin twin;
     IoTClient client;
-    ClimateModel model{twin, client};
+    ClimateModel model;
+
+    model.setObservers(&twin, &client);
+    twin.setObserver(&model);
+
     model.setInsideTemperature(16);
+
+    twin.setOutsideTemperature(27);
 }

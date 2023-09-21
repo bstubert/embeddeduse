@@ -16,5 +16,5 @@ signals:
     void temperatureChanged(int temperature);
 
 private:
-    int m_temperature{18};
+    int m_insideTemperature{18};
 };
