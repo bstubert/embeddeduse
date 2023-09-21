@@ -12,5 +12,5 @@ public:
     ClimateEcuTwin(QObject *parent = nullptr);
 
 public slots:
-    void setTemperature(int temperature);
+    void setInsideTemperature(int temperature);
 };

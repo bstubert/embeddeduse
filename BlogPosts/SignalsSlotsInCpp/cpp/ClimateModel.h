@@ -8,7 +8,7 @@ class ClimateModel
 {
 public:
     ClimateModel();
-    void setTemperature(int temperature);
+    void setInsideTemperature(int temperature);
 
     std::function<void(int)> temperatureChanged;
 

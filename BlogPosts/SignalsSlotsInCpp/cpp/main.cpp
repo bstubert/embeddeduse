@@ -9,7 +9,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
     ClimateEcuTwin twin;
     model.temperatureChanged = [&twin](int temperature)
     {
-        twin.setTemperature(temperature);
+        twin.setInsideTemperature(temperature);
     };
-    model.setTemperature(14);
+    model.setInsideTemperature(14);
 }

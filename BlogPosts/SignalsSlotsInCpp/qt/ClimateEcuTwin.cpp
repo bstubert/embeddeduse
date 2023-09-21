@@ -9,7 +9,7 @@ ClimateEcuTwin::ClimateEcuTwin(QObject *parent)
 {
 }
 
-void ClimateEcuTwin::setTemperature(int temperature)
+void ClimateEcuTwin::setInsideTemperature(int temperature)
 {
     std::cout << "With Qt: Send temperature " << temperature << " to Climate ECU." << std::endl;
 }

@@ -10,7 +10,7 @@ class ClimateModel : public QObject
 
 public:
     ClimateModel(QObject *parent = nullptr);
-    void setTemperature(int temperature);
+    void setInsideTemperature(int temperature);
 
 signals:
     void temperatureChanged(int temperature);

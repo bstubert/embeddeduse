@@ -6,5 +6,5 @@ class ClimateEcuTwin
 {
 public:
     ClimateEcuTwin();
-    void setTemperature(int temperature);
+    void setInsideTemperature(int temperature);
 };

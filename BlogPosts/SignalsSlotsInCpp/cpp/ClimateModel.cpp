@@ -6,7 +6,7 @@ ClimateModel::ClimateModel()
 {
 }
 
-void ClimateModel::setTemperature(int temperature)
+void ClimateModel::setInsideTemperature(int temperature)
 {
     if (m_temperature == temperature)
         return;

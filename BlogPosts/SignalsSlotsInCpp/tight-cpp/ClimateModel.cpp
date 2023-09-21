@@ -10,12 +10,12 @@ ClimateModel::ClimateModel(ClimateEcuTwin &twin, IoTClient &client)
 {
 }
 
-void ClimateModel::setTemperature(int temperature)
+void ClimateModel::setInsideTemperature(int temperature)
 {
     if (m_temperature == temperature)
         return;
     m_temperature = temperature;
-    m_twin.setTemperature(m_temperature);
-    m_client.setTemperature(m_temperature);
+    m_twin.setInsideTemperature(m_temperature);
+    m_client.setInsideTemperature(m_temperature);
 }
 

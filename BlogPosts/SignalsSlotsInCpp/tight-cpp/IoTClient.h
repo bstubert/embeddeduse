@@ -8,5 +8,5 @@ public:
     IoTClient();
 
 public:
-    void setTemperature(int temperature);
+    void setInsideTemperature(int temperature);
 };

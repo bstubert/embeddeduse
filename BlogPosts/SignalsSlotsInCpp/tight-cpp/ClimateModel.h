@@ -11,7 +11,7 @@ class ClimateModel
 {
 public:
     ClimateModel(ClimateEcuTwin &twin, IoTClient &client);
-    void setTemperature(int temperature);
+    void setInsideTemperature(int temperature);
 
     std::function<void(int)> temperatureChanged;
 

@@ -12,8 +12,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
     ClimateEcuTwin twin;
     IoTClient client;
     QObject::connect(&model, &ClimateModel::temperatureChanged,
-                     &twin, &ClimateEcuTwin::setTemperature);
+                     &twin, &ClimateEcuTwin::setInsideTemperature);
     QObject::connect(&model, &ClimateModel::temperatureChanged,
-                     &client, &IoTClient::setTemperature);
-    model.setTemperature(15);
+                     &client, &IoTClient::setInsideTemperature);
+    model.setInsideTemperature(15);
 }

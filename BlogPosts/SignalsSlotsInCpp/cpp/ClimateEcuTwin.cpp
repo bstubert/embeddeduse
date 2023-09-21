@@ -8,7 +8,7 @@ ClimateEcuTwin::ClimateEcuTwin()
 {
 }
 
-void ClimateEcuTwin::setTemperature(int temperature)
+void ClimateEcuTwin::setInsideTemperature(int temperature)
 {
     std::cout << "With C++: Send temperature " << temperature << " to Climate ECU." << std::endl;
 }

@@ -10,7 +10,7 @@ IoTClient::IoTClient(QObject *parent)
 
 }
 
-void IoTClient::setTemperature(int temperature)
+void IoTClient::setInsideTemperature(int temperature)
 {
     std::cout << "With Qt: Send temperature " << temperature << " to IoT cloud." << std::endl;
 }
