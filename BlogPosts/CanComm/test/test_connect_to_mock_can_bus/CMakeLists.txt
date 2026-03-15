@@ -12,7 +12,7 @@ find_package(Qt5SerialBus)
 
 add_executable(
     ${PROJECT_NAME}
-    ../../ecucan/canbusrouter.cpp
+#    ../../ecucan/canbusrouter.cpp
     test_connect_to_mock_can_bus.cpp
 )
 
